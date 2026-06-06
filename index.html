@@ -1,181 +1,6 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ItWorks - AI‑First Managed Services</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: 
-#ffffff;
-      color: 
-#111111;
-      line-height: 1.6;
-    }
-    .hero {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-      padding: 0 20px;
-    }
-    .hero h1 {
-      font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-    }
-    .hero p {
-      font-size: 1.25rem;
-      max-width: 600px;
-      margin-bottom: 2rem;
-      color: 
-#555555;
-    }
-    .cta-button {
-      background: 
-#000000;
-      color: 
-#ffffff;
-      padding: 14px 28px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: background 0.3s ease;
-    }
-    .cta-button:hover {
-      background: 
-#333333;
-    }
-    .services {
-      padding: 60px 20px;
-      text-align: center;
-    }
-    .services h2 {
-      font-size: 2rem;
-      margin-bottom: 40px;
-    }
-    .service-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-    .service-card {
-      border: 1px solid #eee;
-      border-radius: 12px;
-      padding: 20px;
-      background: 
-#fafafa;
-      transition: transform 0.3s ease;
-    }
-    .service-card:hover {
-      transform: translateY(-5px);
-    }
-    .service-card h3 {
-      margin-bottom: 10px;
-      font-size: 1.2rem;
-    }
-    .contact {
-      padding: 60px 20px;
-      background: 
-#f9f9f9;
-      text-align: center;
-    }
-    .contact h2 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-    }
-    form {
-      max-width: 500px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-    input, textarea {
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-    button {
-      background: 
-#000000;
-      color: 
-#ffffff;
-      padding: 14px;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    button:hover {
-      background: 
-#333333;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 0.9rem;
-      color: 
-#777777;
-    }
-  </style>
-</head>
-<body>
-  <!-- Hero Section -->
-  <section class="hero">
-    <h1>AI‑First Managed Services. Future‑Ready IT.</h1>
-    <p>
-      We combine intelligent automation with expert oversight to deliver faster, smarter, and more reliable IT support for modern businesses.
-    </p>
-    <a href="#contact" class="cta-button">Get Started</a>
-  </section>
-  <!-- Services Section -->
-  <section class="services">
-    <h2>Our Services</h2>
-    <div class="service-grid">
-      <div class="service-card">
-        <h3>Cloud Automation</h3>
-        <p>Streamline deployments and scale effortlessly with AI‑driven cloud management.</p>
-      </div>
-      <div class="service-card">
-        <h3>AI‑Driven Security</h3>
-        <p>Proactive threat detection and automated response to keep your business safe.</p>
-      </div>
-      <div class="service-card">
-        <h3>Managed IT Support</h3>
-        <p>Reliable, round‑the‑clock support powered by intelligent automation.</p>
-      </div>
-      <div class="service-card">
-        <h3>Process Optimization</h3>
-        <p>Use AI insights to reduce costs and improve efficiency across operations.</p>
-      </div>
-    </div>
-  </section>
-  <!-- Contact Section -->
-  <section class="contact" id="contact">
-    <h2>Contact Us</h2>
-    <form action="https://formspree.io/f/your-form-id" method="POST">
-      <input type="text" name="name" placeholder="Your Name" required>
-      <input type="email" name="email" placeholder="Your Email" required>
-      <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
-      <button type="submit">Send Message</button>
-    </form>
-  </section>
-  <!-- Footer -->
-  <footer>
-    © 2026 ItWorks. Powered by AI.
-  </footer>
-</body>
-</html>
+raw
+Index · HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -457,38 +282,7 @@
       background: rgba(59,130,246,0.08);
     }
  
-    /* ─── Scroll Indicator ──────────────────────────── */
-    .scroll-indicator {
-      position: absolute;
-      bottom: 36px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      animation: fadeUp 1s 1s ease both;
-    }
-    .scroll-indicator .mouse {
-      width: 22px; height: 36px;
-      border: 2px solid var(--muted);
-      border-radius: 12px;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding-top: 6px;
-    }
-    .scroll-indicator .wheel {
-      width: 3px; height: 6px;
-      background: var(--accent);
-      border-radius: 2px;
-      animation: scrollWheel 2s infinite;
-    }
+    /* ─── Scroll Indicator (removed) ───────────────── */
  
     /* ─── Stats Bar ─────────────────────────────────── */
     .stats-bar {
@@ -941,14 +735,15 @@
     .form-group input,
     .form-group textarea,
     .form-group select {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--glass-bdr);
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.18);
       border-radius: 10px;
       padding: 12px 16px;
-      color: var(--text);
+      color: #ffffff;
       font-family: 'Montserrat', sans-serif;
       font-size: 0.875rem;
-      transition: border-color 0.3s, box-shadow 0.3s;
+      font-weight: 500;
+      transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
       outline: none;
       resize: vertical;
     }
@@ -956,11 +751,13 @@
     .form-group textarea:focus,
     .form-group select:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+      background: rgba(255,255,255,0.13);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
     }
     .form-group input::placeholder,
-    .form-group textarea::placeholder { color: rgba(148,163,184,0.5); }
-    .form-group select option { background: #0f172a; }
+    .form-group textarea::placeholder { color: rgba(255,255,255,0.4); }
+    .form-group select { color: #ffffff; }
+    .form-group select option { background: #0f172a; color: #f1f5f9; }
  
     .btn-submit {
       width: 100%;
@@ -1098,8 +895,8 @@
       <li><a href="#services">Services</a></li>
       <li><a href="#how">How It Works</a></li>
       <li><a href="#testimonials">Reviews</a></li>
-      <li><a href="#pricing">Pricing</a></li>
-      <li><a href="#contact" class="nav-cta">Get Started</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="#contact" class="nav-cta">Talk to Us</a></li>
     </ul>
     <div class="hamburger" id="hamburger" onclick="toggleMenu()">
       <span></span><span></span><span></span>
@@ -1111,8 +908,8 @@
     <a href="#services" onclick="toggleMenu()">Services</a>
     <a href="#how" onclick="toggleMenu()">How It Works</a>
     <a href="#testimonials" onclick="toggleMenu()">Reviews</a>
-    <a href="#pricing" onclick="toggleMenu()">Pricing</a>
-    <a href="#contact" onclick="toggleMenu()">Get Started →</a>
+    <a href="blog.html" onclick="toggleMenu()">Blog</a>
+    <a href="#contact" onclick="toggleMenu()">Talk to Us →</a>
   </div>
  
   <!-- Hero -->
@@ -1137,10 +934,6 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         See What We Do
       </a>
-    </div>
-    <div class="scroll-indicator">
-      <div class="mouse"><div class="wheel"></div></div>
-      <span>Scroll</span>
     </div>
   </section>
  
@@ -1326,55 +1119,37 @@
     </div>
   </section>
  
-  <!-- Pricing -->
-  <section class="pricing" id="pricing">
-    <div class="pricing-header">
-      <div class="section-label">Simple Pricing</div>
-      <h2 class="section-title">Transparent Plans<br/>No Surprises</h2>
-      <p class="section-sub">Choose the plan that fits your business. Scale up or down at any time.</p>
-    </div>
-    <div class="pricing-grid">
-      <div class="price-card">
-        <div class="price-name">Starter</div>
-        <div class="price-amount">£999<span style="font-size:1.2rem;font-weight:400;">/mo</span></div>
-        <div class="price-period">Per month, billed annually</div>
-        <ul class="price-features">
-          <li>Up to 25 endpoints</li>
-          <li>24/7 AI-powered monitoring</li>
-          <li>Basic threat detection</li>
-          <li>Cloud cost optimisation</li>
-          <li>Email & chat support</li>
-        </ul>
-        <a href="#contact" class="btn-plan btn-plan-outline">Get Started</a>
+  <!-- Discovery Call CTA -->
+  <section class="pricing" id="discovery" style="padding: 100px 6vw;">
+    <div style="max-width:1100px; margin:0 auto;">
+      <div class="pricing-header">
+        <div class="section-label">Our Approach</div>
+        <h2 class="section-title">No Off-the-Shelf Packages.<br/>Just Results.</h2>
+        <p class="section-sub">Every business is different. We start with a free Discovery Call — no pitch, no pressure — to understand your challenges, goals, and where AI can unlock the most value for you.</p>
       </div>
-      <div class="price-card featured">
-        <div class="popular-badge">Most Popular</div>
-        <div class="price-name">Growth</div>
-        <div class="price-amount">£2,499<span style="font-size:1.2rem;font-weight:400;">/mo</span></div>
-        <div class="price-period">Per month, billed annually</div>
-        <ul class="price-features">
-          <li>Up to 100 endpoints</li>
-          <li>Full AI security suite</li>
-          <li>Automated incident response</li>
-          <li>Process automation</li>
-          <li>Dedicated account manager</li>
-          <li>Priority 24/7 support</li>
-        </ul>
-        <a href="#contact" class="btn-plan btn-plan-filled">Get Started</a>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:24px; max-width:1100px; margin-bottom:60px;">
+        <div class="glass-card visible" style="text-align:center; padding:36px 28px;">
+          <div style="font-size:2.5rem; margin-bottom:16px;">🔍</div>
+          <h3>Discovery</h3>
+          <p>We map your current operations, identify bottlenecks, and understand your growth targets — completely free, no obligation.</p>
+        </div>
+        <div class="glass-card visible" style="text-align:center; padding:36px 28px; border-color:rgba(59,130,246,0.4); background:rgba(59,130,246,0.06); box-shadow: 0 0 60px rgba(59,130,246,0.12);">
+          <div style="font-size:2.5rem; margin-bottom:16px;">🤖</div>
+          <h3>AI Blueprint</h3>
+          <p>We design a tailored AI automation strategy — exactly matched to your business, your team, and your industry.</p>
+        </div>
+        <div class="glass-card visible" style="text-align:center; padding:36px 28px;">
+          <div style="font-size:2.5rem; margin-bottom:16px;">🚀</div>
+          <h3>Deploy & Grow</h3>
+          <p>We build and launch your AI systems, then stay alongside you as an embedded tech partner driving continuous growth.</p>
+        </div>
       </div>
-      <div class="price-card">
-        <div class="price-name">Enterprise</div>
-        <div class="price-amount" style="font-size:2rem;">Custom</div>
-        <div class="price-period">Tailored to your organisation</div>
-        <ul class="price-features">
-          <li>Unlimited endpoints</li>
-          <li>White-glove onboarding</li>
-          <li>Custom AI integrations</li>
-          <li>Compliance & audit support</li>
-          <li>On-site engineering support</li>
-          <li>SLA-backed guarantees</li>
-        </ul>
-        <a href="#contact" class="btn-plan btn-plan-outline">Talk to Sales</a>
+      <div style="text-align:center;">
+        <a href="#contact" class="btn-primary" style="font-size:1.05rem; padding:16px 44px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          Book a Free Discovery Call
+        </a>
+        <p style="margin-top:16px; color: var(--muted); font-size:0.85rem;">30 minutes. No commitment. Just a conversation about your growth.</p>
       </div>
     </div>
   </section>
@@ -1383,9 +1158,9 @@
   <section class="contact" id="contact">
     <div class="contact-inner">
       <div class="contact-info">
-        <div class="section-label">Get In Touch</div>
-        <h2 class="section-title">Ready to Build<br/>Smarter IT?</h2>
-        <p class="section-sub">Tell us about your business and we'll design a free AI-first strategy tailored to your goals.</p>
+        <div class="section-label">Book Your Discovery Call</div>
+        <h2 class="section-title">Let's Talk About<br/>Your Growth.</h2>
+        <p class="section-sub">Fill in the form and one of our AI consultants will reach out within 24 hours to schedule your free Discovery Call.</p>
         <div class="contact-item">
           <div class="contact-icon">📧</div>
           <div class="contact-text">
@@ -1409,7 +1184,7 @@
         </div>
       </div>
       <div class="contact-form" id="contact-form">
-        <form action="https://formspree.io/f/your-form-id" method="POST" id="the-form">
+        <form action="https://formspree.io/f/mvznzqgq" method="POST" id="the-form">
           <div class="form-row">
             <div class="form-group">
               <label>First Name</label>
@@ -1460,9 +1235,9 @@
     <p>© 2026 ItWorks. AI‑First Managed Services.</p>
     <div class="footer-links">
       <a href="#services">Services</a>
-      <a href="#pricing">Pricing</a>
+      <a href="#discovery">Our Approach</a>
+      <a href="blog.html">Blog</a>
       <a href="#contact">Contact</a>
-      <a href="#">Privacy</a>
     </div>
   </footer>
  
