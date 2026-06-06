@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog — ItWorks | AI‑First Managed Services</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #030712;
+      --accent:    #3b82f6;
+      --accent2:   #8b5cf6;
+      --accent3:   #06b6d4;
+      --glass-bg:  rgba(255,255,255,0.04);
+      --glass-bdr: rgba(255,255,255,0.10);
+      --text:      #f1f5f9;
+      --muted:     #94a3b8;
+      --radius:    16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+    #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    .grid-overlay {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .orb {
+      position: fixed; border-radius: 50%;
+      filter: blur(80px); pointer-events: none; z-index: 0;
+    }
+    .orb-1 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+      top: -80px; right: -80px;
+      animation: floatGlow 8s ease-in-out infinite;
+    }
+    .orb-2 {
+      width: 350px; height: 350px;
+      background: radial-gradient(circle, rgba(139,92,246,0.10) 0%, transparent 70%);
+      bottom: 30%; left: -80px;
+      animation: floatGlow 11s ease-in-out infinite reverse;
+    }
+
+    @keyframes floatGlow {
+      0%, 100% { transform: translateY(0px); opacity: 0.3; }
+      50%       { transform: translateY(-20px); opacity: 0.5; }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: none; }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50%       { transform: scale(1.4); opacity: 0.7; }
+    }
+
+    /* ── Nav ─────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 6vw;
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(3,7,18,0.75);
+      border-bottom: 1px solid var(--glass-bdr);
+      transition: padding 0.3s;
+    }
+    nav.scrolled { padding: 12px 6vw; }
+    .nav-logo {
+      font-size: 1.5rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; letter-spacing: -0.5px;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: 0.875rem; font-weight: 500; letter-spacing: 0.5px;
+      transition: color 0.3s; position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px; transition: width 0.3s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a.active { color: var(--text); }
+    .nav-links a.active::after { width: 100%; }
+    .nav-cta {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff !important; padding: 8px 22px; border-radius: 50px;
+      font-weight: 600 !important; -webkit-text-fill-color: #fff !important;
+      transition: opacity 0.3s, transform 0.2s !important;
+    }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: 0.3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .mobile-menu {
+      display: none; position: fixed; top: 65px; left: 0; right: 0; z-index: 99;
+      backdrop-filter: blur(20px); background: rgba(3,7,18,0.95);
+      border-bottom: 1px solid var(--glass-bdr);
+      padding: 20px 6vw; flex-direction: column; gap: 16px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { color: var(--muted); text-decoration: none; font-size: 1rem; font-weight: 500; padding: 8px 0; border-bottom: 1px solid var(--glass-bdr); transition: color 0.3s; }
+    .mobile-menu a:hover { color: var(--text); }
+
+    /* ── Page Header ─────────────────────────────── */
+    .blog-hero {
+      position: relative; z-index: 1;
+      padding: 160px 6vw 80px;
+      text-align: center;
+    }
+    .blog-hero .label {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3);
+      border-radius: 50px; padding: 6px 18px;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 24px; animation: fadeUp 0.8s ease both;
+    }
+    .blog-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.8rem); font-weight: 900;
+      letter-spacing: -2px; line-height: 1.1; margin-bottom: 16px;
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
+    .blog-hero h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .blog-hero p {
+      color: var(--muted); font-size: 1rem; max-width: 520px;
+      margin: 0 auto; line-height: 1.8;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+
+    /* ── Featured Article ────────────────────────── */
+    .featured-wrap {
+      position: relative; z-index: 1;
+      padding: 0 6vw 80px;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .featured-card {
+      background: var(--glass-bg);
+      border: 1px solid rgba(59,130,246,0.3);
+      border-radius: 24px;
+      overflow: hidden;
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 0 80px rgba(59,130,246,0.12);
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 420px;
+      animation: fadeUp 0.8s 0.3s ease both;
+      transition: transform 0.4s, box-shadow 0.4s;
+    }
+    .featured-card:hover { transform: translateY(-6px); box-shadow: 0 0 100px rgba(59,130,246,0.2); }
+    .featured-visual {
+      background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(139,92,246,0.2), rgba(6,182,212,0.15));
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 300px;
+    }
+    .featured-visual .city-art {
+      font-size: 6rem; opacity: 0.8;
+      animation: floatGlow 6s ease-in-out infinite;
+    }
+    .featured-visual .tags-visual {
+      position: absolute; bottom: 20px; left: 20px;
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .vtag {
+      padding: 4px 12px; border-radius: 50px;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px;
+      backdrop-filter: blur(10px);
+    }
+    .vtag-blue   { background: rgba(59,130,246,0.3); color: #93c5fd; border: 1px solid rgba(59,130,246,0.4); }
+    .vtag-purple { background: rgba(139,92,246,0.3); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.4); }
+    .vtag-cyan   { background: rgba(6,182,212,0.3);  color: #67e8f9; border: 1px solid rgba(6,182,212,0.4); }
+    .featured-content {
+      padding: 44px 40px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .featured-meta {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 16px; font-size: 0.78rem; color: var(--muted);
+    }
+    .featured-meta .dot { width: 4px; height: 4px; background: var(--muted); border-radius: 50%; }
+    .case-badge {
+      display: inline-block; padding: 4px 14px; border-radius: 50px;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; margin-bottom: 14px;
+    }
+    .featured-content h2 {
+      font-size: clamp(1.4rem, 2.5vw, 2rem); font-weight: 800;
+      letter-spacing: -0.5px; line-height: 1.25; margin-bottom: 16px;
+    }
+    .featured-content p {
+      color: var(--muted); font-size: 0.9rem; line-height: 1.8; margin-bottom: 24px;
+    }
+    .read-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; padding: 12px 28px; border-radius: 50px;
+      text-decoration: none; font-weight: 700; font-size: 0.875rem;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 0 24px rgba(59,130,246,0.3);
+      align-self: flex-start;
+    }
+    .read-btn:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(59,130,246,0.5); }
+
+    /* ── Other Posts ────────────────────────────── */
+    .other-posts {
+      position: relative; z-index: 1;
+      padding: 0 6vw 100px; max-width: 1200px; margin: 0 auto;
+    }
+    .other-posts h3 {
+      font-size: 1rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 28px;
+    }
+    .posts-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .post-card {
+      background: var(--glass-bg); border: 1px solid var(--glass-bdr);
+      border-radius: var(--radius); overflow: hidden;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      transition: transform 0.4s, border-color 0.4s, box-shadow 0.4s;
+      opacity: 0; transform: translateY(20px);
+    }
+    .post-card.visible { opacity: 1; transform: none; }
+    .post-card:hover { transform: translateY(-6px); border-color: rgba(59,130,246,0.3); box-shadow: 0 16px 40px rgba(59,130,246,0.1); }
+    .post-thumb {
+      height: 140px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+    }
+    .post-body { padding: 24px; }
+    .post-cat {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
+    }
+    .post-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; line-height: 1.4; }
+    .post-card p { color: var(--muted); font-size: 0.83rem; line-height: 1.7; margin-bottom: 16px; }
+    .post-date { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+
+    /* ── Full Article Page ───────────────────────── */
+    #article-view {
+      display: none;
+      position: relative; z-index: 1;
+    }
+    #article-view.active { display: block; }
+
+    .article-header {
+      padding: 140px 6vw 60px;
+      max-width: 860px; margin: 0 auto;
+    }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--muted); text-decoration: none;
+      font-size: 0.875rem; font-weight: 600;
+      margin-bottom: 32px; transition: color 0.3s;
+      cursor: pointer; background: none; border: none;
+    }
+    .back-btn:hover { color: var(--text); }
+    .article-cats { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .a-cat {
+      padding: 4px 14px; border-radius: 50px;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    }
+    .a-cat-blue   { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); }
+    .a-cat-purple { background: rgba(139,92,246,0.15); color: #a78bfa; border: 1px solid rgba(139,92,246,0.25); }
+    .a-cat-cyan   { background: rgba(6,182,212,0.15);  color: #22d3ee; border: 1px solid rgba(6,182,212,0.25); }
+    .a-cat-green  { background: rgba(34,197,94,0.15);  color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
+    .article-header h1 {
+      font-size: clamp(2rem, 4.5vw, 3.2rem); font-weight: 900;
+      letter-spacing: -1.5px; line-height: 1.15; margin-bottom: 20px;
+    }
+    .article-header h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .article-meta {
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      font-size: 0.82rem; color: var(--muted); margin-bottom: 32px;
+    }
+    .author-chip {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .author-chip .av {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 800; color: #fff;
+    }
+    .article-meta .sep { width: 4px; height: 4px; background: var(--muted); border-radius: 50%; }
+
+    /* ── Article Body ───────────────────────────── */
+    .article-body {
+      max-width: 760px; margin: 0 auto;
+      padding: 0 6vw 80px;
+      font-size: 1.02rem; line-height: 1.9; color: #cbd5e1;
+    }
+    .article-body h2 {
+      font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px;
+      color: var(--text); margin: 52px 0 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--glass-bdr);
+    }
+    .article-body h3 {
+      font-size: 1.15rem; font-weight: 700; color: var(--text);
+      margin: 32px 0 12px; letter-spacing: -0.3px;
+    }
+    .article-body p { margin-bottom: 20px; }
+    .article-body strong { color: var(--text); font-weight: 700; }
+    .article-body em { color: var(--accent3); font-style: normal; font-weight: 600; }
+
+    .article-body .callout {
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(59,130,246,0.25);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 12px 12px 0;
+      padding: 20px 24px;
+      margin: 32px 0;
+      color: #bfdbfe;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    .article-body .callout-purple {
+      background: rgba(139,92,246,0.08);
+      border-color: rgba(139,92,246,0.25);
+      border-left-color: var(--accent2);
+      color: #ddd6fe;
+    }
+    .article-body .callout-green {
+      background: rgba(34,197,94,0.08);
+      border-color: rgba(34,197,94,0.25);
+      border-left-color: #22c55e;
+      color: #bbf7d0;
+    }
+
+    .stat-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+      gap: 16px; margin: 36px 0;
+    }
+    .stat-box {
+      background: var(--glass-bg); border: 1px solid var(--glass-bdr);
+      border-radius: var(--radius); padding: 24px 20px; text-align: center;
+      backdrop-filter: blur(12px);
+    }
+    .stat-box .n {
+      font-size: 2.2rem; font-weight: 900; letter-spacing: -1px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      display: block;
+    }
+    .stat-box .l { font-size: 0.78rem; color: var(--muted); font-weight: 600; margin-top: 4px; }
+
+    .ai-modules {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+      gap: 16px; margin: 36px 0;
+    }
+    .ai-module {
+      background: var(--glass-bg); border: 1px solid var(--glass-bdr);
+      border-radius: var(--radius); padding: 24px 20px;
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .ai-module:hover { transform: translateY(-4px); border-color: rgba(59,130,246,0.3); }
+    .ai-module .mod-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .ai-module h4 { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .ai-module p { font-size: 0.8rem; color: var(--muted); line-height: 1.6; margin: 0; }
+
+    .timeline {
+      border-left: 2px solid rgba(59,130,246,0.3);
+      margin: 36px 0; padding-left: 24px;
+      display: flex; flex-direction: column; gap: 28px;
+    }
+    .tl-item { position: relative; }
+    .tl-item::before {
+      content: ''; position: absolute;
+      left: -31px; top: 6px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--accent); border: 3px solid var(--bg);
+      box-shadow: 0 0 10px rgba(59,130,246,0.5);
+    }
+    .tl-phase {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 4px;
+    }
+    .tl-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .tl-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.7; margin: 0; }
+
+    .results-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+      gap: 16px; margin: 36px 0;
+    }
+    .result-item {
+      background: var(--glass-bg); border: 1px solid var(--glass-bdr);
+      border-radius: var(--radius); padding: 24px; text-align: center;
+      backdrop-filter: blur(12px);
+    }
+    .result-item .r-icon { font-size: 1.8rem; margin-bottom: 10px; }
+    .result-item .r-val {
+      font-size: 1.8rem; font-weight: 900; letter-spacing: -0.5px;
+      display: block; margin-bottom: 4px;
+    }
+    .result-item .r-label { font-size: 0.78rem; color: var(--muted); font-weight: 600; }
+
+    .partnership-banner {
+      background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(139,92,246,0.12));
+      border: 1px solid rgba(59,130,246,0.3);
+      border-radius: 20px; padding: 40px; text-align: center;
+      margin: 48px 0;
+    }
+    .partnership-banner .logos {
+      display: flex; align-items: center; justify-content: center;
+      gap: 20px; margin-bottom: 20px; font-size: 1.4rem; font-weight: 900;
+    }
+    .partnership-banner .logos .x {
+      font-size: 1.5rem; color: var(--muted); font-weight: 300;
+    }
+    .logo-lhc {
+      background: linear-gradient(135deg, #f59e0b, #f97316);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .logo-iw {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .partnership-banner h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 10px; }
+    .partnership-banner p { color: var(--muted); font-size: 0.9rem; max-width: 480px; margin: 0 auto; line-height: 1.8; }
+
+    .article-cta {
+      background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(139,92,246,0.1));
+      border: 1px solid rgba(59,130,246,0.25);
+      border-radius: 20px; padding: 40px; text-align: center; margin: 48px 0 0;
+    }
+    .article-cta h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 10px; }
+    .article-cta p { color: var(--muted); font-size: 0.9rem; margin-bottom: 24px; line-height: 1.8; }
+    .article-cta a {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; padding: 13px 32px; border-radius: 50px;
+      text-decoration: none; font-weight: 700; font-size: 0.9rem;
+      box-shadow: 0 0 30px rgba(59,130,246,0.3);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .article-cta a:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(59,130,246,0.5); }
+
+    /* ── Footer ─────────────────────────────────── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--glass-bdr);
+      padding: 40px 6vw;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo {
+      font-size: 1.2rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    footer p { font-size: 0.8rem; color: var(--muted); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.8rem; transition: color 0.3s; }
+    .footer-links a:hover { color: var(--text); }
+
+    @media (max-width: 768px) {
+      .featured-card { grid-template-columns: 1fr; }
+      .featured-visual { min-height: 180px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      footer { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+  <div class="grid-overlay"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <!-- Nav -->
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">ItWorks</a>
+    <ul class="nav-links">
+      <li><a href="index.html#services">Services</a></li>
+      <li><a href="index.html#how">How It Works</a></li>
+      <li><a href="index.html#testimonials">Reviews</a></li>
+      <li><a href="blog.html" class="active">Blog</a></li>
+      <li><a href="index.html#contact" class="nav-cta">Talk to Us</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html#services" onclick="toggleMenu()">Services</a>
+    <a href="index.html#how" onclick="toggleMenu()">How It Works</a>
+    <a href="blog.html" onclick="toggleMenu()">Blog</a>
+    <a href="index.html#contact" onclick="toggleMenu()">Talk to Us →</a>
+  </div>
+
+  <!-- Blog List View -->
+  <div id="blog-view">
+    <section class="blog-hero">
+      <div class="label">
+        <span style="width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite;display:inline-block;"></span>
+        ItWorks Blog
+      </div>
+      <h1>Insights on <span>AI, Growth<br/>& the Future of IT</span></h1>
+      <p>Real stories, real results. How AI-first thinking is transforming businesses we work with — and the industry at large.</p>
+    </section>
+
+    <!-- Featured Post -->
+    <div class="featured-wrap">
+      <div class="featured-card" onclick="openArticle()" style="cursor:pointer;">
+        <div class="featured-visual">
+          <div class="city-art">✈️</div>
+          <div class="tags-visual">
+            <span class="vtag vtag-blue">AI Automation</span>
+            <span class="vtag vtag-purple">Agentic AI</span>
+            <span class="vtag vtag-cyan">Growth</span>
+          </div>
+        </div>
+        <div class="featured-content">
+          <span class="case-badge">📂 Case Study</span>
+          <div class="featured-meta">
+            <span>ItWorks Team</span>
+            <span class="dot"></span>
+            <span>June 2026</span>
+            <span class="dot"></span>
+            <span>12 min read</span>
+          </div>
+          <h2>LHC x ItWorks: Rebuilding a Transport Business with AI After Covid</h2>
+          <p>How London Heathrow Cars went from Covid-decimated operations to an AI-powered growth engine — and what this partnership means for the future of mobility.</p>
+          <a class="read-btn" onclick="openArticle(); return false;" href="#">
+            Read Case Study
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Other Posts -->
+    <div class="other-posts">
+      <h3>More from ItWorks</h3>
+      <div class="posts-grid">
+        <div class="post-card">
+          <div class="post-thumb" style="background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.15));">🤖</div>
+          <div class="post-body">
+            <div class="post-cat">AI Strategy</div>
+            <h4>What is Agentic AI — and Why Every Business Needs to Understand It Now</h4>
+            <p>Agentic AI isn't just automation. It's AI that plans, decides, and acts on your behalf. Here's what that means for your business.</p>
+            <div class="post-date">May 2026 · 7 min read</div>
+          </div>
+        </div>
+        <div class="post-card">
+          <div class="post-thumb" style="background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(236,72,153,0.15));">☁️</div>
+          <div class="post-body">
+            <div class="post-cat">Cloud & Infrastructure</div>
+            <h4>Why SMEs Are Overpaying for Cloud by 40% — And How to Stop It</h4>
+            <p>Most small and mid-size businesses are running cloud infrastructure the same way enterprises did in 2015. AI changes the economics entirely.</p>
+            <div class="post-date">April 2026 · 5 min read</div>
+          </div>
+        </div>
+        <div class="post-card">
+          <div class="post-thumb" style="background: linear-gradient(135deg, rgba(6,182,212,0.15), rgba(34,197,94,0.15));">🛡️</div>
+          <div class="post-body">
+            <div class="post-cat">Cybersecurity</div>
+            <h4>The Threat You Can't See: How AI Detects Breaches Before They Happen</h4>
+            <p>Traditional threat detection reacts. AI-first security predicts. We break down how proactive security works in practice — and why it matters.</p>
+            <div class="post-date">March 2026 · 6 min read</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────
+       FULL ARTICLE: LHC x ItWorks Case Study
+  ───────────────────────────────────────────────── -->
+  <div id="article-view">
+
+    <div class="article-header">
+      <button class="back-btn" onclick="closeArticle()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Blog
+      </button>
+      <div class="article-cats">
+        <span class="a-cat a-cat-blue">Case Study</span>
+        <span class="a-cat a-cat-purple">AI Automation</span>
+        <span class="a-cat a-cat-cyan">Agentic AI</span>
+        <span class="a-cat a-cat-green">Growth Strategy</span>
+      </div>
+      <h1>LHC x ItWorks: <span>Rebuilding a Transport Business with AI After Covid</span></h1>
+      <div class="article-meta">
+        <div class="author-chip">
+          <div class="av">IW</div>
+          <span>ItWorks Team</span>
+        </div>
+        <span class="sep"></span>
+        <span>June 2026</span>
+        <span class="sep"></span>
+        <span>12 min read</span>
+        <span class="sep"></span>
+        <span>✈️ Airport Transfers · 🤖 AI Automation</span>
+      </div>
+    </div>
+
+    <div class="article-body">
+
+      <div class="partnership-banner">
+        <div class="logos">
+          <span class="logo-lhc">LHC</span>
+          <span class="x">×</span>
+          <span class="logo-iw">ItWorks</span>
+        </div>
+        <h3>An Active Engagement — June 2026</h3>
+        <p>London Heathrow Cars is a current ItWorks client. This case study documents the ongoing AI transformation we are building together in real time.</p>
+      </div>
+
+      <h2>The Business: London Heathrow Cars</h2>
+
+      <p>
+        <strong>London Heathrow Cars (LHC)</strong> is a private hire and airport transfer company based in the UK, operating primarily around Heathrow Airport and Greater London. Before the pandemic, LHC had built a solid reputation for reliable, professional airport transfers — a business where trust, punctuality, and word-of-mouth are everything.
+      </p>
+
+      <p>
+        Like the vast majority of companies in the mobility and ride-hailing sector, LHC was deeply dependent on a single revenue stream: international air travel. When passengers fly, they need airport transfers. When passengers stop flying, the business stops with them.
+      </p>
+
+      <div class="callout">
+        <strong>"We went from a stable, growing operation to effectively zero revenue in a matter of weeks. No flights. No bookings. No income."</strong>
+      </div>
+
+      <h2>The Covid Devastation</h2>
+
+      <p>
+        When the pandemic hit in March 2020, the UK aviation industry ground to a halt almost overnight. Heathrow Airport — one of the busiest in the world — saw passenger numbers collapse by <em>over 80%</em>. For a business like LHC, this wasn't a downturn. It was an existential crisis.
+      </p>
+
+      <div class="stat-row">
+        <div class="stat-box">
+          <span class="n">−83%</span>
+          <span class="l">UK Air Passenger Drop (2020)</span>
+        </div>
+        <div class="stat-box">
+          <span class="n">~18mo</span>
+          <span class="l">Effective Operational Shutdown</span>
+        </div>
+        <div class="stat-box">
+          <span class="n">£0</span>
+          <span class="l">Airport Transfer Revenue at Peak Lockdown</span>
+        </div>
+        <div class="stat-box">
+          <span class="n">2026</span>
+          <span class="l">Year of Full AI Growth Engagement</span>
+        </div>
+      </div>
+
+      <p>
+        The company survived — through sheer resilience, personal sacrifice, and operational discipline — but emerged from the pandemic years smaller, leaner, and facing a very different competitive landscape. The private hire market had shifted. Aggregator apps had gained market share. Customer expectations had changed. And the growth that had felt inevitable before 2020 now required an entirely new strategy to achieve.
+      </p>
+
+      <p>
+        Recovery had begun. But recovering is not the same as growing. To compete and win in 2026, LHC needed more than a return to normal. They needed to build something new.
+      </p>
+
+      <h2>Enter ItWorks: The AI Growth Consultation</h2>
+
+      <p>
+        That's where we came in. ItWorks was introduced to LHC through a mutual connection in early 2026. Our initial discovery call made one thing immediately clear: LHC was not short of ambition, experience, or customer relationships. What they lacked was the <strong>operational infrastructure to scale</strong> — the systems, automations, and intelligence layer that modern growth demands.
+      </p>
+
+      <p>
+        Our role in this engagement isn't just technical. We're acting as an embedded <em>AI Growth Consultancy</em> — sitting inside the business as a strategic partner, mapping every workflow, identifying every friction point, and deploying AI tools and agentic systems to remove them one by one.
+      </p>
+
+      <div class="callout callout-purple">
+        <strong>Our mandate:</strong> Use AI automation and Agentic AI to turn LHC from a post-Covid survivor into a growth-first operation — with technology doing the heavy lifting across sales, operations, marketing, and customer experience.
+      </div>
+
+      <h2>Diagnosing the Challenges</h2>
+
+      <p>
+        Before writing a line of code or deploying a single tool, we spent time understanding LHC's actual operational reality. The Discovery phase surfaced five core challenges that were silently holding growth back:
+      </p>
+
+      <h3>1. Booking & Lead Conversion Leakage</h3>
+      <p>
+        Enquiries were coming in through multiple channels — phone, email, web form, WhatsApp — but there was no unified system capturing and following up on every lead. A significant number of potential bookings were falling through the cracks due to response delays or inconsistent follow-up.
+      </p>
+
+      <h3>2. No Automated Retention Engine</h3>
+      <p>
+        LHC had a loyal customer base built over years. But there was no systematic way of re-engaging past customers, prompting repeat bookings, or staying top-of-mind between journeys. Retention was happening by accident rather than by design.
+      </p>
+
+      <h3>3. Manual Operations Creating Capacity Constraints</h3>
+      <p>
+        Driver scheduling, job dispatching, and fleet coordination were handled manually — creating bottlenecks, errors, and an upper ceiling on how many bookings could realistically be managed at once. Growth would inevitably hit an operational wall.
+      </p>
+
+      <h3>4. Underdeveloped Digital Presence</h3>
+      <p>
+        In a post-Covid world where passengers increasingly book online, LHC's digital footprint didn't reflect the quality of service they delivered. SEO, review management, and content were all underinvested — meaning competitors with worse services but stronger online presence were winning bookings LHC deserved.
+      </p>
+
+      <h3>5. No Data Intelligence</h3>
+      <p>
+        Decisions were being made based on experience and intuition — valuable, but insufficient. There was no dashboard showing which channels drove the most profitable bookings, which customers had the highest lifetime value, or when to expect seasonal demand peaks.
+      </p>
+
+      <h2>The ItWorks AI Blueprint: What We're Building</h2>
+
+      <p>
+        With the diagnosis complete, we designed a phased AI transformation programme. Here's the full architecture of what we're deploying — some already live, some in build, all on a clear delivery timeline.
+      </p>
+
+      <div class="ai-modules">
+        <div class="ai-module">
+          <div class="mod-icon">🤖</div>
+          <h4>AI Booking Assistant</h4>
+          <p>An intelligent agent that handles inbound enquiries 24/7 across WhatsApp, email, and web — qualifying leads, capturing details, and confirming bookings without human intervention.</p>
+        </div>
+        <div class="ai-module">
+          <div class="mod-icon">🔄</div>
+          <h4>Automated Follow-Up Engine</h4>
+          <p>Multi-step AI sequences that nurture every enquiry: instant acknowledgement, quote delivery, reminder nudges, and post-journey review requests — all on autopilot.</p>
+        </div>
+        <div class="ai-module">
+          <div class="mod-icon">📊</div>
+          <h4>Customer Intelligence Dashboard</h4>
+          <p>A real-time view of bookings, revenue, customer lifetime value, and channel performance — so every business decision is backed by data, not guesswork.</p>
+        </div>
+        <div class="ai-module">
+          <div class="mod-icon">📣</div>
+          <h4>AI Marketing Automation</h4>
+          <p>Segmented email and WhatsApp campaigns triggered by behaviour: lapsed customers, seasonal peaks, flight-based retargeting, and loyalty rewards — all personalised at scale.</p>
+        </div>
+        <div class="ai-module">
+          <div class="mod-icon">⭐</div>
+          <h4>Reputation & Review AI</h4>
+          <p>Automated review request flows, AI-drafted responses to Google and Trustpilot reviews, and sentiment monitoring to protect and grow LHC's digital reputation continuously.</p>
+        </div>
+        <div class="ai-module">
+          <div class="mod-icon">🗓️</div>
+          <h4>Smart Dispatch & Scheduling</h4>
+          <p>An AI layer over operations that suggests optimal driver assignments, flags conflicts, and handles pre-trip communications — reducing manual coordination by 70%+.</p>
+        </div>
+      </div>
+
+      <h2>Delivery Roadmap</h2>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-phase">Phase 1 — Weeks 1–4</div>
+          <div class="tl-title">Foundation: Data, Systems & Integrations</div>
+          <p class="tl-desc">Audit of all existing tools and data sources. CRM setup and data migration. Integration of booking channels into a unified inbox. AI booking assistant prototype deployed.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-phase">Phase 2 — Weeks 5–10</div>
+          <div class="tl-title">Automation: Lead Capture & Retention Flows</div>
+          <p class="tl-desc">Automated follow-up sequences live. Review request automation launched. First email campaigns to lapsed customer segments. Performance dashboard deployed.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-phase">Phase 3 — Weeks 11–18</div>
+          <div class="tl-title">Intelligence: Agentic AI & Marketing Scale</div>
+          <p class="tl-desc">Full agentic booking assistant live across all channels. AI-driven marketing calendar deployed. Smart dispatch pilot launched. SEO content programme begins.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-phase">Phase 4 — Ongoing</div>
+          <div class="tl-title">Optimise & Grow</div>
+          <p class="tl-desc">Monthly performance reviews. AI model fine-tuning based on booking data. New automation opportunities identified. Continuous compounding of growth gains.</p>
+        </div>
+      </div>
+
+      <h2>What Agentic AI Means for LHC</h2>
+
+      <p>
+        The term <strong>"Agentic AI"</strong> gets thrown around a lot in 2026, but for LHC it has a very specific, practical meaning. It means building AI systems that don't just respond — they <em>initiate, decide, and act</em> on behalf of the business within defined boundaries.
+      </p>
+
+      <p>
+        Consider a customer who made three bookings in 2024 but hasn't returned since. A traditional CRM might flag them. A human might remember to call. An <em>Agentic AI system</em> detects the lapse automatically, identifies their historical travel patterns, cross-references upcoming flight schedules at Heathrow, and sends a hyper-personalised re-engagement message — without anyone pressing a button.
+      </p>
+
+      <div class="callout callout-green">
+        <strong>This is the compounding advantage of Agentic AI:</strong> it works 24 hours a day, 365 days a year, getting smarter with every interaction — while the LHC team focuses on delivering the exceptional service they're known for.
+      </div>
+
+      <p>
+        The ambition here is not to replace the human touch that makes LHC great. It's to use AI to ensure that <em>every</em> customer interaction — from first enquiry to post-journey follow-up — feels as attentive and professional as LHC's best drivers on their best days. Consistently. At scale.
+      </p>
+
+      <h2>Early Signals & What We're Watching</h2>
+
+      <p>
+        This engagement is live and active. We're watching a set of KPIs closely as our automations go live and build momentum:
+      </p>
+
+      <div class="results-grid">
+        <div class="result-item">
+          <div class="r-icon">📥</div>
+          <span class="r-val" style="background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">100%</span>
+          <span class="r-label">Enquiry Capture Rate (Target)</span>
+        </div>
+        <div class="result-item">
+          <div class="r-icon">⚡</div>
+          <span class="r-val" style="background: linear-gradient(135deg, var(--accent3), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">&lt; 2 min</span>
+          <span class="r-label">AI First Response Time</span>
+        </div>
+        <div class="result-item">
+          <div class="r-icon">🔁</div>
+          <span class="r-val" style="background: linear-gradient(135deg, var(--accent2), #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">3×</span>
+          <span class="r-label">Repeat Booking Rate (6-mo Target)</span>
+        </div>
+        <div class="result-item">
+          <div class="r-icon">⭐</div>
+          <span class="r-val" style="background: linear-gradient(135deg, #f59e0b, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">4.8+</span>
+          <span class="r-label">Google Review Score (Target)</span>
+        </div>
+      </div>
+
+      <h2>Why This Partnership Matters to Us</h2>
+
+      <p>
+        At ItWorks, we're an AI-first managed services team. We build technology for businesses. But the work we do with LHC is something we're particularly proud of — because it represents exactly what AI-first consulting should look like in 2026.
+      </p>
+
+      <p>
+        It's not about selling software licences or deploying a chatbot and calling it innovation. It's about sitting inside a real business that survived something devastating, understanding what they need to grow, and building the exact right combination of tools, automations, and intelligent systems to get them there.
+      </p>
+
+      <p>
+        The private hire and airport transfer sector is <strong>underserved by technology</strong>. Most operators are running on manual processes, WhatsApp groups, and spreadsheets. The opportunity for a business like LHC — which has the reputation, the fleet, and the market relationships — to leap ahead of the competition through AI is enormous.
+      </p>
+
+      <p>
+        We're building that advantage, one automation at a time. And we'll be documenting the results here as they come in.
+      </p>
+
+      <div class="partnership-banner">
+        <div class="logos">
+          <span class="logo-lhc">LHC</span>
+          <span class="x">×</span>
+          <span class="logo-iw">ItWorks</span>
+        </div>
+        <h3>This Is What AI-First Growth Looks Like</h3>
+        <p>Follow this blog for ongoing updates from our LHC engagement — including metrics, automation breakdowns, and lessons learned as the programme scales.</p>
+      </div>
+
+      <div class="article-cta">
+        <h3>Is Your Business Ready for AI-Driven Growth?</h3>
+        <p>Every business has a version of what LHC is going through — growth bottlenecks that technology can remove. Let's find yours in a free Discovery Call.</p>
+        <a href="index.html#contact">
+          Book a Free Discovery Call
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo">ItWorks</div>
+    <p>© 2026 ItWorks. AI‑First Managed Services.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#services">Services</a>
+      <a href="blog.html">Blog</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Particles ──────────────────────────────── */
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [], mouse = {x:-9999,y:-9999};
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    function P() {
+      this.reset = function() {
+        this.x = Math.random()*W; this.y = Math.random()*H;
+        this.vx = (Math.random()-.5)*.4; this.vy = (Math.random()-.5)*.4;
+        this.r = Math.random()*1.5+.5; this.a = Math.random()*.35+.08;
+        this.c = Math.random()>.5?'59,130,246':Math.random()>.5?'139,92,246':'6,182,212';
+      }; this.reset();
+    }
+    for(let i=0;i<100;i++){const p=new P();particles.push(p);}
+    document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
+    function draw() {
+      ctx.clearRect(0,0,W,H);
+      particles.forEach(p=>{
+        const dx=mouse.x-p.x,dy=mouse.y-p.y,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<100){p.x-=dx*.006;p.y-=dy*.006;}
+        p.x+=p.vx;p.y+=p.vy;
+        if(p.x<0||p.x>W)p.vx*=-1; if(p.y<0||p.y>H)p.vy*=-1;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle=`rgba(${p.c},${p.a})`;ctx.fill();
+      });
+      for(let i=0;i<particles.length;i++) for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<90){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(59,130,246,${.05*(1-d/90)})`;ctx.lineWidth=.5;ctx.stroke();}
+      }
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    /* ── Nav ────────────────────────────────────── */
+    window.addEventListener('scroll',()=>{document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50);});
+    function toggleMenu(){document.getElementById('hamburger').classList.toggle('open');document.getElementById('mobile-menu').classList.toggle('open');}
+
+    /* ── Scroll reveal ──────────────────────────── */
+    const io = new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.12});
+    document.querySelectorAll('.post-card').forEach((el,i)=>{el.style.transitionDelay=i*0.1+'s';io.observe(el);});
+
+    /* ── Article open / close ───────────────────── */
+    function openArticle() {
+      document.getElementById('blog-view').style.display = 'none';
+      document.getElementById('article-view').classList.add('active');
+      window.scrollTo({top: 0, behavior: 'smooth'});
+      document.title = 'LHC × ItWorks Case Study — ItWorks Blog';
+    }
+    function closeArticle() {
+      document.getElementById('blog-view').style.display = 'block';
+      document.getElementById('article-view').classList.remove('active');
+      window.scrollTo({top: 0, behavior: 'smooth'});
+      document.title = 'Blog — ItWorks | AI‑First Managed Services';
+    }
+
+    /* ── Check URL hash for direct article link ─── */
+    if(window.location.hash === '#lhc-case-study') openArticle();
+  </script>
+</body>
+</html>
