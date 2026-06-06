@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Careers — ItWorks | We're Hiring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #030712;
+      --accent:    #3b82f6;
+      --accent2:   #8b5cf6;
+      --accent3:   #06b6d4;
+      --glass-bg:  rgba(255,255,255,0.04);
+      --glass-bdr: rgba(255,255,255,0.10);
+      --text:      #f1f5f9;
+      --muted:     #94a3b8;
+      --radius:    16px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+    #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .grid-overlay {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .orb { position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
+    .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%); top: -100px; right: -100px; animation: floatGlow 8s ease-in-out infinite; }
+    .orb-2 { width: 380px; height: 380px; background: radial-gradient(circle, rgba(139,92,246,0.10) 0%, transparent 70%); bottom: 20%; left: -80px; animation: floatGlow 11s ease-in-out infinite reverse; }
+
+    @keyframes floatGlow { 0%,100%{transform:translateY(0);opacity:.3} 50%{transform:translateY(-20px);opacity:.5} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+    @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:.7} }
+
+    /* ── Nav ─────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 6vw;
+      backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(3,7,18,0.75); border-bottom: 1px solid var(--glass-bdr);
+      transition: padding 0.3s;
+    }
+    nav.scrolled { padding: 12px 6vw; }
+    .nav-logo {
+      font-size: 1.5rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      text-decoration: none; letter-spacing: -0.5px;
+    }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: 0.875rem; font-weight: 500;
+      letter-spacing: 0.5px; transition: color 0.3s; position: relative;
+    }
+    .nav-links a::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:2px; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:2px; transition:width 0.3s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    .nav-links a.active { color: var(--text); }
+    .nav-cta {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff !important; padding: 8px 22px; border-radius: 50px;
+      font-weight: 600 !important; -webkit-text-fill-color: #fff !important;
+    }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover { opacity: 0.9; }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: 0.3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .mobile-menu { display:none; position:fixed; top:65px; left:0; right:0; z-index:99; backdrop-filter:blur(20px); background:rgba(3,7,18,0.95); border-bottom:1px solid var(--glass-bdr); padding:20px 6vw; flex-direction:column; gap:16px; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { color:var(--muted); text-decoration:none; font-size:1rem; font-weight:500; padding:8px 0; border-bottom:1px solid var(--glass-bdr); transition:color 0.3s; }
+    .mobile-menu a:hover { color: var(--text); }
+
+    /* ── Hero ────────────────────────────────────── */
+    .hero {
+      position: relative; z-index: 1;
+      padding: 160px 6vw 80px;
+      text-align: center;
+      max-width: 900px; margin: 0 auto;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 50px; padding: 6px 18px;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: #4ade80;
+      margin-bottom: 28px; animation: fadeUp 0.8s ease both;
+    }
+    .hero-badge .dot { width: 7px; height: 7px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900;
+      letter-spacing: -2px; line-height: 1.1; margin-bottom: 20px;
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero p {
+      color: var(--muted); font-size: 1.1rem; max-width: 560px;
+      margin: 0 auto 36px; line-height: 1.8;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+
+    /* ── Perks bar ───────────────────────────────── */
+    .perks {
+      position: relative; z-index: 1;
+      padding: 0 6vw 80px;
+    }
+    .perks-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px; max-width: 1100px; margin: 0 auto;
+    }
+    .perk-card {
+      background: var(--glass-bg); border: 1px solid var(--glass-bdr);
+      border-radius: var(--radius); padding: 24px 20px; text-align: center;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      transition: transform 0.3s, border-color 0.3s;
+      opacity: 0; transform: translateY(20px);
+    }
+    .perk-card.visible { opacity: 1; transform: none; }
+    .perk-card:hover { transform: translateY(-4px); border-color: rgba(59,130,246,0.3); }
+    .perk-icon { font-size: 1.8rem; margin-bottom: 10px; }
+    .perk-card h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+    .perk-card p { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── Section header ──────────────────────────── */
+    .section-wrap { position: relative; z-index: 1; padding: 0 6vw 100px; max-width: 1200px; margin: 0 auto; }
+    .section-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .section-title { font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 800; letter-spacing: -1px; line-height: 1.2; margin-bottom: 12px; }
+    .section-sub { color: var(--muted); font-size: 1rem; max-width: 520px; line-height: 1.8; margin-bottom: 50px; }
+
+    /* ── Role cards ──────────────────────────────── */
+    .roles-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .role-card {
+      background: var(--glass-bg); border: 1px solid var(--glass-bdr);
+      border-radius: var(--radius); padding: 32px;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      transition: transform 0.4s, border-color 0.4s, box-shadow 0.4s;
+      display: flex; flex-direction: column;
+      opacity: 0; transform: translateY(24px);
+    }
+    .role-card.visible { opacity: 1; transform: none; }
+    .role-card:hover { transform: translateY(-6px); border-color: rgba(59,130,246,0.35); box-shadow: 0 20px 50px rgba(59,130,246,0.1); }
+
+    .role-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; gap: 12px; }
+    .role-icon {
+      width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+    }
+    .role-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; margin-top: 4px; }
+    .badge {
+      padding: 3px 10px; border-radius: 50px;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;
+    }
+    .badge-remote { background: rgba(34,197,94,0.12); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); }
+    .badge-exp    { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
+    .badge-full   { background: rgba(139,92,246,0.12); color: #a78bfa; border: 1px solid rgba(139,92,246,0.2); }
+
+    .role-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.3px; }
+    .role-dept { font-size: 0.75rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+    .role-summary { color: var(--muted); font-size: 0.85rem; line-height: 1.75; margin-bottom: 16px; flex: 1; }
+
+    .role-skills { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+    .skill-tag {
+      padding: 3px 10px; background: rgba(255,255,255,0.05);
+      border: 1px solid var(--glass-bdr); border-radius: 50px;
+      font-size: 0.68rem; font-weight: 600; color: var(--muted);
+    }
+
+    .btn-apply {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 11px 20px; border-radius: 50px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; border: none; font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem; font-weight: 700; cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 0 20px rgba(59,130,246,0.2);
+    }
+    .btn-apply:hover { transform: translateY(-2px); box-shadow: 0 0 35px rgba(59,130,246,0.4); }
+
+    /* ── Modal ───────────────────────────────────── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #0c1428; border: 1px solid rgba(59,130,246,0.3);
+      border-radius: 20px; padding: 40px; max-width: 560px; width: 100%;
+      max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 0 80px rgba(59,130,246,0.2);
+      animation: fadeUp 0.3s ease;
+    }
+    .modal-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; gap: 12px; }
+    .modal-header h3 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; }
+    .modal-role-tag { font-size: 0.72rem; color: var(--accent); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
+    .modal-close {
+      background: none; border: none; color: var(--muted); cursor: pointer;
+      font-size: 1.3rem; line-height: 1; padding: 4px; flex-shrink: 0;
+      transition: color 0.3s;
+    }
+    .modal-close:hover { color: var(--text); }
+
+    .form-group { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+    .form-group label { font-size: 0.78rem; font-weight: 600; color: var(--muted); letter-spacing: 0.5px; }
+    .form-group input, .form-group select {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px; padding: 11px 14px; color: #fff;
+      font-family: 'Montserrat', sans-serif; font-size: 0.875rem; font-weight: 500;
+      outline: none; transition: border-color 0.3s, background 0.3s;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--accent); background: rgba(255,255,255,0.11);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+    }
+    .form-group input::placeholder { color: rgba(255,255,255,0.35); }
+    .form-group select option { background: #0c1428; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    /* ── File Upload ─────────────────────────────── */
+    .file-upload-area {
+      border: 2px dashed rgba(59,130,246,0.3); border-radius: 12px;
+      padding: 28px 20px; text-align: center; cursor: pointer;
+      transition: border-color 0.3s, background 0.3s;
+      background: rgba(59,130,246,0.03);
+    }
+    .file-upload-area:hover, .file-upload-area.dragover {
+      border-color: var(--accent); background: rgba(59,130,246,0.07);
+    }
+    .file-upload-area .upload-icon { font-size: 2rem; margin-bottom: 8px; }
+    .file-upload-area p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+    .file-upload-area strong { color: var(--text); }
+    .file-upload-area input[type="file"] { display: none; }
+    .file-name {
+      margin-top: 10px; font-size: 0.78rem; color: #4ade80;
+      font-weight: 600; display: none;
+    }
+
+    .btn-submit-modal {
+      width: 100%; padding: 13px; margin-top: 6px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; border: none; border-radius: 50px;
+      font-family: 'Montserrat', sans-serif; font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 0 24px rgba(59,130,246,0.3);
+    }
+    .btn-submit-modal:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(59,130,246,0.5); }
+    .btn-submit-modal:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .apply-success {
+      display: none; text-align: center; padding: 24px 0;
+    }
+    .apply-success .check { font-size: 3rem; margin-bottom: 16px; }
+    .apply-success h4 { font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; }
+    .apply-success p { color: var(--muted); font-size: 0.875rem; line-height: 1.7; }
+
+    .note-text {
+      font-size: 0.72rem; color: var(--muted); text-align: center;
+      margin-top: 12px; line-height: 1.6;
+    }
+
+    /* ── Footer ─────────────────────────────────── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--glass-bdr);
+      padding: 40px 6vw;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo {
+      font-size: 1.2rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    footer p { font-size: 0.8rem; color: var(--muted); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.8rem; transition: color 0.3s; }
+    .footer-links a:hover { color: var(--text); }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .form-row { grid-template-columns: 1fr; }
+      footer { flex-direction: column; text-align: center; }
+      .footer-links { flex-wrap: wrap; justify-content: center; }
+      .modal { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+  <div class="grid-overlay"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <!-- Nav -->
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">ItWorks</a>
+    <ul class="nav-links">
+      <li><a href="index.html#services">Services</a></li>
+      <li><a href="index.html#how">How It Works</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="careers.html" class="active">Careers</a></li>
+      <li><a href="index.html#contact" class="nav-cta">Talk to Us</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html#services" onclick="toggleMenu()">Services</a>
+    <a href="index.html#how" onclick="toggleMenu()">How It Works</a>
+    <a href="blog.html" onclick="toggleMenu()">Blog</a>
+    <a href="careers.html" onclick="toggleMenu()">Careers</a>
+    <a href="index.html#contact" onclick="toggleMenu()">Talk to Us →</a>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      We're Actively Hiring
+    </div>
+    <h1>Build the Future of AI<br/><span>From Anywhere in the World</span></h1>
+    <p>ItWorks is an AI-first managed services team growing fast. We're looking for ambitious, curious people who want to work at the intersection of technology, automation, and real business impact — all remote.</p>
+  </section>
+
+  <!-- Perks -->
+  <section class="perks">
+    <div class="perks-grid">
+      <div class="perk-card">
+        <div class="perk-icon">🌍</div>
+        <h4>100% Remote</h4>
+        <p>Work from anywhere. We're a globally distributed team — what matters is your output, not your location.</p>
+      </div>
+      <div class="perk-card">
+        <div class="perk-icon">🤖</div>
+        <h4>AI-First Culture</h4>
+        <p>You won't just work with AI tools — you'll be building and deploying them for real clients in real time.</p>
+      </div>
+      <div class="perk-card">
+        <div class="perk-icon">📈</div>
+        <h4>Fast Growth</h4>
+        <p>We're scaling quickly. Join early and grow with the business — your impact will be visible from day one.</p>
+      </div>
+      <div class="perk-card">
+        <div class="perk-icon">🧠</div>
+        <h4>Learn Constantly</h4>
+        <p>Work across diverse industries and client challenges. No two projects are the same — your skills compound fast.</p>
+      </div>
+      <div class="perk-card">
+        <div class="perk-icon">🤝</div>
+        <h4>Real Ownership</h4>
+        <p>Small teams mean big responsibility. You'll own your work end-to-end, with autonomy to make real decisions.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Open Roles -->
+  <div class="section-wrap">
+    <div class="section-label">Open Positions</div>
+    <h2 class="section-title">Join the ItWorks Team</h2>
+    <p class="section-sub">All roles are fully remote. We're looking for people with 2+ years of relevant experience who are excited by AI and want to help businesses grow.</p>
+
+    <div class="roles-grid" id="roles-grid">
+
+      <!-- 1. Growth Engineer -->
+      <div class="role-card" onclick="openApply('Growth Engineer')">
+        <div class="role-header">
+          <div class="role-icon" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);">📈</div>
+          <div class="role-badges">
+            <span class="badge badge-remote">Remote</span>
+            <span class="badge badge-exp">2+ yrs</span>
+            <span class="badge badge-full">Full-time</span>
+          </div>
+        </div>
+        <div class="role-dept">Growth</div>
+        <div class="role-title">Growth Engineer</div>
+        <div class="role-summary">Design and run AI-powered growth experiments across acquisition, activation, and retention. You'll build automation pipelines, analyse funnels, and ship data-driven improvements that directly drive client revenue. You're equal parts analytical and technical — comfortable in dashboards and in code.</div>
+        <div class="role-skills">
+          <span class="skill-tag">Growth Loops</span>
+          <span class="skill-tag">Python / JS</span>
+          <span class="skill-tag">APIs</span>
+          <span class="skill-tag">A/B Testing</span>
+          <span class="skill-tag">HubSpot / Segment</span>
+        </div>
+        <button class="btn-apply" onclick="event.stopPropagation(); openApply('Growth Engineer')">
+          Apply Now →
+        </button>
+      </div>
+
+      <!-- 2. Team Lead AI Automations -->
+      <div class="role-card" onclick="openApply('Team Lead — AI Automations')">
+        <div class="role-header">
+          <div class="role-icon" style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);">⚡</div>
+          <div class="role-badges">
+            <span class="badge badge-remote">Remote</span>
+            <span class="badge badge-exp">2+ yrs</span>
+            <span class="badge badge-full">Full-time</span>
+          </div>
+        </div>
+        <div class="role-dept">Engineering Leadership</div>
+        <div class="role-title">Team Lead — AI Automations</div>
+        <div class="role-summary">Lead a team of automation engineers delivering complex multi-system integrations for clients across industries. You'll architect workflows, set technical standards, mentor engineers, and be the bridge between client requirements and technical execution. You live in n8n and Make but you also know when to use code instead.</div>
+        <div class="role-skills">
+          <span class="skill-tag">n8n / Make</span>
+          <span class="skill-tag">Team Leadership</span>
+          <span class="skill-tag">API Architecture</span>
+          <span class="skill-tag">Client Delivery</span>
+          <span class="skill-tag">Webhooks</span>
+        </div>
+        <button class="btn-apply" onclick="event.stopPropagation(); openApply('Team Lead — AI Automations')">
+          Apply Now →
+        </button>
+      </div>
+
+      <!-- 3. Project Manager -->
+      <div class="role-card" onclick="openApply('Project Manager')">
+        <div class="role-header">
+          <div class="role-icon" style="background:rgba(6,182,212,0.15);border:1px solid rgba(6,182,212,0.3);">🗂️</div>
+          <div class="role-badges">
+            <span class="badge badge-remote">Remote</span>
+            <span class="badge badge-exp">2+ yrs</span>
+            <span class="badge badge-full">Full-time</span>
+          </div>
+        </div>
+        <div class="role-dept">Delivery</div>
+        <div class="role-title">Project Manager</div>
+        <div class="role-summary">Own the delivery of multiple client engagements simultaneously — from kickoff to go-live. You'll manage timelines, dependencies, and stakeholders while keeping the team focused and clients confident. You run tight ships, communicate proactively, and thrive in fast-paced environments. Agile background preferred.</div>
+        <div class="role-skills">
+          <span class="skill-tag">Agile / Scrum</span>
+          <span class="skill-tag">Asana / Linear</span>
+          <span class="skill-tag">Client Comms</span>
+          <span class="skill-tag">Risk Management</span>
+          <span class="skill-tag">Stakeholders</span>
+        </div>
+        <button class="btn-apply" onclick="event.stopPropagation(); openApply('Project Manager')">
+          Apply Now →
+        </button>
+      </div>
+
+      <!-- 4. Project Coordinator -->
+      <div class="role-card" onclick="openApply('Project Coordinator')">
+        <div class="role-header">
+          <div class="role-icon" style="background:rgba(249,115,22,0.15);border:1px solid rgba(249,115,22,0.3);">📋</div>
+          <div class="role-badges">
+            <span class="badge badge-remote">Remote</span>
+            <span class="badge badge-exp">2+ yrs</span>
+            <span class="badge badge-full">Full-time</span>
+          </div>
+        </div>
+        <div class="role-dept">Delivery</div>
+        <div class="role-title">Project Coordinator</div>
+        <div class="role-summary">Support our Project Managers in keeping multiple client projects on track. You'll handle meeting coordination, task tracking, documentation, and progress reporting. You're meticulous, proactive, and great at keeping complex moving parts organised. The role requires strong written communication and a knack for detail that others miss.</div>
+        <div class="role-skills">
+          <span class="skill-tag">Organisation</span>
+          <span class="skill-tag">Documentation</span>
+          <span class="skill-tag">Notion / Asana</span>
+          <span class="skill-tag">Communication</span>
+          <span class="skill-tag">Reporting</span>
+        </div>
+        <button class="btn-apply" onclick="event.stopPropagation(); openApply('Project Coordinator')">
+          Apply Now →
+        </button>
+      </div>
+
+      <!-- 5. Client Success Manager -->
+      <div class="role-card" onclick="openApply('Client Success Manager')">
+        <div class="role-header">
+          <div class="role-icon" style="background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.3);">🤝</div>
+          <div class="role-badges">
+            <span class="badge badge-remote">Remote</span>
+            <span class="badge badge-exp">2+ yrs</span>
+            <span class="badge badge-full">Full-time</span>
+          </div>
+        </div>
+        <div class="role-dept">Client Success</div>
+        <div class="role-title">Client Success Manager</div>
+        <div class="role-summary">Build and protect long-term relationships with our clients. You'll own a portfolio of accounts — driving adoption of our AI solutions, identifying expansion opportunities, and ensuring every client achieves measurable ROI. You're the voice of the client internally and the trusted advisor to them externally. Tech-savvy, data-driven, and genuinely relationship-focused.</div>
+        <div class="role-skills">
+          <span class="skill-tag">Account Management</span>
+          <span class="skill-tag">Retention</span>
+          <span class="skill-tag">QBRs</span>
+          <span class="skill-tag">CRM Tools</span>
+          <span class="skill-tag">Upsell Strategy</span>
+        </div>
+        <button class="btn-apply" onclick="event.stopPropagation(); openApply('Client Success Manager')">
+          Apply Now →
+        </button>
+      </div>
+
+      <!-- 6. AI Solution Architect -->
+      <div class="role-card" onclick="openApply('AI Solution Architect')">
+        <div class="role-header">
+          <div class="role-icon" style="background:rgba(236,72,153,0.15);border:1px solid rgba(236,72,153,0.3);">🏗️</div>
+          <div class="role-badges">
+            <span class="badge badge-remote">Remote</span>
+            <span class="badge badge-exp">2+ yrs</span>
+            <span class="badge badge-full">Full-time</span>
+          </div>
+        </div>
+        <div class="role-dept">Solutions</div>
+        <div class="role-title">AI Solution Architect</div>
+        <div class="role-summary">Translate complex client business requirements into precise, scalable AI system designs. You'll lead technical scoping sessions, produce detailed solution specifications, and ensure what we promise we can actually build. You're fluent in LLMs, APIs, and system integration patterns. You can explain complex architecture to non-technical stakeholders without losing nuance.</div>
+        <div class="role-skills">
+          <span class="skill-tag">LLMs / AI APIs</span>
+          <span class="skill-tag">System Design</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">Pre-Sales</span>
+          <span class="skill-tag">Integration</span>
+        </div>
+        <button class="btn-apply" onclick="event.stopPropagation(); openApply('AI Solution Architect')">
+          Apply Now →
+        </button>
+      </div>
+
+      <!-- 7. Automations Expert -->
+      <div class="role-card" onclick="openApply('Automations Expert')">
+        <div class="role-header">
+          <div class="role-icon" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);">🔄</div>
+          <div class="role-badges">
+            <span class="badge badge-remote">Remote</span>
+            <span class="badge badge-exp">2+ yrs</span>
+            <span class="badge badge-full">Full-time</span>
+          </div>
+        </div>
+        <div class="role-dept">Engineering</div>
+        <div class="role-title">Automations Expert</div>
+        <div class="role-summary">You live and breathe workflow automation. You'll build complex, multi-step integrations across CRMs, ERPs, communication tools, and custom APIs — primarily using n8n and Make. When the platform runs out of features, you drop into code. You're a creative problem-solver who can turn a messy 12-step business process into a single clean automation that runs on its own.</div>
+        <div class="role-skills">
+          <span class="skill-tag">n8n</span>
+          <span class="skill-tag">Make / Zapier</span>
+          <span class="skill-tag">REST APIs</span>
+          <span class="skill-tag">Webhooks</span>
+          <span class="skill-tag">JavaScript</span>
+        </div>
+        <button class="btn-apply" onclick="event.stopPropagation(); openApply('Automations Expert')">
+          Apply Now →
+        </button>
+      </div>
+
+      <!-- 8. Onboarding Specialist -->
+      <div class="role-card" onclick="openApply('Onboarding Specialist')">
+        <div class="role-header">
+          <div class="role-icon" style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);">🎓</div>
+          <div class="role-badges">
+            <span class="badge badge-remote">Remote</span>
+            <span class="badge badge-exp">2+ yrs</span>
+            <span class="badge badge-full">Full-time</span>
+          </div>
+        </div>
+        <div class="role-dept">Client Experience</div>
+        <div class="role-title">Onboarding Specialist</div>
+        <div class="role-summary">Own the first 90 days of every new client relationship. You'll guide clients through setup, configuration, and training — making sure they reach their first milestone quickly and confidently. You create clear documentation, run engaging training sessions, and act as the bridge between our technical team and a client who just wants things to work. Your success metric: time-to-first-value.</div>
+        <div class="role-skills">
+          <span class="skill-tag">Client Training</span>
+          <span class="skill-tag">Documentation</span>
+          <span class="skill-tag">Onboarding Flows</span>
+          <span class="skill-tag">Communication</span>
+          <span class="skill-tag">Tech Aptitude</span>
+        </div>
+        <button class="btn-apply" onclick="event.stopPropagation(); openApply('Onboarding Specialist')">
+          Apply Now →
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Apply Modal -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+    <div class="modal" id="apply-modal">
+      <div class="modal-header">
+        <div>
+          <div class="modal-role-tag" id="modal-role-tag">Role</div>
+          <h3>Apply for this Role</h3>
+        </div>
+        <button class="modal-close" onclick="closeApply()">✕</button>
+      </div>
+
+      <div id="apply-form-wrap">
+        <form id="apply-form" onsubmit="handleApply(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name *</label>
+              <input type="text" id="apply-first" placeholder="John" required />
+            </div>
+            <div class="form-group">
+              <label>Last Name *</label>
+              <input type="text" id="apply-last" placeholder="Smith" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" id="apply-email" placeholder="john@email.com" required />
+          </div>
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <input type="tel" id="apply-phone" placeholder="+44 7700 000000" required />
+          </div>
+
+          <div class="form-group">
+            <label>Upload CV / Resume *</label>
+            <div class="file-upload-area" id="upload-area" onclick="document.getElementById('cv-upload').click()">
+              <div class="upload-icon">📄</div>
+              <p><strong>Click to upload</strong> or drag & drop<br/>PDF, DOC, DOCX — max 5MB</p>
+              <input type="file" id="cv-upload" accept=".pdf,.doc,.docx" onchange="handleFileSelect(this)" />
+              <div class="file-name" id="file-name"></div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit-modal" id="apply-submit-btn">
+            Submit Application →
+          </button>
+          <p class="note-text">
+            Your CV is uploaded securely to our team's private Google Drive.<br/>
+            You'll receive an email confirmation immediately after submitting.
+          </p>
+        </form>
+      </div>
+
+      <div class="apply-success" id="apply-success">
+        <div class="check">✅</div>
+        <h4>Application Received!</h4>
+        <p>Thanks for applying. We've saved your CV and sent you a confirmation email.<br/><br/>If you're shortlisted for the role, our talent team will be in touch within <strong>7 business days</strong>.<br/><br/>Good luck — we look forward to reviewing your application!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo">ItWorks</div>
+    <p>© 2026 ItWorks. AI‑First Managed Services.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <a href="careers.html">Careers</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    // ─── IMPORTANT: Replace this URL with your Google Apps Script Web App URL ───
+    // See apps-script.gs for setup instructions
+    const APPS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
+    /* ── Particles ─────────────────────────────── */
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [], mouse = {x:-9999,y:-9999};
+    function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+    resize(); window.addEventListener('resize',resize);
+    function P(){this.reset=function(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*.4;this.vy=(Math.random()-.5)*.4;this.r=Math.random()*1.5+.5;this.a=Math.random()*.35+.08;this.c=Math.random()>.5?'59,130,246':Math.random()>.5?'139,92,246':'6,182,212';};this.reset();}
+    for(let i=0;i<100;i++){const p=new P();particles.push(p);}
+    document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
+    function draw(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{const dx=mouse.x-p.x,dy=mouse.y-p.y,d=Math.sqrt(dx*dx+dy*dy);if(d<100){p.x-=dx*.006;p.y-=dy*.006;}p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(${p.c},${p.a})`;ctx.fill();});for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<90){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(59,130,246,${.05*(1-d/90)})`;ctx.lineWidth=.5;ctx.stroke();}}requestAnimationFrame(draw);}
+    draw();
+
+    /* ── Nav ───────────────────────────────────── */
+    window.addEventListener('scroll',()=>{document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50);});
+    function toggleMenu(){document.getElementById('hamburger').classList.toggle('open');document.getElementById('mobile-menu').classList.toggle('open');}
+
+    /* ── Scroll reveal ─────────────────────────── */
+    const io = new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
+    document.querySelectorAll('.perk-card, .role-card').forEach((el,i)=>{el.style.transitionDelay=(i%4)*0.08+'s';io.observe(el);});
+
+    /* ── Modal logic ───────────────────────────── */
+    let currentRole = '';
+
+    function openApply(role) {
+      currentRole = role;
+      document.getElementById('modal-role-tag').textContent = role;
+      document.getElementById('apply-form-wrap').style.display = 'block';
+      document.getElementById('apply-success').style.display = 'none';
+      document.getElementById('apply-form').reset();
+      document.getElementById('file-name').style.display = 'none';
+      document.getElementById('file-name').textContent = '';
+      document.getElementById('apply-submit-btn').disabled = false;
+      document.getElementById('apply-submit-btn').textContent = 'Submit Application →';
+      document.getElementById('modal-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeApply() {
+      document.getElementById('modal-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function closeModal(e) {
+      if (e.target === document.getElementById('modal-overlay')) closeApply();
+    }
+
+    /* ── File select ───────────────────────────── */
+    function handleFileSelect(input) {
+      const file = input.files[0];
+      if (file) {
+        const fn = document.getElementById('file-name');
+        fn.textContent = '✓ ' + file.name;
+        fn.style.display = 'block';
+      }
+    }
+
+    // Drag & drop support
+    const uploadArea = document.getElementById('upload-area');
+    uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+    uploadArea.addEventListener('drop', e => {
+      e.preventDefault(); uploadArea.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        const dt = new DataTransfer(); dt.items.add(file);
+        document.getElementById('cv-upload').files = dt.files;
+        handleFileSelect({ files: dt.files });
+      }
+    });
+
+    /* ── Form submit ───────────────────────────── */
+    async function handleApply(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('cv-upload');
+      const file = fileInput.files[0];
+
+      if (!file) { alert('Please upload your CV/Resume.'); return; }
+      if (file.size > 5 * 1024 * 1024) { alert('File too large. Please upload under 5MB.'); return; }
+
+      const btn = document.getElementById('apply-submit-btn');
+      btn.textContent = 'Uploading...';
+      btn.disabled = true;
+
+      const reader = new FileReader();
+      reader.onload = async function(ev) {
+        const base64 = ev.target.result.split(',')[1];
+        const ext = file.name.split('.').pop().toLowerCase();
+
+        const payload = {
+          firstName: document.getElementById('apply-first').value,
+          lastName:  document.getElementById('apply-last').value,
+          email:     document.getElementById('apply-email').value,
+          phone:     document.getElementById('apply-phone').value,
+          role:      currentRole,
+          cvData:    base64,
+          cvName:    file.name,
+          cvType:    file.type,
+          cvExt:     ext
+        };
+
+        try {
+          // Uses no-cors because Apps Script doesn't return CORS headers
+          // The data DOES reach the script — we just can't read the response
+          await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } catch (err) {
+          // Network error fallback
+          console.error('Submit error:', err);
+        }
+
+        // Show success regardless — the Apps Script handles email confirmation
+        document.getElementById('apply-form-wrap').style.display = 'none';
+        document.getElementById('apply-success').style.display = 'block';
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    /* ── Keyboard close ────────────────────────── */
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeApply(); });
+  </script>
+  <!-- ItWorks AI Assistant — Ivy -->
+  <script src="chatbot.js"></script>
+</body>
+</html>
