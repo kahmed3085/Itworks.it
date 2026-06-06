@@ -1232,9 +1232,9 @@
         </div>
 
         <div class="or-divider"><span>or skip the form</span></div>
-        <a href="https://cal.com/kashif-ahmed-q1odeg/30min" target="_blank" class="cal-btn">
+        <button data-cal-link="kashif-ahmed-q1odeg/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}' class="cal-btn">
           📅 &nbsp; Book a Time Directly in Our Calendar
-        </a>
+        </button>
       </div>
       <div class="contact-form" id="contact-form">
         <form action="https://formsubmit.co/londonheathrowcars.com@gmail.com" method="POST" id="the-form">
@@ -1496,6 +1496,12 @@
     });
   </script>
   <!-- ItWorks AI Assistant — Ivy -->
+  <!-- Cal.com embed -->
+  <script type="text/javascript">
+    (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+    Cal("init", "30min", {origin:"https://app.cal.com"});
+    Cal.ns["30min"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+  </script>
   <script src="chatbot.js"></script>
 </body>
 </html>
