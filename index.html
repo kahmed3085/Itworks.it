@@ -175,12 +175,21 @@
     .hero {
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
       padding: 120px 6vw 80px;
     }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 60px;
+      align-items: center;
+      max-width: 1280px;
+      width: 100%;
+    }
+    .hero-left { text-align: left; }
+    .hero-left .hero-buttons { justify-content: flex-start; }
+    .hero-right { display: flex; flex-direction: column; align-items: center; gap: 14px; }
 
     .hero-badge {
       display: inline-flex;
@@ -912,6 +921,112 @@
     .cal-btn:hover { background: rgba(59,130,246,0.1); border-color: var(--accent); transform: translateY(-2px); }
 
     /* ─── Responsive ────────────────────────────────── */
+    /* ─── Ivy Product Card ──────────────────────────── */
+    .product-label {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(139,92,246,0.15);
+      border: 1px solid rgba(139,92,246,0.35);
+      border-radius: 50px; padding: 5px 14px;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: #a78bfa;
+    }
+    .product-label .dot { width: 6px; height: 6px; background: #a78bfa; border-radius: 50%; animation: pulse 2s infinite; }
+
+    .ivy-card {
+      width: 320px;
+      background: rgba(6,12,30,0.88);
+      border: 1px solid rgba(139,92,246,0.25);
+      border-radius: 22px; overflow: hidden;
+      backdrop-filter: blur(24px);
+      box-shadow: 0 0 60px rgba(59,130,246,0.12), 0 0 120px rgba(139,92,246,0.07), 0 20px 60px rgba(0,0,0,0.5);
+      animation: cardFloat 6s ease-in-out infinite, fadeUp 0.8s 0.6s ease both;
+    }
+    @keyframes cardFloat {
+      0%,100% { transform: translateY(0) rotate(0.4deg); }
+      50%      { transform: translateY(-14px) rotate(-0.4deg); }
+    }
+    .ivy-card-hdr {
+      background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(139,92,246,0.18));
+      padding: 14px 18px; display: flex; align-items: center; gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .ivy-av {
+      width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 0.85rem; color: #fff;
+    }
+    .ivy-hdr-name { font-weight: 700; font-size: 0.9rem; line-height: 1.2; }
+    .ivy-hdr-sub  { font-size: 0.7rem; color: #94a3b8; }
+    .ivy-online {
+      width: 9px; height: 9px; border-radius: 50%; background: #22c55e;
+      box-shadow: 0 0 8px #22c55e; margin-left: auto; flex-shrink: 0;
+      animation: pulse 2s infinite;
+    }
+    .ivy-msgs {
+      padding: 14px 14px 8px; display: flex; flex-direction: column; gap: 10px; min-height: 220px;
+    }
+    .ivy-m {
+      max-width: 82%; padding: 9px 13px; border-radius: 14px;
+      font-size: 0.78rem; line-height: 1.5; opacity: 0;
+      animation: iwMsgIn 0.4s ease forwards;
+    }
+    .ivy-m.bot {
+      background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.2);
+      border-bottom-left-radius: 3px; align-self: flex-start;
+    }
+    .ivy-m.usr {
+      background: linear-gradient(135deg, rgba(59,130,246,0.28), rgba(139,92,246,0.28));
+      border-bottom-right-radius: 3px; align-self: flex-end;
+    }
+    @keyframes iwMsgIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    .ivy-m:nth-child(1) { animation-delay: 0.7s; }
+    .ivy-m:nth-child(2) { animation-delay: 2.0s; }
+    .ivy-m:nth-child(3) { animation-delay: 3.4s; }
+    .ivy-m:nth-child(4) { animation-delay: 4.8s; }
+    .ivy-m:nth-child(5) { animation-delay: 6.2s; }
+
+    .ivy-input-row {
+      padding: 10px 14px; border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex; gap: 8px; align-items: center;
+    }
+    .ivy-input-bar {
+      flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 50px; padding: 8px 14px; font-size: 0.75rem; color: #94a3b8;
+      pointer-events: none; font-family: 'Montserrat', sans-serif;
+    }
+    .ivy-send {
+      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg,#3b82f6,#8b5cf6);
+      border: none; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+    .ivy-card-foot {
+      text-align: center; padding: 8px; font-size: 0.68rem; color: #64748b;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    .ivy-card-foot strong {
+      background: linear-gradient(135deg,#3b82f6,#8b5cf6);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    /* Try Ivy button on card */
+    .ivy-try-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg,#3b82f6,#8b5cf6);
+      color: #fff; border: none; border-radius: 50px;
+      padding: 9px 22px; font-size: 0.8rem; font-weight: 700;
+      font-family: 'Montserrat', sans-serif; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(59,130,246,0.35);
+    }
+    .ivy-try-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(59,130,246,0.5); }
+
+    @media (max-width: 968px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-left { text-align: center; }
+      .hero-left .hero-buttons { justify-content: center; }
+      .hero-right { display: none; }
+    }
+
     @media (max-width: 768px) {
       .nav-links { display: none; }
       .hamburger { display: flex; }
@@ -959,26 +1074,72 @@
 
   <!-- Hero -->
   <section class="hero" id="hero">
-    <div class="hero-badge">
-      <span class="dot"></span>
-      AI‑Powered IT Solutions
-    </div>
-    <h1>
-      Future‑Ready IT<br/>
-      <span class="gradient-text">Powered by Intelligence</span>
-    </h1>
-    <p>
-      We combine intelligent automation with expert human oversight to deliver faster, smarter, and more reliable managed IT services for modern businesses.
-    </p>
-    <div class="hero-buttons">
-      <a href="#contact" class="btn-primary">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
-        Get Started Free
-      </a>
-      <a href="#services" class="btn-secondary">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        See What We Do
-      </a>
+    <div class="hero-inner">
+
+      <!-- Left: text + CTA -->
+      <div class="hero-left">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          AI‑Powered IT Solutions
+        </div>
+        <h1>
+          Future‑Ready IT<br/>
+          <span class="gradient-text">Powered by Intelligence</span>
+        </h1>
+        <p>
+          We combine intelligent automation with expert human oversight to deliver faster, smarter, and more reliable managed IT services for modern businesses.
+        </p>
+        <div class="hero-buttons">
+          <a href="#contact" class="btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
+            Get Started Free
+          </a>
+          <a href="#services" class="btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            See What We Do
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: Ivy product card -->
+      <div class="hero-right">
+        <div class="product-label">
+          <span class="dot"></span>
+          Live Product Demo
+        </div>
+        <div class="ivy-card">
+          <!-- Header -->
+          <div class="ivy-card-hdr">
+            <div class="ivy-av">IW</div>
+            <div>
+              <div class="ivy-hdr-name">Ivy</div>
+              <div class="ivy-hdr-sub">AI Assistant · ItWorks</div>
+            </div>
+            <div class="ivy-online"></div>
+          </div>
+          <!-- Messages -->
+          <div class="ivy-msgs">
+            <div class="ivy-m bot">👋 Hi! I'm <strong>Ivy</strong>, ItWorks' AI assistant. How can I help?</div>
+            <div class="ivy-m usr">What services do you offer?</div>
+            <div class="ivy-m bot">We specialise in <strong>AI automation</strong>, agentic systems, cloud infrastructure, managed IT &amp; analytics. 🚀</div>
+            <div class="ivy-m usr">Can I book a free call?</div>
+            <div class="ivy-m bot">Absolutely! 📅 Book a free 30-min <strong>Discovery Call</strong> — no pitch, just clarity.</div>
+          </div>
+          <!-- Input (visual only) -->
+          <div class="ivy-input-row">
+            <div class="ivy-input-bar">Ask me anything about ItWorks...</div>
+            <div class="ivy-send">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </div>
+          </div>
+          <div class="ivy-card-foot">Powered by <strong>ItWorks AI</strong></div>
+        </div>
+        <button class="ivy-try-btn" onclick="document.getElementById('iw-toggle').click()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          Try Ivy Now
+        </button>
+      </div>
+
     </div>
   </section>
 

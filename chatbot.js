@@ -188,6 +188,29 @@
   const CSS = `
     #iw-wrap * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', -apple-system, sans-serif; }
 
+    /* ── WhatsApp Button ── */
+    #iw-wa {
+      position: fixed; bottom: 28px; right: 104px; z-index: 99999;
+      width: 54px; height: 54px; border-radius: 50%;
+      background: #25d366;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.45);
+      text-decoration: none;
+      transition: transform 0.3s, box-shadow 0.3s;
+      animation: iwWaPop 0.5s 1s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes iwWaPop { from { opacity:0; transform:scale(0.5); } to { opacity:1; transform:scale(1); } }
+    #iw-wa:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.65); }
+    #iw-wa-label {
+      position: absolute; bottom: 68px; right: 104px;
+      background: rgba(6,12,30,0.92); color: #fff;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.3px;
+      padding: 5px 10px; border-radius: 8px; white-space: nowrap;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+      border: 1px solid rgba(37,211,102,0.3);
+    }
+    #iw-wa:hover + #iw-wa-label, #iw-wa-label:hover { opacity: 1; }
+
     /* ── Toggle Button ── */
     #iw-toggle {
       position: fixed; bottom: 28px; right: 28px; z-index: 99999;
@@ -376,6 +399,8 @@
     @media (max-width: 480px) {
       #iw-window { width: calc(100vw - 24px); right: 12px; bottom: 88px; height: 70vh; }
       #iw-toggle { bottom: 18px; right: 18px; }
+      #iw-wa { bottom: 18px; right: 90px; width: 48px; height: 48px; }
+      #iw-wa-label { display: none; }
     }
   `;
 
@@ -405,6 +430,15 @@
           </button>
         </div>
       </div>
+
+      <!-- WhatsApp Button -->
+      <!-- ⚠️ Replace YOUR_WHATSAPP_NUMBER with your number incl. country code, no spaces or + e.g. 447700900123 -->
+      <a id="iw-wa" href="https://wa.me/YOUR_WHATSAPP_NUMBER?text=Hi%20ItWorks!%20I%27d%20like%20to%20learn%20more%20about%20your%20AI%20services." target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+      </a>
+      <div id="iw-wa-label">Chat on WhatsApp</div>
 
       <!-- Toggle Button -->
       <button id="iw-toggle" aria-label="Open AI assistant">
