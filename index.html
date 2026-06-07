@@ -921,95 +921,164 @@
     .cal-btn:hover { background: rgba(59,130,246,0.1); border-color: var(--accent); transform: translateY(-2px); }
 
     /* ─── Responsive ────────────────────────────────── */
-    /* ─── Ivy Product Card ──────────────────────────── */
+    /* ─── Phone Trio Mockup ─────────────────────────── */
     .product-label {
       display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(139,92,246,0.15);
-      border: 1px solid rgba(139,92,246,0.35);
+      background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.35);
       border-radius: 50px; padding: 5px 14px;
       font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;
       text-transform: uppercase; color: #a78bfa;
     }
     .product-label .dot { width: 6px; height: 6px; background: #a78bfa; border-radius: 50%; animation: pulse 2s infinite; }
 
-    .ivy-card {
-      width: 272px;
-      background: rgba(6,12,30,0.88);
-      border: 1px solid rgba(139,92,246,0.25);
-      border-radius: 18px; overflow: hidden;
-      backdrop-filter: blur(24px);
-      box-shadow: 18px 18px 50px rgba(0,0,0,0.55), 0 0 50px rgba(59,130,246,0.10), -4px -4px 20px rgba(139,92,246,0.06);
-      animation: cardFloat 6s ease-in-out infinite, fadeUp 0.8s 0.6s ease both;
-      transform-style: preserve-3d;
-    }
-    @keyframes cardFloat {
-      0%,100% { transform: perspective(900px) rotateY(-10deg) rotateX(3deg) translateY(0); }
-      50%      { transform: perspective(900px) rotateY(-10deg) rotateX(3deg) translateY(-12px); }
-    }
-    .ivy-card-hdr {
-      background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(139,92,246,0.18));
-      padding: 11px 14px; display: flex; align-items: center; gap: 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
-    }
-    .ivy-av {
-      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    .phone-trio {
       display: flex; align-items: center; justify-content: center;
-      font-weight: 900; font-size: 0.72rem; color: #fff;
+      gap: 0; position: relative;
     }
-    .ivy-hdr-name { font-weight: 700; font-size: 0.8rem; line-height: 1.2; }
-    .ivy-hdr-sub  { font-size: 0.63rem; color: #94a3b8; }
-    .ivy-online {
-      width: 8px; height: 8px; border-radius: 50%; background: #22c55e;
-      box-shadow: 0 0 6px #22c55e; margin-left: auto; flex-shrink: 0;
-      animation: pulse 2s infinite;
-    }
-    .ivy-msgs {
-      padding: 12px 12px 6px; display: flex; flex-direction: column; gap: 8px; min-height: 185px;
-    }
-    .ivy-m {
-      max-width: 84%; padding: 7px 11px; border-radius: 12px;
-      font-size: 0.72rem; line-height: 1.45; opacity: 0;
-      animation: iwMsgIn 0.4s ease forwards;
-    }
-    .ivy-m.bot {
-      background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.2);
-      border-bottom-left-radius: 3px; align-self: flex-start;
-    }
-    .ivy-m.usr {
-      background: linear-gradient(135deg, rgba(59,130,246,0.28), rgba(139,92,246,0.28));
-      border-bottom-right-radius: 3px; align-self: flex-end;
-    }
-    @keyframes iwMsgIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
-    .ivy-m:nth-child(1) { animation-delay: 0.7s; }
-    .ivy-m:nth-child(2) { animation-delay: 2.0s; }
-    .ivy-m:nth-child(3) { animation-delay: 3.4s; }
-    .ivy-m:nth-child(4) { animation-delay: 4.8s; }
-    .ivy-m:nth-child(5) { animation-delay: 6.2s; }
 
-    .ivy-input-row {
-      padding: 8px 12px; border-top: 1px solid rgba(255,255,255,0.06);
-      display: flex; gap: 7px; align-items: center;
+    /* ── Base phone shell ── */
+    .ph {
+      border-radius: 28px;
+      background: linear-gradient(160deg, #0d1528, #060c1e);
+      border: 2px solid rgba(255,255,255,0.1);
+      overflow: hidden; position: relative; flex-shrink: 0;
     }
-    .ivy-input-bar {
-      flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
-      border-radius: 50px; padding: 6px 12px; font-size: 0.68rem; color: #94a3b8;
-      pointer-events: none; font-family: 'Montserrat', sans-serif;
+    .ph-notch {
+      position: absolute; top: 9px; left: 50%; transform: translateX(-50%);
+      width: 44px; height: 11px; background: #000; border-radius: 7px; z-index: 5;
     }
-    .ivy-send {
-      width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    .ph-status {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 12px 2px; font-size: 0.55rem; color: rgba(255,255,255,0.55); font-weight: 600;
+    }
+    .ph-status-dots { display: flex; gap: 3px; }
+    .ph-status-dot  { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.45); }
+
+    /* ── Left phone ── */
+    .ph-left {
+      width: 124px; height: 248px; margin-right: -18px; z-index: 1;
+      border-color: rgba(139,92,246,0.2);
+      box-shadow: -8px 20px 50px rgba(0,0,0,0.65), 0 0 25px rgba(139,92,246,0.07);
+      animation: floatL 6s ease-in-out infinite 0.4s, fadeUp 0.8s 0.5s ease both;
+    }
+    @keyframes floatL {
+      0%,100% { transform: perspective(700px) rotateY(24deg) rotateX(4deg) translateY(0); }
+      50%      { transform: perspective(700px) rotateY(24deg) rotateX(4deg) translateY(-10px); }
+    }
+
+    /* ── Center phone ── */
+    .ph-center {
+      width: 155px; height: 308px; z-index: 3;
+      border-color: rgba(59,130,246,0.3);
+      box-shadow: 0 28px 80px rgba(0,0,0,0.75), 0 0 50px rgba(59,130,246,0.14);
+      animation: floatC 6s ease-in-out infinite, fadeUp 0.8s 0.6s ease both;
+    }
+    @keyframes floatC {
+      0%,100% { transform: perspective(700px) rotateX(3deg) translateY(0); }
+      50%      { transform: perspective(700px) rotateX(3deg) translateY(-13px); }
+    }
+
+    /* ── Right phone ── */
+    .ph-right {
+      width: 124px; height: 248px; margin-left: -18px; z-index: 2;
+      border-color: rgba(59,130,246,0.2);
+      box-shadow: 8px 20px 50px rgba(0,0,0,0.65), 0 0 25px rgba(59,130,246,0.07);
+      animation: floatR 6s ease-in-out infinite 0.8s, fadeUp 0.8s 0.7s ease both;
+    }
+    @keyframes floatR {
+      0%,100% { transform: perspective(700px) rotateY(-24deg) rotateX(4deg) translateY(0); }
+      50%      { transform: perspective(700px) rotateY(-24deg) rotateX(4deg) translateY(-10px); }
+    }
+
+    /* ── Left phone: home screen ── */
+    .ph-home { padding: 6px 10px; }
+    .ph-home-greet { font-size: 0.56rem; color: #94a3b8; }
+    .ph-home-uname { font-size: 0.68rem; font-weight: 700; color: #fff; margin-bottom: 7px; }
+    .ph-home-search {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 7px; padding: 4px 7px; font-size: 0.55rem; color: #64748b; margin-bottom: 8px;
+    }
+    .ph-sec-lbl { font-size: 0.52rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+    .ph-chips { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 8px; }
+    .ph-chip {
+      background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.25);
+      border-radius: 5px; padding: 2px 6px; font-size: 0.5rem; font-weight: 600; color: #7dd3fc;
+    }
+    .ph-hist { display: flex; align-items: center; gap: 5px; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .ph-hist-ic {
+      width: 18px; height: 18px; border-radius: 5px; flex-shrink: 0;
       background: linear-gradient(135deg,#3b82f6,#8b5cf6);
-      border: none; display: flex; align-items: center; justify-content: center; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.45rem; font-weight: 700; color: #fff;
     }
-    .ivy-card-foot {
-      text-align: center; padding: 6px; font-size: 0.63rem; color: #64748b;
-      border-top: 1px solid rgba(255,255,255,0.04);
+    .ph-hist span { font-size: 0.52rem; color: #94a3b8; }
+
+    /* ── Center phone: Ivy splash ── */
+    .ph-splash {
+      padding: 14px 14px 10px; display: flex; flex-direction: column;
+      align-items: center; text-align: center;
     }
-    .ivy-card-foot strong {
+    .ph-splash-orb {
+      width: 62px; height: 62px; border-radius: 50%; margin-bottom: 10px;
       background: linear-gradient(135deg,#3b82f6,#8b5cf6);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 1rem; color: #fff;
+      box-shadow: 0 0 32px rgba(59,130,246,0.55), 0 0 65px rgba(139,92,246,0.3);
+      animation: orbPulse 3s ease-in-out infinite;
     }
-    /* Try Ivy button on card */
+    @keyframes orbPulse {
+      0%,100% { box-shadow: 0 0 32px rgba(59,130,246,0.55), 0 0 65px rgba(139,92,246,0.3); transform: scale(1); }
+      50%      { box-shadow: 0 0 52px rgba(59,130,246,0.8), 0 0 95px rgba(139,92,246,0.5); transform: scale(1.05); }
+    }
+    .ph-splash-title { font-size: 1.1rem; font-weight: 900; color: #fff; margin-bottom: 3px; }
+    .ph-splash-tag   { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.5px; color: #a78bfa; text-transform: uppercase; margin-bottom: 5px; }
+    .ph-splash-desc  { font-size: 0.6rem; color: #64748b; line-height: 1.5; margin-bottom: 12px; padding: 0 4px; }
+    .ph-splash-btn {
+      background: linear-gradient(135deg,#3b82f6,#8b5cf6); color: #fff; border: none;
+      border-radius: 50px; padding: 7px 0; font-size: 0.65rem; font-weight: 700;
+      font-family: 'Montserrat', sans-serif; cursor: pointer; width: 100%; margin-bottom: 6px;
+    }
+    .ph-splash-sec {
+      width: 100%; padding: 6px 0; font-size: 0.6rem; font-weight: 600;
+      background: transparent; border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 50px; color: #94a3b8; cursor: pointer; font-family: 'Montserrat', sans-serif;
+    }
+
+    /* ── Right phone: chat ── */
+    .ph-chat-hdr {
+      display: flex; align-items: center; gap: 7px;
+      padding: 5px 9px 7px; border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: rgba(59,130,246,0.07);
+    }
+    .ph-av {
+      width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg,#3b82f6,#8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 0.5rem; color: #fff;
+    }
+    .ph-av-name { font-weight: 700; font-size: 0.6rem; }
+    .ph-av-sub  { font-size: 0.5rem; color: #22c55e; }
+    .ph-msgs { padding: 7px 8px 4px; display: flex; flex-direction: column; gap: 5px; }
+    @keyframes iwMsgIn { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+    .ph-m {
+      max-width: 86%; padding: 5px 8px; border-radius: 9px;
+      font-size: 0.57rem; line-height: 1.4; opacity: 0;
+      animation: iwMsgIn 0.35s ease forwards;
+    }
+    .ph-m.bot { background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.2); border-bottom-left-radius: 2px; align-self: flex-start; }
+    .ph-m.usr { background: linear-gradient(135deg,rgba(59,130,246,0.28),rgba(139,92,246,0.28)); border-bottom-right-radius: 2px; align-self: flex-end; }
+    .ph-m:nth-child(1) { animation-delay: 0.8s; }
+    .ph-m:nth-child(2) { animation-delay: 2.2s; }
+    .ph-m:nth-child(3) { animation-delay: 3.7s; }
+    .ph-m:nth-child(4) { animation-delay: 5.2s; }
+    .ph-m:nth-child(5) { animation-delay: 6.7s; }
+    .ph-input {
+      margin: 5px 8px 7px; background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 18px;
+      padding: 4px 9px; font-size: 0.54rem; color: #64748b;
+    }
+
+    /* Try Ivy button */
     .ivy-try-btn {
       display: inline-flex; align-items: center; gap: 6px;
       background: linear-gradient(135deg,#3b82f6,#8b5cf6);
@@ -1102,39 +1171,76 @@
         </div>
       </div>
 
-      <!-- Right: Ivy product card -->
+      <!-- Right: Phone Trio Mockup -->
       <div class="hero-right">
-        <div class="product-label">
-          <span class="dot"></span>
-          Live Product Demo
-        </div>
-        <div class="ivy-card">
-          <!-- Header -->
-          <div class="ivy-card-hdr">
-            <div class="ivy-av">IW</div>
-            <div>
-              <div class="ivy-hdr-name">Ivy</div>
-              <div class="ivy-hdr-sub">AI Assistant · ItWorks</div>
+        <div class="product-label"><span class="dot"></span>Live Product Demo</div>
+
+        <div class="phone-trio">
+
+          <!-- Left phone: Home screen -->
+          <div class="ph ph-left">
+            <div class="ph-notch"></div>
+            <div class="ph-status">
+              <span>09:41</span>
+              <div class="ph-status-dots"><div class="ph-status-dot"></div><div class="ph-status-dot"></div><div class="ph-status-dot"></div></div>
             </div>
-            <div class="ivy-online"></div>
-          </div>
-          <!-- Messages -->
-          <div class="ivy-msgs">
-            <div class="ivy-m bot">👋 Hi! I'm <strong>Ivy</strong>, ItWorks' AI assistant. How can I help?</div>
-            <div class="ivy-m usr">What services do you offer?</div>
-            <div class="ivy-m bot">We specialise in <strong>AI automation</strong>, agentic systems, cloud infrastructure, managed IT &amp; analytics. 🚀</div>
-            <div class="ivy-m usr">Can I book a free call?</div>
-            <div class="ivy-m bot">Absolutely! 📅 Book a free 30-min <strong>Discovery Call</strong> — no pitch, just clarity.</div>
-          </div>
-          <!-- Input (visual only) -->
-          <div class="ivy-input-row">
-            <div class="ivy-input-bar">Ask me anything about ItWorks...</div>
-            <div class="ivy-send">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            <div class="ph-home">
+              <div class="ph-home-greet">Good Morning 👋</div>
+              <div class="ph-home-uname">Kashif</div>
+              <div class="ph-home-search">🔍 Search prompts...</div>
+              <div class="ph-sec-lbl">Topics</div>
+              <div class="ph-chips">
+                <span class="ph-chip">AI Tools</span>
+                <span class="ph-chip">Growth</span>
+                <span class="ph-chip">Cloud</span>
+                <span class="ph-chip">Automation</span>
+              </div>
+              <div class="ph-sec-lbl">Recent</div>
+              <div class="ph-hist"><div class="ph-hist-ic">IW</div><span>AI automation for LHC...</span></div>
+              <div class="ph-hist"><div class="ph-hist-ic">IW</div><span>Discovery Call booked</span></div>
             </div>
           </div>
-          <div class="ivy-card-foot">Powered by <strong>ItWorks AI</strong></div>
-        </div>
+
+          <!-- Center phone: Ivy splash -->
+          <div class="ph ph-center">
+            <div class="ph-notch"></div>
+            <div class="ph-status">
+              <span>09:41</span>
+              <div class="ph-status-dots"><div class="ph-status-dot"></div><div class="ph-status-dot"></div><div class="ph-status-dot"></div></div>
+            </div>
+            <div class="ph-splash">
+              <div class="ph-splash-orb">IW</div>
+              <div class="ph-splash-title">Ivy</div>
+              <div class="ph-splash-tag">AI Growth Partner</div>
+              <div class="ph-splash-desc">Smarter business decisions, powered by ItWorks AI</div>
+              <button class="ph-splash-btn" onclick="document.getElementById('iw-toggle').click()">Start Chat →</button>
+              <button class="ph-splash-sec">Book Discovery Call</button>
+            </div>
+          </div>
+
+          <!-- Right phone: Chat -->
+          <div class="ph ph-right">
+            <div class="ph-notch"></div>
+            <div class="ph-status">
+              <span>09:41</span>
+              <div class="ph-status-dots"><div class="ph-status-dot"></div><div class="ph-status-dot"></div><div class="ph-status-dot"></div></div>
+            </div>
+            <div class="ph-chat-hdr">
+              <div class="ph-av">IW</div>
+              <div><div class="ph-av-name">Ivy</div><div class="ph-av-sub">● Online</div></div>
+            </div>
+            <div class="ph-msgs">
+              <div class="ph-m bot">👋 Hi! I'm Ivy. How can I help?</div>
+              <div class="ph-m usr">What does ItWorks do?</div>
+              <div class="ph-m bot">AI automation, cloud &amp; managed IT 🚀</div>
+              <div class="ph-m usr">Can I book a free call?</div>
+              <div class="ph-m bot">Yes! Free 30-min Discovery Call 📅</div>
+            </div>
+            <div class="ph-input">Ask me anything...</div>
+          </div>
+
+        </div><!-- end .phone-trio -->
+
         <button class="ivy-try-btn" onclick="document.getElementById('iw-toggle').click()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
           Try Ivy Now
