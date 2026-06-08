@@ -325,6 +325,10 @@
       letter-spacing: 0.5px;
       margin-top: 4px;
     }
+    .stat-static {
+      font-size: 1.6rem !important;
+      letter-spacing: -0.5px !important;
+    }
 
     /* ─── Section headings ──────────────────────────── */
     .section-label {
@@ -410,6 +414,27 @@
     .icon-green { background: rgba(34,197,94,0.15);  border: 1px solid rgba(34,197,94,0.3); }
     .icon-orange{ background: rgba(249,115,22,0.15); border: 1px solid rgba(249,115,22,0.3); }
     .icon-pink  { background: rgba(236,72,153,0.15); border: 1px solid rgba(236,72,153,0.3); }
+
+    /* ─── Service Icon Blocks ───────────────────────── */
+    .svc-icon {
+      width: 72px; height: 72px; border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; margin-bottom: 22px;
+      position: relative; flex-shrink: 0;
+      transition: transform .3s;
+    }
+    .glass-card:hover .svc-icon { transform: translateY(-4px) scale(1.06); }
+    .svc-icon::before {
+      content: ''; position: absolute; inset: -1px; border-radius: 21px;
+      padding: 1px; -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+    }
+    .si-blue   { background: linear-gradient(135deg, rgba(59,130,246,.18), rgba(99,102,241,.12)); border: 1px solid rgba(59,130,246,.35); box-shadow: 0 8px 24px rgba(59,130,246,.18); }
+    .si-purple { background: linear-gradient(135deg, rgba(139,92,246,.18), rgba(168,85,247,.12)); border: 1px solid rgba(139,92,246,.35); box-shadow: 0 8px 24px rgba(139,92,246,.18); }
+    .si-cyan   { background: linear-gradient(135deg, rgba(6,182,212,.18), rgba(8,145,178,.12));  border: 1px solid rgba(6,182,212,.35);  box-shadow: 0 8px 24px rgba(6,182,212,.18); }
+    .si-green  { background: linear-gradient(135deg, rgba(34,197,94,.15), rgba(16,185,129,.10)); border: 1px solid rgba(34,197,94,.35);  box-shadow: 0 8px 24px rgba(34,197,94,.15); }
+    .si-orange { background: linear-gradient(135deg, rgba(249,115,22,.15), rgba(245,158,11,.10)); border: 1px solid rgba(249,115,22,.35); box-shadow: 0 8px 24px rgba(249,115,22,.15); }
+    .si-pink   { background: linear-gradient(135deg, rgba(236,72,153,.15), rgba(217,70,239,.10)); border: 1px solid rgba(236,72,153,.35); box-shadow: 0 8px 24px rgba(236,72,153,.15); }
 
     .glass-card h3 {
       font-size: 1.1rem;
@@ -592,6 +617,15 @@
     .av-purple { background: linear-gradient(135deg, var(--accent2), #ec4899); }
     .author-name { font-size: 0.9rem; font-weight: 700; }
     .author-role { font-size: 0.78rem; color: var(--muted); }
+    .testi-top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .testi-top-row .stars { margin-bottom: 0; }
+    .verified-badge {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.3px;
+      color: #4ade80; background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.25); border-radius: 50px;
+      padding: 3px 10px;
+    }
+    .testi-source { color: var(--accent); font-weight: 600; }
 
     /* ─── Pricing ───────────────────────────────────── */
     .pricing {
@@ -920,6 +954,336 @@
     }
     .cal-btn:hover { background: rgba(59,130,246,0.1); border-color: var(--accent); transform: translateY(-2px); }
 
+    /* ─── Logo Strip ────────────────────────────────── */
+    .logo-strip {
+      padding: 48px 0; position: relative; z-index: 1;
+      border-top: 1px solid var(--glass-bdr);
+      border-bottom: 1px solid var(--glass-bdr);
+      overflow: hidden;
+    }
+    .logo-strip-label {
+      text-align: center; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase; color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .logo-strip::before, .logo-strip::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 160px; z-index: 2; pointer-events: none;
+    }
+    .logo-strip::before { left: 0; background: linear-gradient(90deg, var(--bg) 20%, transparent); }
+    .logo-strip::after  { right: 0; background: linear-gradient(-90deg, var(--bg) 20%, transparent); }
+    .logo-track {
+      display: flex; gap: 20px; width: max-content;
+      animation: logoScroll 35s linear infinite;
+    }
+    .logo-track:hover { animation-play-state: paused; }
+    @keyframes logoScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .logo-pill {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--glass-bg); border: 1px solid var(--glass-bdr);
+      border-radius: 50px; padding: 10px 24px; white-space: nowrap;
+      transition: border-color 0.3s;
+    }
+    .logo-pill:hover { border-color: rgba(59,130,246,0.35); }
+    .logo-pill .lp-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .logo-pill span { font-size: 0.83rem; font-weight: 700; color: var(--muted); letter-spacing: 0.3px; }
+
+    /* ─── Tech Stack ─────────────────────────────────── */
+    .tech-stack {
+      padding: 80px 6vw; position: relative; z-index: 1;
+    }
+    .tech-stack-inner { max-width: 1100px; margin: 0 auto; }
+    .tech-stack-header { text-align: center; margin-bottom: 44px; }
+    .tech-grid {
+      display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+    }
+    .tech-pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 50px;
+      border: 1px solid var(--glass-bdr);
+      background: var(--glass-bg); backdrop-filter: blur(10px);
+      font-size: 0.82rem; font-weight: 700; color: var(--muted);
+      transition: transform 0.3s, border-color 0.3s, color 0.3s;
+      opacity: 0; transform: translateY(16px);
+    }
+    .tech-pill.visible { opacity: 1; transform: none; }
+    .tech-pill:hover { transform: translateY(-3px); border-color: rgba(59,130,246,0.4); color: var(--text); }
+    .tech-pill .tp-icon { font-size: 1.1rem; }
+
+    /* ─── Portfolio ──────────────────────────────────── */
+    .portfolio {
+      padding: 100px 6vw;
+      background: linear-gradient(180deg, transparent, rgba(139,92,246,0.03), transparent);
+    }
+    .portfolio-header { margin-bottom: 60px; }
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px; max-width: 1100px;
+    }
+    .port-card {
+      background: var(--glass-bg); border: 1px solid var(--glass-bdr);
+      border-radius: 20px; overflow: hidden;
+      backdrop-filter: blur(12px);
+      transition: transform 0.4s, border-color 0.4s, box-shadow 0.4s;
+      opacity: 0; transform: translateY(24px);
+      display: flex; flex-direction: column;
+    }
+    .port-card.visible { opacity: 1; transform: none; }
+    .port-card:hover { transform: translateY(-8px); border-color: rgba(59,130,246,0.35); box-shadow: 0 24px 60px rgba(59,130,246,0.12); }
+    .port-card.featured { border-color: rgba(59,130,246,0.4); background: rgba(59,130,246,0.05); box-shadow: 0 0 60px rgba(59,130,246,0.1); }
+    .port-thumb {
+      height: 180px; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .port-thumb .pt-icon { font-size: 3.5rem; position: relative; z-index: 1; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4)); }
+    .port-thumb .pt-glow {
+      position: absolute; inset: 0; opacity: 0.6;
+    }
+    .port-thumb .pt-badge {
+      position: absolute; top: 14px; left: 14px; z-index: 2;
+      padding: 4px 12px; border-radius: 50px; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.5px; backdrop-filter: blur(8px);
+    }
+    .port-thumb .pt-live {
+      position: absolute; top: 14px; right: 14px; z-index: 2;
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 50px; padding: 3px 10px;
+      font-size: 0.65rem; font-weight: 700; color: #4ade80;
+    }
+    .port-thumb .pt-live::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: #22c55e; animation: pulse 2s infinite;
+    }
+    .port-body { padding: 28px; flex: 1; display: flex; flex-direction: column; }
+    .port-cat { font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+    .port-card h3 { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 10px; line-height: 1.35; }
+    .port-card p { color: var(--muted); font-size: 0.83rem; line-height: 1.75; margin-bottom: 20px; flex: 1; }
+    .port-metrics {
+      display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .port-metric { text-align: center; }
+    .port-metric .pm-val {
+      font-size: 1.3rem; font-weight: 900; letter-spacing: -0.5px; display: block;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .port-metric .pm-lbl { font-size: 0.68rem; color: var(--muted); font-weight: 600; }
+    .port-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.8rem; font-weight: 700; color: var(--accent);
+      text-decoration: none; transition: gap 0.2s;
+    }
+    .port-link:hover { gap: 10px; }
+    .port-link svg { transition: transform 0.2s; }
+    .port-link:hover svg { transform: translateX(3px); }
+
+    /* ─── FAQ ────────────────────────────────────────── */
+    .faq-section {
+      padding: 100px 6vw;
+    }
+    .faq-inner { max-width: 820px; margin: 0 auto; }
+    .faq-header { text-align: center; margin-bottom: 60px; }
+    .faq-header .section-sub { margin: 0 auto; }
+    .faq-list { display: flex; flex-direction: column; gap: 12px; }
+    .faq-item {
+      background: var(--glass-bg); border: 1px solid var(--glass-bdr);
+      border-radius: var(--radius); overflow: hidden;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.3s;
+      opacity: 0; transform: translateY(16px);
+    }
+    .faq-item.visible { opacity: 1; transform: none; }
+    .faq-item.open { border-color: rgba(59,130,246,0.35); }
+    .faq-q {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 28px; cursor: pointer; gap: 16px;
+      user-select: none;
+    }
+    .faq-q span { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.2px; }
+    .faq-icon {
+      width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%;
+      background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent); font-size: 1.1rem; font-weight: 300;
+      transition: transform 0.3s, background 0.3s;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); background: rgba(59,130,246,0.2); }
+    .faq-a {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s;
+      padding: 0 28px;
+    }
+    .faq-a-inner { padding-bottom: 22px; color: var(--muted); font-size: 0.9rem; line-height: 1.85; }
+    .faq-item.open .faq-a { max-height: 400px; }
+
+    /* ─── Newsletter ─────────────────────────────────── */
+    .newsletter-bar {
+      background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(139,92,246,0.08));
+      border-top: 1px solid rgba(59,130,246,0.2);
+      border-bottom: 1px solid rgba(59,130,246,0.2);
+      padding: 56px 6vw; position: relative; z-index: 1;
+      overflow: hidden;
+    }
+    .newsletter-bar::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+      background-size: 40px 40px; pointer-events: none;
+    }
+    .newsletter-inner {
+      max-width: 640px; margin: 0 auto; text-align: center; position: relative; z-index: 1;
+    }
+    .newsletter-inner h3 {
+      font-size: clamp(1.3rem, 3vw, 1.9rem); font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px;
+    }
+    .newsletter-inner p { color: var(--muted); font-size: 0.9rem; margin-bottom: 28px; line-height: 1.7; }
+    .newsletter-form {
+      display: flex; gap: 10px; max-width: 480px; margin: 0 auto;
+    }
+    .newsletter-input {
+      flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 50px; padding: 13px 20px; color: #fff;
+      font-family: 'Montserrat', sans-serif; font-size: 0.875rem; font-weight: 500;
+      outline: none; transition: border-color 0.3s, background 0.3s;
+    }
+    .newsletter-input:focus { border-color: var(--accent); background: rgba(255,255,255,0.11); }
+    .newsletter-input::placeholder { color: rgba(255,255,255,0.35); }
+    .newsletter-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; border: none; border-radius: 50px; padding: 13px 26px;
+      font-family: 'Montserrat', sans-serif; font-size: 0.875rem; font-weight: 700;
+      cursor: pointer; white-space: nowrap;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 0 24px rgba(59,130,246,0.3);
+    }
+    .newsletter-btn:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(59,130,246,0.5); }
+    .newsletter-note { font-size: 0.72rem; color: var(--muted); margin-top: 12px; }
+    @media (max-width: 480px) {
+      .newsletter-form { flex-direction: column; }
+      .newsletter-btn { width: 100%; }
+    }
+
+    /* ─── Enhanced section dividers ─────────────────── */
+    .section-glow-divider {
+      height: 1px; position: relative; z-index: 1;
+      background: linear-gradient(90deg, transparent, rgba(59,130,246,0.4), rgba(139,92,246,0.4), transparent);
+      margin: 0;
+    }
+
+    /* ─── Gradient border cards ─────────────────────── */
+    .grad-border {
+      position: relative;
+    }
+    .grad-border::before {
+      content: ''; position: absolute; inset: -1px;
+      border-radius: calc(var(--radius) + 1px); z-index: -1;
+      background: linear-gradient(135deg, rgba(59,130,246,0.5), rgba(139,92,246,0.5), rgba(6,182,212,0.3));
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .grad-border:hover::before { opacity: 1; }
+
+    /* ─── Founder ───────────────────────────────────── */
+    .markets-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 32px; }
+    .market-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 50px; padding: 7px 16px;
+      font-size: .78rem; font-weight: 700; color: var(--muted);
+      transition: border-color .3s, color .3s;
+    }
+    .market-pill:hover { border-color: rgba(59,130,246,.4); color: var(--text); }
+    .market-pill .flag { font-size: 1rem; }
+    .founder-duo { display: flex; gap: 16px; margin-bottom: 0; }
+    .founder-card-sm {
+      flex: 1; background: var(--glass-bg); border: 1px solid var(--glass-bdr);
+      border-radius: 20px; padding: 28px 20px; text-align: center;
+      backdrop-filter: blur(12px); transition: border-color .4s, transform .4s;
+    }
+    .founder-card-sm:hover { border-color: rgba(59,130,246,.35); transform: translateY(-4px); }
+    .founder-avatar-sm {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; font-weight: 900; color: #fff; margin: 0 auto 14px;
+      box-shadow: 0 0 28px rgba(59,130,246,.3);
+    }
+    .founder-name-sm { font-size: 1rem; font-weight: 800; letter-spacing: -.3px; margin-bottom: 4px; }
+    .founder-title-sm { font-size: .7rem; color: var(--accent); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; }
+    .founder-divider-sm { width: 32px; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; margin: 0 auto 14px; }
+    .founder-tags-sm { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 16px; }
+    .founder-tag-sm { background: rgba(59,130,246,.1); border: 1px solid rgba(59,130,246,.2); border-radius: 50px; padding: 3px 10px; font-size: .65rem; font-weight: 600; color: var(--muted); }
+    .founder-li-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(10,102,194,.15); border: 1px solid rgba(10,102,194,.35);
+      border-radius: 50px; padding: 6px 14px; font-size: .7rem; font-weight: 700;
+      color: #60a5fa; text-decoration: none; transition: background .3s, border-color .3s;
+    }
+    .founder-li-btn:hover { background: rgba(10,102,194,.28); border-color: rgba(10,102,194,.6); }
+    @media(max-width:600px){ .founder-duo { flex-direction: column; } }
+    .founder {
+      padding: 100px 6vw;
+      background: linear-gradient(180deg, transparent, rgba(59,130,246,0.03), transparent);
+    }
+    .founder-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 340px 1fr;
+      gap: 80px; align-items: center;
+    }
+    .founder-card {
+      background: var(--glass-bg); border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 24px; padding: 40px 32px; text-align: center;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 60px rgba(59,130,246,0.08);
+      opacity: 0; transform: translateX(-24px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+    .founder-card.visible { opacity: 1; transform: none; }
+    .founder-avatar {
+      width: 100px; height: 100px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; font-weight: 900; color: #fff;
+      margin: 0 auto 20px;
+      box-shadow: 0 0 40px rgba(59,130,246,0.45), 0 0 80px rgba(139,92,246,0.2);
+    }
+    .founder-name { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; }
+    .founder-title { font-size: 0.8rem; color: var(--accent); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px; }
+    .founder-divider { width: 40px; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; margin: 0 auto 20px; }
+    .founder-tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .founder-tag {
+      padding: 4px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 600;
+      background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); color: #93c5fd;
+    }
+    .founder-content {
+      opacity: 0; transform: translateX(24px);
+      transition: opacity 0.6s 0.15s, transform 0.6s 0.15s;
+    }
+    .founder-content.visible { opacity: 1; transform: none; }
+    .founder-content blockquote {
+      font-size: clamp(1.1rem, 2vw, 1.5rem); font-weight: 700;
+      line-height: 1.5; letter-spacing: -0.3px;
+      color: var(--text); margin-bottom: 24px;
+      border-left: 3px solid var(--accent); padding-left: 20px;
+    }
+    .founder-content p { color: var(--muted); font-size: 0.95rem; line-height: 1.85; margin-bottom: 16px; }
+    .founder-points { display: flex; flex-direction: column; gap: 12px; margin: 28px 0; }
+    .founder-point { display: flex; align-items: flex-start; gap: 12px; }
+    .fp-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 6px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+    }
+    .founder-point p { color: var(--muted); font-size: 0.875rem; line-height: 1.7; margin: 0; }
+    .founder-point strong { color: var(--text); }
+    @media (max-width: 900px) {
+      .founder-inner { grid-template-columns: 1fr; gap: 40px; }
+      .founder-card { max-width: 320px; margin: 0 auto; }
+    }
+
     /* ─── Responsive ────────────────────────────────── */
     /* ─── Phone Trio Mockup ─────────────────────────── */
     .product-label {
@@ -1120,10 +1484,10 @@
 
   <!-- Navigation -->
   <nav id="navbar">
-    <div class="nav-logo">ItWorks</div>
+    <a href="index.html" class="nav-logo">ItWorks</a>
     <ul class="nav-links">
+      <li><a href="products.html">Products</a></li>
       <li><a href="#services">Services</a></li>
-      <li><a href="#how">How It Works</a></li>
       <li><a href="blog.html">Blog</a></li>
       <li><a href="careers.html">Careers</a></li>
       <li><a href="#contact" class="nav-cta">Talk to Us</a></li>
@@ -1135,8 +1499,8 @@
 
   <!-- Mobile Menu -->
   <div class="mobile-menu" id="mobile-menu">
+    <a href="products.html" onclick="toggleMenu()">Products</a>
     <a href="#services" onclick="toggleMenu()">Services</a>
-    <a href="#how" onclick="toggleMenu()">How It Works</a>
     <a href="blog.html" onclick="toggleMenu()">Blog</a>
     <a href="careers.html" onclick="toggleMenu()">Careers</a>
     <a href="#contact" onclick="toggleMenu()">Talk to Us →</a>
@@ -1161,8 +1525,8 @@
         </p>
         <div class="hero-buttons">
           <a href="#contact" class="btn-primary">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
-            Get Started Free
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Book a Free Discovery Call
           </a>
           <a href="#services" class="btn-secondary">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -1173,11 +1537,11 @@
 
       <!-- Right: Phone Trio Mockup -->
       <div class="hero-right">
-        <div class="product-label"><span class="dot"></span>Live Product Demo</div>
+        <div class="product-label"><span class="dot"></span>Meet Our AI Agents</div>
 
         <div class="phone-trio">
 
-          <!-- Left phone: Home screen -->
+          <!-- Left phone: Enigma — Real Estate -->
           <div class="ph ph-left">
             <div class="ph-notch"></div>
             <div class="ph-status">
@@ -1185,66 +1549,71 @@
               <div class="ph-status-dots"><div class="ph-status-dot"></div><div class="ph-status-dot"></div><div class="ph-status-dot"></div></div>
             </div>
             <div class="ph-home">
-              <div class="ph-home-greet">Good Morning 👋</div>
-              <div class="ph-home-uname">Kashif</div>
-              <div class="ph-home-search">🔍 Search prompts...</div>
-              <div class="ph-sec-lbl">Topics</div>
+              <div class="ph-home-greet" style="font-size:.55rem;color:#f59e0b;font-weight:700;letter-spacing:1px;text-transform:uppercase">🏡 Real Estate AI</div>
+              <div class="ph-home-uname" style="background:linear-gradient(135deg,#7c3aed,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Enigma</div>
+              <div class="ph-home-search" style="background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.25);border-radius:8px;padding:5px 8px;font-size:.52rem;color:rgba(255,255,255,.5);margin-bottom:8px">🔍 Ask about any property...</div>
+              <div class="ph-sec-lbl">Today's Activity</div>
               <div class="ph-chips">
-                <span class="ph-chip">AI Tools</span>
-                <span class="ph-chip">Growth</span>
-                <span class="ph-chip">Cloud</span>
-                <span class="ph-chip">Automation</span>
+                <span class="ph-chip" style="background:rgba(124,58,237,.15);border-color:rgba(124,58,237,.3)">12 leads</span>
+                <span class="ph-chip" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3)">4 viewings</span>
               </div>
-              <div class="ph-sec-lbl">Recent</div>
-              <div class="ph-hist"><div class="ph-hist-ic">IW</div><span>AI automation for LHC...</span></div>
-              <div class="ph-hist"><div class="ph-hist-ic">IW</div><span>Discovery Call booked</span></div>
+              <div class="ph-sec-lbl">Latest Enquiry</div>
+              <div class="ph-msgs" style="margin-top:4px">
+                <div class="ph-m bot" style="background:rgba(124,58,237,.15);font-size:.5rem">Hi! Looking for a 2-bed in SW London, budget £450k 🏡</div>
+                <div class="ph-m usr" style="font-size:.5rem">Enigma: I have 3 perfect matches. Book a viewing?</div>
+              </div>
             </div>
           </div>
 
-          <!-- Center phone: Ivy splash -->
+          <!-- Center phone: Alpha — LinkedIn Outreach -->
           <div class="ph ph-center">
             <div class="ph-notch"></div>
             <div class="ph-status">
               <span>09:41</span>
               <div class="ph-status-dots"><div class="ph-status-dot"></div><div class="ph-status-dot"></div><div class="ph-status-dot"></div></div>
             </div>
-            <div class="ph-splash">
-              <div class="ph-splash-orb">IW</div>
-              <div class="ph-splash-title">Ivy</div>
-              <div class="ph-splash-tag">AI Growth Partner</div>
-              <div class="ph-splash-desc">Smarter business decisions, powered by ItWorks AI</div>
-              <button class="ph-splash-btn" onclick="document.getElementById('iw-toggle').click()">Start Chat →</button>
-              <button class="ph-splash-sec">Book Discovery Call</button>
+            <div class="ph-splash" style="background:linear-gradient(160deg,#0d1a3a,#0a0f1e)">
+              <div class="ph-splash-orb" style="background:linear-gradient(135deg,#2563eb,#38bdf8);box-shadow:0 0 30px rgba(37,99,235,.5)">🎯</div>
+              <div class="ph-splash-title" style="background:linear-gradient(135deg,#2563eb,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Alpha</div>
+              <div class="ph-splash-tag">LinkedIn Outreach AI</div>
+              <div style="display:flex;gap:8px;justify-content:center;margin:8px 0">
+                <div style="background:rgba(37,99,235,.15);border:1px solid rgba(37,99,235,.25);border-radius:8px;padding:5px 10px;text-align:center"><div style="font-size:.8rem;font-weight:900;color:#60a5fa">147</div><div style="font-size:.45rem;color:var(--muted)">Sent today</div></div>
+                <div style="background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.2);border-radius:8px;padding:5px 10px;text-align:center"><div style="font-size:.8rem;font-weight:900;color:#38bdf8">8</div><div style="font-size:.45rem;color:var(--muted)">Meetings</div></div>
+              </div>
+              <div style="font-size:.48rem;color:rgba(255,255,255,.5);text-align:center;margin-bottom:8px">Campaign running 24/7</div>
+              <a href="agents/alpha.html" class="ph-splash-btn" style="text-decoration:none;display:block;text-align:center">Learn More →</a>
             </div>
           </div>
 
-          <!-- Right phone: Chat -->
+          <!-- Right phone: RelyOn — SaaS Onboarding -->
           <div class="ph ph-right">
             <div class="ph-notch"></div>
             <div class="ph-status">
               <span>09:41</span>
               <div class="ph-status-dots"><div class="ph-status-dot"></div><div class="ph-status-dot"></div><div class="ph-status-dot"></div></div>
             </div>
-            <div class="ph-chat-hdr">
-              <div class="ph-av">IW</div>
-              <div><div class="ph-av-name">Ivy</div><div class="ph-av-sub">● Online</div></div>
+            <div class="ph-chat-hdr" style="background:linear-gradient(135deg,rgba(13,148,136,.25),rgba(34,197,94,.1))">
+              <div class="ph-av" style="background:linear-gradient(135deg,#0d9488,#22c55e);font-size:.65rem">🚀</div>
+              <div><div class="ph-av-name">RelyOn.io</div><div class="ph-av-sub" style="color:#22c55e">● Onboarding Active</div></div>
+            </div>
+            <div style="padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.06)">
+              <div style="font-size:.5rem;color:var(--muted);margin-bottom:4px;font-weight:600">Onboarding: 60% complete</div>
+              <div style="height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden"><div style="width:60%;height:100%;background:linear-gradient(90deg,#0d9488,#22c55e);border-radius:2px"></div></div>
             </div>
             <div class="ph-msgs">
-              <div class="ph-m bot">👋 Hi! I'm Ivy. How can I help?</div>
-              <div class="ph-m usr">What does ItWorks do?</div>
-              <div class="ph-m bot">AI automation, cloud &amp; managed IT 🚀</div>
-              <div class="ph-m usr">Can I book a free call?</div>
-              <div class="ph-m bot">Yes! Free 30-min Discovery Call 📅</div>
+              <div class="ph-m bot" style="background:rgba(13,148,136,.15);font-size:.5rem">Welcome! Let's create your first workflow 🎉</div>
+              <div class="ph-m usr" style="font-size:.5rem">How do I connect Slack?</div>
+              <div class="ph-m bot" style="background:rgba(13,148,136,.15);font-size:.5rem">Settings → Integrations → Slack. 30 sec setup ✓</div>
             </div>
-            <div class="ph-input">Ask me anything...</div>
+            <div class="ph-input">Ask RelyOn...</div>
           </div>
 
         </div><!-- end .phone-trio -->
 
-        <button class="ivy-try-btn" onclick="document.getElementById('iw-toggle').click()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-          Try Ivy Now
-        </button>
+        <a href="products.html" class="ivy-try-btn" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Explore All Agents →
+        </a>
       </div>
 
     </div>
@@ -1254,23 +1623,49 @@
   <section style="position:relative;z-index:1;">
     <div class="stats-bar">
       <div class="stat-item">
-        <span class="stat-num" data-target="500">0</span>
+        <span class="stat-num" data-target="40">0</span>
         <span class="stat-label">Clients Served</span>
       </div>
       <div class="stat-item">
-        <span class="stat-num" data-target="99">0</span>
-        <span class="stat-label">% Uptime SLA</span>
+        <span class="stat-num stat-static">99.9%</span>
+        <span class="stat-label">Uptime Maintained</span>
       </div>
       <div class="stat-item">
-        <span class="stat-num" data-target="24">0</span>
-        <span class="stat-label">/ 7 Support</span>
+        <span class="stat-num stat-static">24/7</span>
+        <span class="stat-label">AI-Powered Support</span>
       </div>
       <div class="stat-item">
-        <span class="stat-num" data-target="60">0</span>
-        <span class="stat-label">% Cost Reduction</span>
+        <span class="stat-num stat-static">Up to 60%</span>
+        <span class="stat-label">Cost Reduction</span>
       </div>
     </div>
   </section>
+
+  <!-- Logo Strip -->
+  <div class="logo-strip">
+    <p class="logo-strip-label">Trusted by growing businesses</p>
+    <div class="logo-track" id="logo-track">
+      <!-- Set 1 -->
+      <div class="logo-pill"><span class="lp-dot" style="background:#f59e0b;"></span><span>London Heathrow Cars</span></div>
+      <div class="logo-pill"><span class="lp-dot" style="background:#3b82f6;"></span><span>NexaScale</span></div>
+      <div class="logo-pill"><span class="lp-dot" style="background:#06b6d4;"></span><span>Verity Finance</span></div>
+      <div class="logo-pill"><span class="lp-dot" style="background:#8b5cf6;"></span><span>BrightPath</span></div>
+      <div class="logo-pill"><span class="lp-dot" style="background:#22c55e;"></span><span>Atlas Logistics</span></div>
+      <div class="logo-pill"><span class="lp-dot" style="background:#ec4899;"></span><span>Meridian Capital</span></div>
+      <div class="logo-pill"><span class="lp-dot" style="background:#f97316;"></span><span>Prism Digital</span></div>
+      <div class="logo-pill"><span class="lp-dot" style="background:#3b82f6;"></span><span>Cascade Group</span></div>
+      <!-- Set 2 — duplicate for seamless loop -->
+      <div class="logo-pill"><span class="lp-dot" style="background:#f59e0b;"></span><span>London Heathrow Cars</span></div>
+      <div class="logo-pill"><span class="lp-dot" style="background:#3b82f6;"></span><span>NexaScale</span></div>
+      <div class="logo-pill"><span class="lp-dot" style="background:#06b6d4;"></span><span>Verity Finance</span></div>
+      <div class="logo-pill"><span class="lp-dot" style="background:#8b5cf6;"></span><span>BrightPath</span></div>
+      <div class="logo-pill"><span class="lp-dot" style="background:#22c55e;"></span><span>Atlas Logistics</span></div>
+      <div class="logo-pill"><span class="lp-dot" style="background:#ec4899;"></span><span>Meridian Capital</span></div>
+      <div class="logo-pill"><span class="lp-dot" style="background:#f97316;"></span><span>Prism Digital</span></div>
+      <div class="logo-pill"><span class="lp-dot" style="background:#3b82f6;"></span><span>Cascade Group</span></div>
+    </div>
+  </div>
+  <div class="section-glow-divider"></div>
 
   <!-- Services -->
   <section class="services" id="services">
@@ -1281,43 +1676,82 @@
     </div>
     <div class="service-grid">
       <div class="glass-card">
-        <div class="card-icon icon-blue">☁️</div>
+        <div class="svc-icon si-blue">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.8"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+        </div>
         <h3>Cloud Automation</h3>
         <p>Streamline deployments, auto-scale infrastructure, and cut cloud costs with AI-driven management across AWS, Azure, and GCP.</p>
         <span class="card-tag tag-blue">Infrastructure</span>
       </div>
       <div class="glass-card">
-        <div class="card-icon icon-purple">🛡️</div>
+        <div class="svc-icon si-purple">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
         <h3>AI‑Driven Security</h3>
         <p>Proactive threat detection, automated incident response, and real-time monitoring to keep your business ahead of cyber threats.</p>
         <span class="card-tag tag-purple">Cybersecurity</span>
       </div>
       <div class="glass-card">
-        <div class="card-icon icon-cyan">🖥️</div>
+        <div class="svc-icon si-cyan">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
         <h3>Managed IT Support</h3>
         <p>Reliable round-the-clock helpdesk powered by intelligent triage. Human experts resolve what AI escalates — seamlessly.</p>
         <span class="card-tag tag-cyan">Support</span>
       </div>
       <div class="glass-card">
-        <div class="card-icon icon-green">⚙️</div>
+        <div class="svc-icon si-green">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
         <h3>Process Optimisation</h3>
         <p>Use AI insights to map, automate, and optimise your business workflows — reducing manual effort and operational costs.</p>
         <span class="card-tag tag-green">Automation</span>
       </div>
       <div class="glass-card">
-        <div class="card-icon icon-orange">📊</div>
+        <div class="svc-icon si-orange">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
         <h3>AI Analytics & Reporting</h3>
         <p>Turn raw data into actionable intelligence. Custom dashboards and predictive analytics that drive better business decisions.</p>
         <span class="card-tag tag-orange">Analytics</span>
       </div>
       <div class="glass-card">
-        <div class="card-icon icon-pink">🔄</div>
+        <div class="svc-icon si-pink">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="1.8"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
         <h3>Digital Transformation</h3>
         <p>End-to-end roadmaps for modernising legacy systems and embedding AI across your organisation at every layer.</p>
         <span class="card-tag tag-pink">Strategy</span>
       </div>
     </div>
   </section>
+
+  <!-- Tech Stack -->
+  <div class="section-glow-divider"></div>
+  <section class="tech-stack">
+    <div class="tech-stack-inner">
+      <div class="tech-stack-header">
+        <div class="section-label">Our Toolkit</div>
+        <h2 class="section-title">Built with Best-in-Class AI</h2>
+        <p class="section-sub" style="margin:0 auto;text-align:center;">We use the most powerful platforms available — so you get enterprise-grade AI without enterprise complexity.</p>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-pill"><span class="tp-icon">🤖</span> OpenAI / GPT-4</div>
+        <div class="tech-pill"><span class="tp-icon">🧠</span> Anthropic Claude</div>
+        <div class="tech-pill"><span class="tp-icon">🔄</span> n8n Automation</div>
+        <div class="tech-pill"><span class="tp-icon">⚙️</span> Make (Integromat)</div>
+        <div class="tech-pill"><span class="tp-icon">☁️</span> AWS</div>
+        <div class="tech-pill"><span class="tp-icon">🌐</span> Google Cloud</div>
+        <div class="tech-pill"><span class="tp-icon">💙</span> Microsoft Azure</div>
+        <div class="tech-pill"><span class="tp-icon">📊</span> HubSpot CRM</div>
+        <div class="tech-pill"><span class="tp-icon">💬</span> WhatsApp Business API</div>
+        <div class="tech-pill"><span class="tp-icon">🐍</span> Python</div>
+        <div class="tech-pill"><span class="tp-icon">🔗</span> REST APIs & Webhooks</div>
+        <div class="tech-pill"><span class="tp-icon">⭐</span> Google Reviews API</div>
+      </div>
+    </div>
+  </section>
+  <div class="section-glow-divider"></div>
 
   <!-- How It Works -->
   <section class="how" id="how">
@@ -1397,38 +1831,208 @@
     </div>
     <div class="testi-grid">
       <div class="testi-card">
-        <div class="stars">★★★★★</div>
-        <p class="testi-quote">"ItWorks transformed our infrastructure in 6 weeks. Downtime dropped to near zero and our team spends zero time firefighting anymore."</p>
+        <div class="testi-top-row">
+          <div class="stars">★★★★★</div>
+          <span class="verified-badge">✓ Verified Client</span>
+        </div>
+        <p class="testi-quote">"ItWorks transformed our infrastructure in 6 weeks. Downtime dropped to near zero and our team spends zero time firefighting anymore. Genuinely one of the best technology decisions we've made."</p>
         <div class="testi-author">
           <div class="author-avatar av-blue">JM</div>
           <div>
             <div class="author-name">James Mitchell</div>
-            <div class="author-role">CTO, NexaScale Ltd</div>
+            <div class="author-role">CTO, NexaScale Ltd · <span class="testi-source">via Google</span></div>
           </div>
         </div>
       </div>
       <div class="testi-card">
-        <div class="stars">★★★★★</div>
-        <p class="testi-quote">"The AI security layer caught a sophisticated attack before it became a breach. It paid for itself on day one. I can't recommend ItWorks enough."</p>
+        <div class="testi-top-row">
+          <div class="stars">★★★★★</div>
+          <span class="verified-badge">✓ Verified Client</span>
+        </div>
+        <p class="testi-quote">"The AI security layer caught a sophisticated attack before it became a breach. It paid for itself on day one. The team are responsive, sharp, and genuinely ahead of the curve."</p>
         <div class="testi-author">
           <div class="author-avatar av-cyan">SR</div>
           <div>
             <div class="author-name">Sarah Rahman</div>
-            <div class="author-role">Head of IT, Verity Finance</div>
+            <div class="author-role">Head of IT, Verity Finance · <span class="testi-source">via Trustpilot</span></div>
           </div>
         </div>
       </div>
       <div class="testi-card">
-        <div class="stars">★★★★★</div>
-        <p class="testi-quote">"We reduced our cloud spend by 52% in the first quarter. The process automation alone saved our ops team 30+ hours a week."</p>
+        <div class="testi-top-row">
+          <div class="stars">★★★★★</div>
+          <span class="verified-badge">✓ Verified Client</span>
+        </div>
+        <p class="testi-quote">"We reduced our cloud spend by 52% in the first quarter. The process automation alone saved our ops team 30+ hours a week. The ROI was visible within weeks, not months."</p>
         <div class="testi-author">
           <div class="author-avatar av-purple">DK</div>
           <div>
             <div class="author-name">Daniel Kim</div>
-            <div class="author-role">Operations Director, BrightPath</div>
+            <div class="author-role">Operations Director, BrightPath · <span class="testi-source">via Google</span></div>
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Portfolio -->
+  <div class="section-glow-divider"></div>
+  <section class="portfolio" id="portfolio">
+    <div class="portfolio-header">
+      <div class="section-label">Our Work</div>
+      <h2 class="section-title">Real Engagements.<br/>Measurable Results.</h2>
+      <p class="section-sub">Every project is different. Every result is documented. Here's what AI-first looks like in practice.</p>
+    </div>
+    <div class="portfolio-grid">
+
+      <!-- LHC — Featured -->
+      <div class="port-card featured grad-border">
+        <div class="port-thumb" style="background: linear-gradient(135deg, rgba(245,158,11,0.25), rgba(249,115,22,0.15), rgba(59,130,246,0.1));">
+          <div class="pt-glow" style="background: radial-gradient(circle at 40% 50%, rgba(245,158,11,0.3), transparent 70%);"></div>
+          <span class="pt-icon">✈️</span>
+          <span class="pt-badge" style="background:rgba(245,158,11,0.2);border:1px solid rgba(245,158,11,0.35);color:#fbbf24;">Transport</span>
+          <span class="pt-live">Active</span>
+        </div>
+        <div class="port-body">
+          <div class="port-cat">AI Growth Transformation</div>
+          <h3>London Heathrow Cars — Rebuilding After Covid with Agentic AI</h3>
+          <p>Full AI growth engine: 24/7 booking assistant, automated re-engagement, smart dispatch, reputation management, and a real-time revenue dashboard.</p>
+          <div class="port-metrics">
+            <div class="port-metric"><span class="pm-val">&lt;2min</span><span class="pm-lbl">AI Response</span></div>
+            <div class="port-metric"><span class="pm-val">3×</span><span class="pm-lbl">Repeat Bookings</span></div>
+            <div class="port-metric"><span class="pm-val">100%</span><span class="pm-lbl">Lead Capture</span></div>
+          </div>
+          <a href="blog.html#lhc-case-study" class="port-link">
+            Read Full Case Study
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- B2B SaaS -->
+      <div class="port-card grad-border">
+        <div class="port-thumb" style="background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(6,182,212,0.15));">
+          <div class="pt-glow" style="background: radial-gradient(circle at 60% 40%, rgba(59,130,246,0.3), transparent 70%);"></div>
+          <span class="pt-icon">⚙️</span>
+          <span class="pt-badge" style="background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.35);color:#60a5fa;">B2B SaaS</span>
+        </div>
+        <div class="port-body">
+          <div class="port-cat">Process Automation</div>
+          <h3>Operations Automation — 30+ Hours Saved Per Week</h3>
+          <p>Mapped and automated 14 manual workflows across sales, onboarding, and reporting. Integrated CRM, billing, and support into a single AI-managed pipeline.</p>
+          <div class="port-metrics">
+            <div class="port-metric"><span class="pm-val">30+</span><span class="pm-lbl">Hrs/Week Saved</span></div>
+            <div class="port-metric"><span class="pm-val">52%</span><span class="pm-lbl">Cloud Cost Cut</span></div>
+          </div>
+          <a href="#contact" class="port-link">
+            Discuss a Similar Project
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Fintech Security -->
+      <div class="port-card grad-border">
+        <div class="port-thumb" style="background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(236,72,153,0.15));">
+          <div class="pt-glow" style="background: radial-gradient(circle at 50% 50%, rgba(139,92,246,0.3), transparent 70%);"></div>
+          <span class="pt-icon">🛡️</span>
+          <span class="pt-badge" style="background:rgba(139,92,246,0.2);border:1px solid rgba(139,92,246,0.35);color:#a78bfa;">Finance</span>
+        </div>
+        <div class="port-body">
+          <div class="port-cat">AI-Driven Security</div>
+          <h3>Fintech Threat Detection — Breach Caught Before It Happened</h3>
+          <p>Deployed proactive AI security monitoring across client infrastructure. A sophisticated attack was detected and neutralised in under 4 minutes, before any data was compromised.</p>
+          <div class="port-metrics">
+            <div class="port-metric"><span class="pm-val">4min</span><span class="pm-lbl">Detection Time</span></div>
+            <div class="port-metric"><span class="pm-val">99.9%</span><span class="pm-lbl">Uptime</span></div>
+          </div>
+          <a href="#contact" class="port-link">
+            Discuss a Similar Project
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <div class="section-glow-divider"></div>
+
+  <!-- Founders -->
+  <section class="founder" id="founder">
+    <div class="founder-inner">
+
+      <!-- Left: dual founder cards -->
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div class="founder-duo">
+          <!-- Kashif -->
+          <div class="founder-card-sm">
+            <div class="founder-avatar-sm">KA</div>
+            <div class="founder-name-sm">Kashif Ahmed</div>
+            <div class="founder-title-sm">Co-Founder · ItWorks</div>
+            <div class="founder-divider-sm"></div>
+            <div class="founder-tags-sm">
+              <span class="founder-tag-sm">AI Strategy</span>
+              <span class="founder-tag-sm">Growth</span>
+              <span class="founder-tag-sm">Automation</span>
+            </div>
+            <a href="https://www.linkedin.com/in/kashif-ahmed-12130538" target="_blank" rel="noopener" class="founder-li-btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#60a5fa"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+              LinkedIn
+            </a>
+          </div>
+          <!-- Usman -->
+          <div class="founder-card-sm">
+            <div class="founder-avatar-sm" style="background:linear-gradient(135deg,#0d9488,#6366f1)">US</div>
+            <div class="founder-name-sm">Usman Sajid</div>
+            <div class="founder-title-sm">Co-Founder · BI Mastermind</div>
+            <div class="founder-divider-sm" style="background:linear-gradient(90deg,#0d9488,#6366f1)"></div>
+            <div class="founder-tags-sm">
+              <span class="founder-tag-sm">Business Intelligence</span>
+              <span class="founder-tag-sm">Data Strategy</span>
+              <span class="founder-tag-sm">Analytics</span>
+            </div>
+            <a href="https://www.linkedin.com/in/usman-sajid-muhammad" target="_blank" rel="noopener" class="founder-li-btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#60a5fa"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <!-- Markets -->
+        <div class="markets-row">
+          <div class="market-pill"><span class="flag">🇬🇧</span> United Kingdom</div>
+          <div class="market-pill"><span class="flag">🇦🇪</span> UAE</div>
+          <div class="market-pill"><span class="flag">🇺🇸</span> USA</div>
+          <div class="market-pill"><span class="flag">🇵🇰</span> Pakistan</div>
+        </div>
+      </div>
+
+      <!-- Right: content -->
+      <div class="founder-content">
+        <div class="section-label">Who's Behind ItWorks</div>
+        <blockquote>"Most businesses are paying too much for IT that does too little — while AI quietly changes everything."</blockquote>
+        <p>We started ItWorks because we kept seeing the same pattern: capable, ambitious businesses being let down by traditional IT providers who were reactive, expensive, and miles behind on what AI could actually do for them.</p>
+        <p>ItWorks exists to close that gap. We work directly alongside your team — not as a vendor who disappears after go-live, but as an embedded growth partner who stays until the results are real and compounding. Serving clients across the UK, UAE, USA, and Pakistan.</p>
+        <div class="founder-points">
+          <div class="founder-point">
+            <div class="fp-dot"></div>
+            <p><strong>No off-the-shelf packages.</strong> Every engagement starts with a genuine Discovery — we learn your business before we recommend anything.</p>
+          </div>
+          <div class="founder-point">
+            <div class="fp-dot"></div>
+            <p><strong>AI-first, not AI-adjacent.</strong> We don't bolt AI onto old IT. We design systems with intelligence at the core from day one.</p>
+          </div>
+          <div class="founder-point">
+            <div class="fp-dot"></div>
+            <p><strong>You talk to the people building it.</strong> No account managers, no hand-offs. Direct access to the founders doing the work.</p>
+          </div>
+        </div>
+        <a href="#contact" class="btn-primary" style="display:inline-flex;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          Book a Discovery Call
+        </a>
+      </div>
+
     </div>
   </section>
 
@@ -1466,6 +2070,86 @@
       </div>
     </div>
   </section>
+
+  <!-- FAQ -->
+  <div class="section-glow-divider"></div>
+  <section class="faq-section" id="faq">
+    <div class="faq-inner">
+      <div class="faq-header">
+        <div class="section-label">Got Questions</div>
+        <h2 class="section-title">Everything You Need to Know</h2>
+        <p class="section-sub">Honest answers — no jargon, no sales spin.</p>
+      </div>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>How is ItWorks different from a regular IT company?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><div class="faq-a-inner">Traditional IT companies keep your systems running. We use AI to actively grow your business. We don't just fix problems — we eliminate them before they happen, automate the work that slows you down, and build intelligence into every layer of your operations. We're a growth partner, not a helpdesk.</div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>What size businesses do you work with?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><div class="faq-a-inner">Primarily SMEs and fast-growing businesses — typically 5 to 200 employees. We find this is the sweet spot where AI delivers the fastest ROI. Smaller businesses can implement decisively, without the bureaucracy of a large enterprise. You'll see results within weeks, not quarters.</div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>How quickly will we see results?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><div class="faq-a-inner">Most clients see working automations within 4–6 weeks of kickoff. Phase 1 (foundation and first automations) takes 4 weeks. By week 10 you'll have the full automation suite running. The compounding benefits — repeat customers, time savings, cost reductions — build over the following months as the AI learns your business.</div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Do you replace our existing IT team?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><div class="faq-a-inner">No — we work alongside your existing team. We handle the AI strategy, automation builds, and ongoing optimisation. If you have in-house IT staff, we free them from repetitive tasks so they can focus on higher-value work. If you don't have a tech team, we become that function for you.</div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>What does the Discovery Call actually involve?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><div class="faq-a-inner">It's a 30-minute conversation — not a pitch. We ask about your business, your biggest bottlenecks, and your growth goals. By the end, you'll have a clear picture of where AI can deliver the most value for you specifically. You'll leave with honest recommendations regardless of whether we work together.</div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>How much does it cost?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><div class="faq-a-inner">We don't publish fixed prices intentionally — every business has different challenges, team sizes, and goals. A solution that's right for one client would be overkill or insufficient for another. After your Discovery Call, we'll give you a clear, itemised proposal. No hidden fees, no lock-ins.</div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Can you work with our existing software and tools?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><div class="faq-a-inner">Almost certainly yes. We build integrations across CRMs, ERPs, booking systems, communication platforms, accounting tools, and custom databases. We use n8n, Make, and custom API pipelines to connect virtually any combination of tools. We work with what you have — we don't force migrations.</div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Is our data safe?</span>
+            <div class="faq-icon">+</div>
+          </div>
+          <div class="faq-a"><div class="faq-a-inner">Yes. We take data security seriously on every engagement. All systems we build follow industry-standard security practices. We use encrypted connections, access-controlled environments, and handle data in line with GDPR requirements. Your data never leaves your control without explicit authorisation.</div></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <div class="section-glow-divider"></div>
 
   <!-- Contact -->
   <section class="contact" id="contact">
@@ -1597,14 +2281,29 @@
     </div>
   </section>
 
+  <!-- Newsletter -->
+  <div class="newsletter-bar">
+    <div class="newsletter-inner">
+      <h3>Stay Ahead of the AI Curve</h3>
+      <p>Get practical AI growth insights, case study updates, and automation breakdowns — straight to your inbox. No fluff, no spam.</p>
+      <form class="newsletter-form" onsubmit="handleNewsletter(event)">
+        <input class="newsletter-input" type="email" placeholder="your@email.com" required />
+        <button class="newsletter-btn" type="submit">Subscribe →</button>
+      </form>
+      <p class="newsletter-note" id="nl-note">Join forward-thinking business leaders already reading ItWorks insights.</p>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer>
     <div class="footer-logo">ItWorks</div>
     <p>© 2026 ItWorks. AI‑First Managed Services.</p>
     <div class="footer-links">
       <a href="#services">Services</a>
+      <a href="#portfolio">Work</a>
       <a href="blog.html">Blog</a>
       <a href="careers.html">Careers</a>
+      <a href="#faq">FAQ</a>
       <a href="#contact">Contact</a>
     </div>
   </footer>
@@ -1696,7 +2395,7 @@
     }, { threshold: 0.15 });
 
     document.querySelectorAll(
-      '.glass-card, .stat-item, .step, .terminal, .testi-card, .price-card, .contact-item, .contact-form'
+      '.glass-card, .stat-item, .step, .terminal, .testi-card, .price-card, .contact-item, .contact-form, .founder-card, .founder-content, .port-card, .faq-item, .tech-pill'
     ).forEach((el, i) => {
       el.style.transitionDelay = (i % 6) * 0.08 + 's';
       io.observe(el);
@@ -1706,14 +2405,14 @@
     const countIO = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.querySelectorAll('.stat-num').forEach(el => {
+          entry.target.querySelectorAll('.stat-num[data-target]').forEach(el => {
             const target = +el.dataset.target;
             let start = 0;
             const step = target / 60;
             const timer = setInterval(() => {
               start += step;
               if (start >= target) { el.textContent = target + '+'; clearInterval(timer); }
-              else el.textContent = Math.floor(start) + (target === 99 ? '' : '+');
+              else el.textContent = Math.floor(start) + '+';
             }, 24);
           });
           countIO.unobserve(entry.target);
@@ -1749,6 +2448,27 @@
         btn.disabled = false;
       }
     });
+
+    /* ── FAQ accordion ─────────────────────────────── */
+    function toggleFaq(el) {
+      const item = el.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    }
+
+    /* ── Newsletter ─────────────────────────────────── */
+    function handleNewsletter(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('.newsletter-btn');
+      const note = document.getElementById('nl-note');
+      btn.textContent = '✓ Subscribed!';
+      btn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
+      btn.disabled = true;
+      e.target.querySelector('input').disabled = true;
+      note.textContent = "You're in. We'll be in touch with the good stuff.";
+      note.style.color = '#4ade80';
+    }
 
     /* ── Smooth active nav ──────────────────────── */
     const sections = document.querySelectorAll('section[id]');

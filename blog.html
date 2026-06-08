@@ -272,6 +272,18 @@
     .post-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; line-height: 1.4; }
     .post-card p { color: var(--muted); font-size: 0.83rem; line-height: 1.7; margin-bottom: 16px; }
     .post-date { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+    .coming-soon-badge {
+      position: absolute; top: 12px; right: 12px; z-index: 2;
+      background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.35);
+      color: #a78bfa; font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 50px;
+    }
+    .post-card[style*="cursor:default"]:hover {
+      transform: none !important;
+      border-color: var(--glass-bdr) !important;
+      box-shadow: none !important;
+    }
 
     /* ── Full Article Page ───────────────────────── */
     #article-view {
@@ -514,10 +526,10 @@
   <nav id="navbar">
     <a href="index.html" class="nav-logo">ItWorks</a>
     <ul class="nav-links">
+      <li><a href="products.html">Products</a></li>
       <li><a href="index.html#services">Services</a></li>
-      <li><a href="index.html#how">How It Works</a></li>
-      <li><a href="index.html#testimonials">Reviews</a></li>
       <li><a href="blog.html" class="active">Blog</a></li>
+      <li><a href="careers.html">Careers</a></li>
       <li><a href="index.html#contact" class="nav-cta">Talk to Us</a></li>
     </ul>
     <div class="hamburger" id="hamburger" onclick="toggleMenu()">
@@ -525,8 +537,8 @@
     </div>
   </nav>
   <div class="mobile-menu" id="mobile-menu">
+    <a href="products.html" onclick="toggleMenu()">Products</a>
     <a href="index.html#services" onclick="toggleMenu()">Services</a>
-    <a href="index.html#how" onclick="toggleMenu()">How It Works</a>
     <a href="blog.html" onclick="toggleMenu()">Blog</a>
     <a href="index.html#contact" onclick="toggleMenu()">Talk to Us →</a>
   </div>
@@ -576,33 +588,87 @@
     <div class="other-posts">
       <h3>More from ItWorks</h3>
       <div class="posts-grid">
-        <div class="post-card">
+
+        <!-- Enigma -->
+        <div class="post-card" onclick="window.location.href='agents/enigma.html'" style="cursor:pointer;">
+          <div class="post-thumb" style="background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(245,158,11,0.15)); display:flex; align-items:center; justify-content:center; font-size:2.2rem;">🏡</div>
+          <div class="post-body">
+            <div class="post-cat" style="color:#f59e0b;">AI Agent · Real Estate</div>
+            <h4>Meet Enigma: The AI Agent Turning Property Enquiries Into Booked Viewings 24/7</h4>
+            <p>Estate agents lose 60% of leads outside business hours. Enigma responds in under 90 seconds, qualifies every enquiry, and books viewings — while you sleep.</p>
+            <div class="post-date" style="display:flex; align-items:center; justify-content:space-between;">
+              <span>June 2026 · 5 min read</span>
+              <a href="agents/enigma-demo.html" onclick="event.stopPropagation()" style="background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);border-radius:50px;padding:3px 12px;font-size:.65rem;font-weight:700;color:#c4b5fd;text-decoration:none;">Try Demo →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alpha -->
+        <div class="post-card" onclick="window.location.href='agents/alpha.html'" style="cursor:pointer;">
+          <div class="post-thumb" style="background: linear-gradient(135deg, rgba(37,99,235,0.2), rgba(56,189,248,0.15)); display:flex; align-items:center; justify-content:center; font-size:2.2rem;">🎯</div>
+          <div class="post-body">
+            <div class="post-cat" style="color:#60a5fa;">AI Agent · LinkedIn Outreach</div>
+            <h4>Alpha: How AI Is Replacing the SDR Grind — 200 Personalised Outreach Messages a Day</h4>
+            <p>Manual LinkedIn outreach averages a 4% reply rate. Alpha's AI-personalised messages hit 21% — by reading prospects' posts before connecting. Here's how.</p>
+            <div class="post-date" style="display:flex; align-items:center; justify-content:space-between;">
+              <span>June 2026 · 6 min read</span>
+              <a href="agents/alpha-demo.html" onclick="event.stopPropagation()" style="background:rgba(37,99,235,.15);border:1px solid rgba(37,99,235,.3);border-radius:50px;padding:3px 12px;font-size:.65rem;font-weight:700;color:#93c5fd;text-decoration:none;">Try Demo →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- RelyOn -->
+        <div class="post-card" onclick="window.location.href='agents/relyon.html'" style="cursor:pointer;">
+          <div class="post-thumb" style="background: linear-gradient(135deg, rgba(13,148,136,0.2), rgba(34,197,94,0.15)); display:flex; align-items:center; justify-content:center; font-size:2.2rem;">🚀</div>
+          <div class="post-body">
+            <div class="post-cat" style="color:#2dd4bf;">AI Agent · SaaS Onboarding</div>
+            <h4>Why 80% of SaaS Churn Happens in the First 90 Days — And How RelyOn.io Fixes It</h4>
+            <p>Poor onboarding is the #1 driver of early churn. RelyOn.io guides every user to their first "aha moment" automatically — cutting churn by 40% within 60 days.</p>
+            <div class="post-date" style="display:flex; align-items:center; justify-content:space-between;">
+              <span>June 2026 · 7 min read</span>
+              <a href="agents/relyon-demo.html" onclick="event.stopPropagation()" style="background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.3);border-radius:50px;padding:3px 12px;font-size:.65rem;font-weight:700;color:#2dd4bf;text-decoration:none;">Try Demo →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vela -->
+        <div class="post-card" onclick="window.location.href='agents/vela.html'" style="cursor:pointer;">
+          <div class="post-thumb" style="background: linear-gradient(135deg, rgba(8,145,178,0.2), rgba(168,85,247,0.15)); display:flex; align-items:center; justify-content:center; font-size:2.2rem;">⭐</div>
+          <div class="post-body">
+            <div class="post-cat" style="color:#22d3ee;">AI Agent · Customer Success</div>
+            <h4>Vela: The AI That Detects Churn Risk 6 Weeks Before Your Customer Even Thinks About Leaving</h4>
+            <p>Your CS team can't manually monitor 200 accounts for early warning signals. Vela does — scoring every account daily and firing intervention playbooks automatically.</p>
+            <div class="post-date" style="display:flex; align-items:center; justify-content:space-between;">
+              <span>June 2026 · 6 min read</span>
+              <a href="agents/vela-demo.html" onclick="event.stopPropagation()" style="background:rgba(8,145,178,.15);border:1px solid rgba(8,145,178,.3);border-radius:50px;padding:3px 12px;font-size:.65rem;font-weight:700;color:#22d3ee;text-decoration:none;">Try Demo →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coming soon: Agentic AI -->
+        <div class="post-card" style="position:relative; cursor:default;">
+          <div class="coming-soon-badge">Coming Soon</div>
           <div class="post-thumb" style="background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.15));">🤖</div>
           <div class="post-body">
             <div class="post-cat">AI Strategy</div>
             <h4>What is Agentic AI — and Why Every Business Needs to Understand It Now</h4>
             <p>Agentic AI isn't just automation. It's AI that plans, decides, and acts on your behalf. Here's what that means for your business.</p>
-            <div class="post-date">May 2026 · 7 min read</div>
+            <div class="post-date">Coming July 2026 · 7 min read</div>
           </div>
         </div>
-        <div class="post-card">
+
+        <!-- Coming soon: Cloud -->
+        <div class="post-card" style="position:relative; cursor:default;">
+          <div class="coming-soon-badge">Coming Soon</div>
           <div class="post-thumb" style="background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(236,72,153,0.15));">☁️</div>
           <div class="post-body">
             <div class="post-cat">Cloud & Infrastructure</div>
             <h4>Why SMEs Are Overpaying for Cloud by 40% — And How to Stop It</h4>
             <p>Most small and mid-size businesses are running cloud infrastructure the same way enterprises did in 2015. AI changes the economics entirely.</p>
-            <div class="post-date">April 2026 · 5 min read</div>
+            <div class="post-date">Coming August 2026 · 5 min read</div>
           </div>
         </div>
-        <div class="post-card">
-          <div class="post-thumb" style="background: linear-gradient(135deg, rgba(6,182,212,0.15), rgba(34,197,94,0.15));">🛡️</div>
-          <div class="post-body">
-            <div class="post-cat">Cybersecurity</div>
-            <h4>The Threat You Can't See: How AI Detects Breaches Before They Happen</h4>
-            <p>Traditional threat detection reacts. AI-first security predicts. We break down how proactive security works in practice — and why it matters.</p>
-            <div class="post-date">March 2026 · 6 min read</div>
-          </div>
-        </div>
+
       </div>
     </div>
   </div>
@@ -901,6 +967,7 @@
       <a href="index.html">Home</a>
       <a href="index.html#services">Services</a>
       <a href="blog.html">Blog</a>
+      <a href="careers.html">Careers</a>
       <a href="index.html#contact">Contact</a>
     </div>
   </footer>
@@ -966,5 +1033,7 @@
     /* ── Check URL hash for direct article link ─── */
     if(window.location.hash === '#lhc-case-study') openArticle();
   </script>
+  <!-- ItWorks AI Assistant — Ivy -->
+  <script src="chatbot.js"></script>
 </body>
 </html>

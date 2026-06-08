@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Agent Products — ItWorks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #030712; --glass-bg: rgba(255,255,255,0.04); --glass-bdr: rgba(255,255,255,0.10);
+      --text: #f1f5f9; --muted: #94a3b8; --radius: 20px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#6366f1;border-radius:3px}
+    #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+    .grid-overlay{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(99,102,241,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.03) 1px,transparent 1px);background-size:60px 60px}
+    .orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
+    .orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(124,58,237,.12) 0%,transparent 70%);top:-150px;right:-100px;animation:floatG 9s ease-in-out infinite}
+    .orb-2{width:500px;height:500px;background:radial-gradient(circle,rgba(8,145,178,.08) 0%,transparent 70%);bottom:10%;left:-100px;animation:floatG 12s ease-in-out infinite reverse}
+    @keyframes floatG{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-25px);opacity:.7}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+    @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.6}}
+    @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+    @keyframes orbGlow{0%,100%{opacity:.7}50%{opacity:1}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 6vw;backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);background:rgba(3,7,18,0.75);border-bottom:1px solid var(--glass-bdr);transition:padding .3s}
+    nav.scrolled{padding:12px 6vw}
+    .nav-logo{font-size:1.5rem;font-weight:800;background:linear-gradient(135deg,#6366f1,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-decoration:none;letter-spacing:-0.5px}
+    .nav-links{display:flex;gap:32px;list-style:none}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:.875rem;font-weight:500;transition:color .3s;position:relative}
+    .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:linear-gradient(90deg,#6366f1,#a855f7);border-radius:2px;transition:width .3s}
+    .nav-links a:hover{color:var(--text)}.nav-links a:hover::after{width:100%}
+    .nav-links a.active{color:var(--text)}.nav-links a.active::after{width:100%}
+    .nav-cta{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff!important;padding:8px 22px;border-radius:50px;font-weight:600!important;-webkit-text-fill-color:#fff!important}
+    .nav-cta::after{display:none!important}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+    .hamburger span{display:block;width:24px;height:2px;background:var(--text);border-radius:2px;transition:.3s}
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}.hamburger.open span:nth-child(2){opacity:0}.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+    .mobile-menu{display:none;position:fixed;top:65px;left:0;right:0;z-index:99;backdrop-filter:blur(20px);background:rgba(3,7,18,.95);border-bottom:1px solid var(--glass-bdr);padding:20px 6vw;flex-direction:column;gap:16px}
+    .mobile-menu.open{display:flex}
+    .mobile-menu a{color:var(--muted);text-decoration:none;font-size:1rem;font-weight:500;padding:8px 0;border-bottom:1px solid var(--glass-bdr);transition:color .3s}
+    @media(max-width:768px){.nav-links{display:none}.hamburger{display:flex}}
+
+    /* HERO */
+    .hero{min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:140px 6vw 80px;position:relative;z-index:1}
+    .hero-inner{max-width:800px}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3);border-radius:50px;padding:6px 20px;font-size:.78rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#a5b4fc;margin-bottom:28px;animation:fadeUp .8s ease both}
+    .hero-badge .dot{width:7px;height:7px;border-radius:50%;background:#6366f1;animation:pulse 2s infinite}
+    .hero h1{font-size:clamp(2.8rem,6vw,5rem);font-weight:900;letter-spacing:-2.5px;line-height:1.05;margin-bottom:20px;animation:fadeUp .8s .1s ease both}
+    .hero h1 .gt{background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero p{color:var(--muted);font-size:1.1rem;line-height:1.85;max-width:600px;margin:0 auto 40px;animation:fadeUp .8s .2s ease both}
+    .hero-cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeUp .8s .3s ease both}
+    .btn-p{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;padding:14px 32px;border-radius:50px;text-decoration:none;font-weight:700;font-size:.9rem;box-shadow:0 0 30px rgba(99,102,241,.3);transition:transform .3s,box-shadow .3s}
+    .btn-p:hover{transform:translateY(-3px);box-shadow:0 0 50px rgba(99,102,241,.5)}
+    .btn-s{display:inline-flex;align-items:center;gap:8px;background:var(--glass-bg);border:1px solid var(--glass-bdr);color:var(--text);padding:14px 32px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.9rem;transition:transform .3s,border-color .3s}
+    .btn-s:hover{transform:translateY(-3px);border-color:rgba(99,102,241,.4)}
+
+    /* AGENT CARDS */
+    .agents-section{padding:80px 6vw 120px;position:relative;z-index:1}
+    .agents-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(520px,1fr));gap:32px;max-width:1200px;margin:0 auto}
+    @media(max-width:600px){.agents-grid{grid-template-columns:1fr}}
+
+    .agent-card{background:var(--glass-bg);border:1px solid var(--glass-bdr);border-radius:28px;overflow:hidden;backdrop-filter:blur(16px);transition:transform .4s,box-shadow .4s,border-color .4s;opacity:0;transform:translateY(30px)}
+    .agent-card.visible{opacity:1;transform:none}
+    .agent-card:hover{transform:translateY(-8px)}
+
+    /* Per-agent accent colours */
+    .card-enigma{--ac1:#7c3aed;--ac2:#f59e0b}
+    .card-alpha{--ac1:#2563eb;--ac2:#38bdf8}
+    .card-relyon{--ac1:#0d9488;--ac2:#22c55e}
+    .card-vela{--ac1:#0891b2;--ac2:#a855f7}
+
+    .agent-card:hover{border-color:rgba(var(--ac1-raw),.35);box-shadow:0 24px 70px rgba(0,0,0,.4)}
+    .card-enigma:hover{border-color:rgba(124,58,237,.35);box-shadow:0 24px 70px rgba(124,58,237,.12)}
+    .card-alpha:hover{border-color:rgba(37,99,235,.35);box-shadow:0 24px 70px rgba(37,99,235,.12)}
+    .card-relyon:hover{border-color:rgba(13,148,136,.35);box-shadow:0 24px 70px rgba(13,148,136,.12)}
+    .card-vela:hover{border-color:rgba(8,145,178,.35);box-shadow:0 24px 70px rgba(8,145,178,.12)}
+
+    .card-top{display:grid;grid-template-columns:1fr auto;gap:20px;padding:32px;align-items:start}
+    .card-info{}
+    .card-industry{font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;opacity:.85}
+    .card-enigma .card-industry{color:#f59e0b}
+    .card-alpha .card-industry{color:#60a5fa}
+    .card-relyon .card-industry{color:#2dd4bf}
+    .card-vela .card-industry{color:#22d3ee}
+    .card-name{font-size:2rem;font-weight:900;letter-spacing:-1px;margin-bottom:6px}
+    .card-enigma .card-name{background:linear-gradient(135deg,#7c3aed,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .card-alpha .card-name{background:linear-gradient(135deg,#2563eb,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .card-relyon .card-name{background:linear-gradient(135deg,#0d9488,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .card-vela .card-name{background:linear-gradient(135deg,#0891b2,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .card-tagline{color:var(--muted);font-size:.875rem;line-height:1.65;max-width:340px}
+
+    /* Phone mockup in card */
+    .card-phone{width:140px;flex-shrink:0;border-radius:28px;overflow:hidden;border:1.5px solid rgba(255,255,255,.08);box-shadow:0 16px 50px rgba(0,0,0,.6);animation:float 4s ease-in-out infinite}
+    .card-enigma .card-phone{box-shadow:0 16px 50px rgba(124,58,237,.2);border-color:rgba(124,58,237,.25)}
+    .card-alpha .card-phone{box-shadow:0 16px 50px rgba(37,99,235,.2);border-color:rgba(37,99,235,.25)}
+    .card-relyon .card-phone{box-shadow:0 16px 50px rgba(13,148,136,.2);border-color:rgba(13,148,136,.25)}
+    .card-vela .card-phone{box-shadow:0 16px 50px rgba(8,145,178,.2);border-color:rgba(8,145,178,.25)}
+
+    .ph-screen{background:#060b14;padding:0}
+    .ph-notch{height:20px;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center}
+    .ph-notch-bar{width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,.12)}
+    .ph-header{padding:10px 12px 8px}
+    .ph-agent-row{display:flex;align-items:center;gap:7px}
+    .ph-av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:900;color:#fff;flex-shrink:0}
+    .card-enigma .ph-av{background:linear-gradient(135deg,#7c3aed,#f59e0b)}
+    .card-alpha .ph-av{background:linear-gradient(135deg,#2563eb,#38bdf8)}
+    .card-relyon .ph-av{background:linear-gradient(135deg,#0d9488,#22c55e)}
+    .card-vela .ph-av{background:linear-gradient(135deg,#0891b2,#a855f7)}
+    .ph-name{font-size:.6rem;font-weight:800;color:#fff}
+    .ph-status{font-size:.45rem;color:#22c55e;display:flex;align-items:center;gap:2px}
+    .ph-status::before{content:'';width:4px;height:4px;border-radius:50%;background:#22c55e}
+    .ph-body{padding:8px 10px;display:flex;flex-direction:column;gap:5px}
+    .ph-msg{border-radius:8px;padding:6px 8px}
+    .ph-msg-bot{background:rgba(255,255,255,.06)}
+    .ph-msg-user{background:rgba(99,102,241,.15);margin-left:auto;max-width:80%}
+    .card-enigma .ph-msg-user{background:rgba(124,58,237,.2)}
+    .card-alpha .ph-msg-user{background:rgba(37,99,235,.2)}
+    .card-relyon .ph-msg-user{background:rgba(13,148,136,.2)}
+    .card-vela .ph-msg-user{background:rgba(8,145,178,.2)}
+    .ph-msg p{font-size:.5rem;color:rgba(255,255,255,.75);line-height:1.4}
+    .ph-msg.ph-msg-user p{color:rgba(255,255,255,.9)}
+    .ph-input{margin:6px 10px 10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:5px 9px;font-size:.48rem;color:rgba(255,255,255,.3)}
+
+    .card-stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--glass-bdr)}
+    .cs{padding:16px;text-align:center;border-right:1px solid var(--glass-bdr)}
+    .cs:last-child{border-right:none}
+    .cs .n{font-size:1.2rem;font-weight:900;display:block;margin-bottom:2px}
+    .card-enigma .cs .n{background:linear-gradient(135deg,#7c3aed,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .card-alpha .cs .n{background:linear-gradient(135deg,#2563eb,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .card-relyon .cs .n{background:linear-gradient(135deg,#0d9488,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .card-vela .cs .n{background:linear-gradient(135deg,#0891b2,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .cs .l{font-size:.6rem;color:var(--muted);font-weight:600}
+
+    .card-bottom{padding:20px 32px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .price-from{display:flex;flex-direction:column}
+    .price-from .label{font-size:.65rem;color:var(--muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
+    .price-from .amount{font-size:1.6rem;font-weight:900;letter-spacing:-0.5px}
+    .card-enigma .price-from .amount{background:linear-gradient(135deg,#7c3aed,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .card-alpha .price-from .amount{background:linear-gradient(135deg,#2563eb,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .card-relyon .price-from .amount{background:linear-gradient(135deg,#0d9488,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .card-vela .price-from .amount{background:linear-gradient(135deg,#0891b2,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .price-from .amount span{font-size:.9rem;font-weight:500;color:var(--muted)}
+    .card-btns{display:flex;gap:10px}
+    .btn-card-primary{padding:11px 24px;border-radius:50px;font-weight:700;font-size:.82rem;text-decoration:none;color:#fff;transition:transform .3s,box-shadow .3s;display:inline-flex;align-items:center;gap:6px}
+    .card-enigma .btn-card-primary{background:linear-gradient(135deg,#7c3aed,#f59e0b);box-shadow:0 0 20px rgba(124,58,237,.3)}
+    .card-alpha .btn-card-primary{background:linear-gradient(135deg,#2563eb,#38bdf8);box-shadow:0 0 20px rgba(37,99,235,.3)}
+    .card-relyon .btn-card-primary{background:linear-gradient(135deg,#0d9488,#22c55e);box-shadow:0 0 20px rgba(13,148,136,.3)}
+    .card-vela .btn-card-primary{background:linear-gradient(135deg,#0891b2,#a855f7);box-shadow:0 0 20px rgba(8,145,178,.3)}
+    .btn-card-primary:hover{transform:translateY(-2px)}
+    .btn-card-secondary{padding:11px 20px;border-radius:50px;font-weight:600;font-size:.82rem;text-decoration:none;color:var(--muted);border:1px solid var(--glass-bdr);transition:border-color .3s,color .3s}
+    .btn-card-secondary:hover{color:var(--text);border-color:rgba(255,255,255,.2)}
+
+    /* COMPARISON TABLE */
+    .compare-section{padding:80px 6vw 120px;position:relative;z-index:1}
+    .compare-section h2{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-1px;text-align:center;margin-bottom:8px}
+    .compare-section p{text-align:center;color:var(--muted);margin-bottom:56px;font-size:.95rem}
+    .compare-table{max-width:1000px;margin:0 auto;overflow-x:auto}
+    table{width:100%;border-collapse:collapse;font-size:.85rem}
+    thead th{padding:16px 20px;text-align:center;font-weight:700;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--glass-bdr)}
+    thead th:first-child{text-align:left;color:var(--muted)}
+    thead th:nth-child(2){color:#a78bfa}
+    thead th:nth-child(3){color:#60a5fa}
+    thead th:nth-child(4){color:#2dd4bf}
+    thead th:nth-child(5){color:#22d3ee}
+    tbody tr{border-bottom:1px solid rgba(255,255,255,.05);transition:background .2s}
+    tbody tr:hover{background:rgba(255,255,255,.02)}
+    tbody td{padding:14px 20px;color:var(--muted)}
+    tbody td:first-child{font-weight:600;color:var(--text);font-size:.82rem}
+    tbody td:not(:first-child){text-align:center}
+    .tick{color:#22c55e;font-size:1rem;font-weight:700}
+    .cross{color:rgba(255,255,255,.2);font-size:.9rem}
+    .partial{color:#f59e0b;font-size:.75rem;font-weight:600}
+
+    /* CTA STRIP */
+    .cta-strip{padding:80px 6vw 120px;position:relative;z-index:1}
+    .cta-box{max-width:820px;margin:0 auto;text-align:center;background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(168,85,247,.08));border:1px solid rgba(99,102,241,.25);border-radius:28px;padding:64px 40px;backdrop-filter:blur(16px)}
+    .cta-box h2{font-size:clamp(2rem,4vw,3rem);font-weight:900;letter-spacing:-1.5px;margin-bottom:16px}
+    .cta-box h2 .gt{background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .cta-box p{color:var(--muted);font-size:1rem;line-height:1.85;max-width:560px;margin:0 auto 36px}
+    .cta-pills{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:36px}
+    .cta-pill{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:50px;padding:6px 16px;font-size:.75rem;font-weight:600;color:var(--muted)}
+
+    footer{position:relative;z-index:1;border-top:1px solid var(--glass-bdr);padding:40px 6vw;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-logo{font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,#6366f1,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    footer p{font-size:.8rem;color:var(--muted)}
+    .footer-links{display:flex;gap:24px}
+    .footer-links a{color:var(--muted);text-decoration:none;font-size:.8rem;transition:color .3s}
+    .footer-links a:hover{color:var(--text)}
+    @media(max-width:768px){footer{flex-direction:column;text-align:center}.footer-links{flex-wrap:wrap;justify-content:center}}
+  </style>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <div class="grid-overlay"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">ItWorks</a>
+    <ul class="nav-links">
+      <li><a href="products.html" class="active">Products</a></li>
+      <li><a href="index.html#services">Services</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="careers.html">Careers</a></li>
+      <li><a href="index.html#contact" class="nav-cta">Talk to Us</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="products.html" onclick="toggleMenu()">Products</a>
+    <a href="index.html#services" onclick="toggleMenu()">Services</a>
+    <a href="blog.html" onclick="toggleMenu()">Blog</a>
+    <a href="careers.html" onclick="toggleMenu()">Careers</a>
+    <a href="index.html#contact" onclick="toggleMenu()">Talk to Us →</a>
+  </div>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge"><span class="dot"></span> AI Agent Suite</div>
+      <h1>Meet Our <span class="gt">AI Agents</span></h1>
+      <p>Four purpose-built AI agents, each trained for a specific industry problem — deployed in 48 hours, no engineering team required.</p>
+      <div class="hero-cta-row">
+        <a href="index.html#contact" class="btn-p">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Book a Free Demo
+        </a>
+        <a href="#compare" class="btn-s">Compare All Agents →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="agents-section">
+    <div class="agents-grid">
+
+      <!-- ENIGMA -->
+      <div class="agent-card card-enigma">
+        <div class="card-top">
+          <div class="card-info">
+            <div class="card-industry">🏡 Real Estate</div>
+            <div class="card-name">Enigma</div>
+            <div class="card-tagline">24/7 property enquiry handling, instant lead qualification, and automated follow-up that books viewings while you sleep.</div>
+          </div>
+          <div class="card-phone">
+            <div class="ph-screen">
+              <div class="ph-notch"><div class="ph-notch-bar"></div></div>
+              <div class="ph-header">
+                <div class="ph-agent-row">
+                  <div class="ph-av">🏡</div>
+                  <div><div class="ph-name">Enigma</div><div class="ph-status">Online</div></div>
+                </div>
+              </div>
+              <div class="ph-body">
+                <div class="ph-msg ph-msg-bot"><p>Hi! I'm Enigma. Looking to buy or rent? Tell me your budget and preferred area 🏡</p></div>
+                <div class="ph-msg ph-msg-user"><p>Buy, £450k, South London</p></div>
+                <div class="ph-msg ph-msg-bot"><p>Perfect — I have 3 properties that match. Want to book a viewing this week?</p></div>
+              </div>
+              <div class="ph-input">Type a message...</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-stats">
+          <div class="cs"><span class="n">3×</span><span class="l">More Leads</span></div>
+          <div class="cs"><span class="n">&lt;90s</span><span class="l">Response</span></div>
+          <div class="cs"><span class="n">24/7</span><span class="l">Active</span></div>
+        </div>
+        <div class="card-bottom">
+          <div class="price-from">
+            <span class="label">Starting from</span>
+            <span class="amount">£99<span>/mo</span></span>
+          </div>
+          <div class="card-btns">
+            <a href="agents/enigma.html" class="btn-card-secondary">Learn More</a>
+            <a href="index.html#contact" class="btn-card-primary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              Get Started
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALPHA -->
+      <div class="agent-card card-alpha">
+        <div class="card-top">
+          <div class="card-info">
+            <div class="card-industry">🎯 LinkedIn Outreach</div>
+            <div class="card-name">Alpha</div>
+            <div class="card-tagline">Personalised LinkedIn outreach at scale — 200 connection requests per day, intelligent follow-ups, and meeting booking. All automated.</div>
+          </div>
+          <div class="card-phone">
+            <div class="ph-screen">
+              <div class="ph-notch"><div class="ph-notch-bar"></div></div>
+              <div class="ph-header">
+                <div class="ph-agent-row">
+                  <div class="ph-av">🎯</div>
+                  <div><div class="ph-name">Alpha</div><div class="ph-status">147 sent today</div></div>
+                </div>
+              </div>
+              <div class="ph-body">
+                <div class="ph-msg ph-msg-bot"><p>Campaign running. 31 replies so far, 8 meetings booked today 📅</p></div>
+                <div class="ph-msg ph-msg-user"><p>Who replied most recently?</p></div>
+                <div class="ph-msg ph-msg-bot"><p>James T. — logistics ops lead. He's open to a chat this week.</p></div>
+              </div>
+              <div class="ph-input">Ask Alpha...</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-stats">
+          <div class="cs"><span class="n">5×</span><span class="l">Reply Rate</span></div>
+          <div class="cs"><span class="n">200+</span><span class="l">Reach/Day</span></div>
+          <div class="cs"><span class="n">24/7</span><span class="l">Running</span></div>
+        </div>
+        <div class="card-bottom">
+          <div class="price-from">
+            <span class="label">Starting from</span>
+            <span class="amount">£79<span>/mo</span></span>
+          </div>
+          <div class="card-btns">
+            <a href="agents/alpha.html" class="btn-card-secondary">Learn More</a>
+            <a href="index.html#contact" class="btn-card-primary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              Get Started
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- RELYON -->
+      <div class="agent-card card-relyon">
+        <div class="card-top">
+          <div class="card-info">
+            <div class="card-industry">🚀 SaaS Onboarding</div>
+            <div class="card-name">RelyOn.io</div>
+            <div class="card-tagline">AI-guided onboarding that gets new SaaS users to their first "aha" moment fast — reducing churn by 40% and cutting time-to-value by 3×.</div>
+          </div>
+          <div class="card-phone">
+            <div class="ph-screen">
+              <div class="ph-notch"><div class="ph-notch-bar"></div></div>
+              <div class="ph-header">
+                <div class="ph-agent-row">
+                  <div class="ph-av">🚀</div>
+                  <div><div class="ph-name">RelyOn.io</div><div class="ph-status">Onboarding active</div></div>
+                </div>
+              </div>
+              <div class="ph-body">
+                <div class="ph-msg ph-msg-bot"><p>Welcome! You're 60% through setup. Let's create your first workflow 🎉</p></div>
+                <div class="ph-msg ph-msg-user"><p>How do I connect Slack?</p></div>
+                <div class="ph-msg ph-msg-bot"><p>Settings → Integrations → Slack. Takes 30 seconds. Want me to walk you through it?</p></div>
+              </div>
+              <div class="ph-input">Ask RelyOn...</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-stats">
+          <div class="cs"><span class="n">40%</span><span class="l">Less Churn</span></div>
+          <div class="cs"><span class="n">3×</span><span class="l">Faster TTV</span></div>
+          <div class="cs"><span class="n">48h</span><span class="l">Setup</span></div>
+        </div>
+        <div class="card-bottom">
+          <div class="price-from">
+            <span class="label">Starting from</span>
+            <span class="amount">£149<span>/mo</span></span>
+          </div>
+          <div class="card-btns">
+            <a href="agents/relyon.html" class="btn-card-secondary">Learn More</a>
+            <a href="index.html#contact" class="btn-card-primary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              Get Started
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- VELA -->
+      <div class="agent-card card-vela">
+        <div class="card-top">
+          <div class="card-info">
+            <div class="card-industry">⭐ Customer Success</div>
+            <div class="card-name">Vela</div>
+            <div class="card-tagline">Predictive churn detection, automated intervention playbooks, and expansion revenue signals — across every account, every day.</div>
+          </div>
+          <div class="card-phone">
+            <div class="ph-screen">
+              <div class="ph-notch"><div class="ph-notch-bar"></div></div>
+              <div class="ph-header">
+                <div class="ph-agent-row">
+                  <div class="ph-av">⭐</div>
+                  <div><div class="ph-name">Vela</div><div class="ph-status">12 accounts live</div></div>
+                </div>
+              </div>
+              <div class="ph-body">
+                <div class="ph-msg ph-msg-bot"><p>⚠️ BrightVault health dropped to 31. Renewal in 28 days. Intervention needed.</p></div>
+                <div class="ph-msg ph-msg-user"><p>Draft a check-in email</p></div>
+                <div class="ph-msg ph-msg-bot"><p>Done. Personalised with their usage data. Ready to send? ✓</p></div>
+              </div>
+              <div class="ph-input">Ask Vela...</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-stats">
+          <div class="cs"><span class="n">35%</span><span class="l">Churn Cut</span></div>
+          <div class="cs"><span class="n">2.4×</span><span class="l">NRR Growth</span></div>
+          <div class="cs"><span class="n">24/7</span><span class="l">Monitoring</span></div>
+        </div>
+        <div class="card-bottom">
+          <div class="price-from">
+            <span class="label">Starting from</span>
+            <span class="amount">£199<span>/mo</span></span>
+          </div>
+          <div class="card-btns">
+            <a href="agents/vela.html" class="btn-card-secondary">Learn More</a>
+            <a href="index.html#contact" class="btn-card-primary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              Get Started
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- COMPARISON TABLE -->
+  <section class="compare-section" id="compare">
+    <h2>Compare All Agents</h2>
+    <p style="color:var(--muted)">Everything you need to pick the right agent — or stack them all.</p>
+    <div class="compare-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Enigma</th>
+            <th>Alpha</th>
+            <th>RelyOn.io</th>
+            <th>Vela</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Industry Focus</td><td>Real Estate</td><td>B2B Sales</td><td>SaaS</td><td>Any (B2B)</td></tr>
+          <tr><td>24/7 Automation</td><td class="tick">✓</td><td class="tick">✓</td><td class="tick">✓</td><td class="tick">✓</td></tr>
+          <tr><td>AI Chat / Conversation</td><td class="tick">✓</td><td class="tick">✓</td><td class="tick">✓</td><td class="tick">✓</td></tr>
+          <tr><td>Lead Generation</td><td class="tick">✓</td><td class="tick">✓</td><td class="cross">—</td><td class="cross">—</td></tr>
+          <tr><td>LinkedIn Outreach</td><td class="cross">—</td><td class="tick">✓</td><td class="cross">—</td><td class="cross">—</td></tr>
+          <tr><td>Booking / Scheduling</td><td class="tick">✓</td><td class="tick">✓</td><td class="partial">Optional</td><td class="partial">Optional</td></tr>
+          <tr><td>Onboarding Flows</td><td class="cross">—</td><td class="cross">—</td><td class="tick">✓</td><td class="partial">Basic</td></tr>
+          <tr><td>Churn Prediction</td><td class="cross">—</td><td class="cross">—</td><td class="partial">Basic</td><td class="tick">✓</td></tr>
+          <tr><td>Health Scoring</td><td class="cross">—</td><td class="cross">—</td><td class="tick">✓</td><td class="tick">✓</td></tr>
+          <tr><td>CRM Integration</td><td class="tick">✓</td><td class="tick">✓</td><td class="tick">✓</td><td class="tick">✓</td></tr>
+          <tr><td>Whatsapp / Web / Email</td><td class="tick">✓</td><td class="partial">Email</td><td class="tick">✓</td><td class="tick">✓</td></tr>
+          <tr><td>Analytics Dashboard</td><td class="tick">✓</td><td class="tick">✓</td><td class="tick">✓</td><td class="tick">✓</td></tr>
+          <tr><td>Setup Time</td><td>48 hours</td><td>48 hours</td><td>48 hours</td><td>24 hours</td></tr>
+          <tr><td>Starting Price</td><td>£99/mo</td><td>£79/mo</td><td>£149/mo</td><td>£199/mo</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-strip">
+    <div class="cta-box">
+      <h2>Not Sure Which <span class="gt">Agent</span> to Start With?</h2>
+      <p>Most ItWorks clients start with one agent, see results in 30 days, then stack the suite. Book a free strategy call and we'll tell you exactly which agent will move the needle fastest for your business.</p>
+      <div class="cta-pills">
+        <div class="cta-pill">No lock-in</div>
+        <div class="cta-pill">14-day free trial</div>
+        <div class="cta-pill">Live in 48 hours</div>
+        <div class="cta-pill">UK-based support</div>
+      </div>
+      <a href="index.html#contact" class="btn-p" style="display:inline-flex">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        Book a Free Strategy Call
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">ItWorks</div>
+    <p>© 2026 ItWorks. AI-first managed services, London UK.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#services">Services</a>
+      <a href="blog.html">Blog</a>
+      <a href="careers.html">Careers</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');
+    let W,H,P=[],m={x:-9999,y:-9999};
+    function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+    resize();window.addEventListener('resize',resize);
+    function Pt(){this.reset=function(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*.3;this.vy=(Math.random()-.5)*.3;this.r=Math.random()*1.5+.5;this.a=Math.random()*.25+.06;const c=['99,102,241','168,85,247','8,145,178','13,148,136'];this.c=c[Math.floor(Math.random()*c.length)];};this.reset();}
+    for(let i=0;i<100;i++){const p=new Pt();P.push(p);}
+    document.addEventListener('mousemove',e=>{m.x=e.clientX;m.y=e.clientY;});
+    function draw(){ctx.clearRect(0,0,W,H);P.forEach(p=>{const dx=m.x-p.x,dy=m.y-p.y,d=Math.sqrt(dx*dx+dy*dy);if(d<120){p.x-=dx*.006;p.y-=dy*.006;}p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(${p.c},${p.a})`;ctx.fill();});requestAnimationFrame(draw);}
+    draw();
+    window.addEventListener('scroll',()=>{document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50);});
+    function toggleMenu(){document.getElementById('hamburger').classList.toggle('open');document.getElementById('mobile-menu').classList.toggle('open');}
+    const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.08});
+    document.querySelectorAll('.agent-card').forEach((el,i)=>{el.style.transitionDelay=(i*.12)+'s';io.observe(el);});
+  </script>
+  <script src="chatbot.js"></script>
+</body>
+</html>
