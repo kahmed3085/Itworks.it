@@ -186,6 +186,7 @@
       transition: opacity .3s;
     }
     .nav-logo:hover { opacity: .85; }
+    .nav-logo-img { height: 38px; border-radius: 8px; display: block; object-fit: contain; }
     .logo-mark {
       width: 34px; height: 34px; flex-shrink: 0;
       border-radius: 9px;
@@ -1690,8 +1691,12 @@
   <!-- Navigation -->
   <nav id="navbar">
     <a href="index.html" class="nav-logo" aria-label="ItWorks home">
-      <span class="logo-mark"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M36 10 L20 36 H30 L26 54 L44 26 H33 Z" fill="white"/></svg></span>
-      <span class="lw-it">It</span><span class="lw-works">Works</span><span class="lw-dot">.</span>
+      <img src="itworks-logo.png" alt="ItWorks" class="nav-logo-img"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'" />
+      <span style="display:none;align-items:center;gap:10px">
+        <span class="logo-mark"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M36 10 L20 36 H30 L26 54 L44 26 H33 Z" fill="white"/></svg></span>
+        <span class="lw-it">It</span><span class="lw-works">Works</span><span class="lw-dot">.</span>
+      </span>
     </a>
     <ul class="nav-links">
       <li><a href="products.html">Products</a></li>
