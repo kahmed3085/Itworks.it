@@ -177,36 +177,12 @@
     nav.scrolled { padding: 12px 6vw; }
 
     .nav-logo {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
+      font-size: 1.5rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; letter-spacing: -0.5px;
       text-decoration: none;
-      font-family: 'Space Grotesk', 'Montserrat', sans-serif;
-      font-size: 1.45rem;
-      font-weight: 700;
-      letter-spacing: -1px;
-      color: var(--text);
-      transition: opacity .3s;
     }
-    .nav-logo:hover { opacity: .85; }
-    .nav-logo-img { height: 38px; border-radius: 8px; display: block; object-fit: contain; }
-    .logo-mark {
-      width: 34px; height: 34px; flex-shrink: 0;
-      border-radius: 9px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 18px rgba(99,102,241,.45);
-    }
-    .logo-mark svg { width: 18px; height: 18px; }
-    .nav-logo .lw-it {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      font-style: italic;
-    }
-    .nav-logo .lw-works { color: var(--text); }
-    .nav-logo .lw-dot { color: var(--accent3); font-style: normal; }
 
     .nav-links {
       display: flex;
@@ -1693,10 +1669,7 @@
 
   <!-- Navigation -->
   <nav id="navbar">
-    <a href="index.html" class="nav-logo" aria-label="ItWorks home">
-      <span class="logo-mark"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M36 10 L20 36 H30 L26 54 L44 26 H33 Z" fill="white"/></svg></span>
-      <span class="lw-it">It</span><span class="lw-works">Works</span><span class="lw-dot">.</span>
-    </a>
+    <a href="index.html" class="nav-logo">ItWorks</a>
     <ul class="nav-links">
       <li><a href="products.html">Products</a></li>
       <li><a href="#services">Services</a></li>
