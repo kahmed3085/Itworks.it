@@ -101,7 +101,10 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <!-- Favicon (shows in browser tab) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%233b82f6'/%3E%3Cstop offset='1' stop-color='%238b5cf6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M36 10 L20 36 H30 L26 54 L44 26 H33 Z' fill='white'/%3E%3C/svg%3E" />
+  <link rel="apple-touch-icon" href="favicon.png" />
   <style>
     /* ─── Reset & Base ─────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -171,14 +174,35 @@
     nav.scrolled { padding: 12px 6vw; }
 
     .nav-logo {
-      font-size: 1.5rem;
-      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      font-family: 'Space Grotesk', 'Montserrat', sans-serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      color: var(--text);
+      transition: opacity .3s;
+    }
+    .nav-logo:hover { opacity: .85; }
+    .logo-mark {
+      width: 34px; height: 34px; flex-shrink: 0;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 18px rgba(99,102,241,.45);
+    }
+    .logo-mark svg { width: 18px; height: 18px; }
+    .nav-logo .lw-it {
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      letter-spacing: -0.5px;
+      font-style: italic;
     }
+    .nav-logo .lw-works { color: var(--text); }
+    .nav-logo .lw-dot { color: var(--accent3); font-style: normal; }
 
     .nav-links {
       display: flex;
@@ -1665,7 +1689,10 @@
 
   <!-- Navigation -->
   <nav id="navbar">
-    <a href="index.html" class="nav-logo">ItWorks</a>
+    <a href="index.html" class="nav-logo" aria-label="ItWorks home">
+      <span class="logo-mark"><svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M36 10 L20 36 H30 L26 54 L44 26 H33 Z" fill="white"/></svg></span>
+      <span class="lw-it">It</span><span class="lw-works">Works</span><span class="lw-dot">.</span>
+    </a>
     <ul class="nav-links">
       <li><a href="products.html">Products</a></li>
       <li><a href="#services">Services</a></li>

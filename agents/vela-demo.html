@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+  <title>Vela — Customer Success AI Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#030712;--ac1:#0891b2;--ac2:#a855f7;--bdr:rgba(255,255,255,.1);--text:#f1f5f9;--muted:#94a3b8}
+    body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+    .orb{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0}
+    .orb1{width:400px;height:400px;background:radial-gradient(circle,rgba(8,145,178,.18),transparent 70%);top:-100px;right:-80px}
+    .orb2{width:300px;height:300px;background:radial-gradient(circle,rgba(168,85,247,.1),transparent 70%);bottom:0;left:-60px}
+    .chat-header{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:rgba(3,7,18,.9);border-bottom:1px solid var(--bdr);backdrop-filter:blur(20px)}
+    .agent-id{display:flex;align-items:center;gap:12px}
+    .agent-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--ac1),var(--ac2));display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 0 20px rgba(8,145,178,.4)}
+    .agent-info .name{font-weight:800;font-size:.95rem}
+    .agent-info .status{font-size:.7rem;color:#22c55e;display:flex;align-items:center;gap:5px;margin-top:2px}
+    .agent-info .status::before{content:'';width:6px;height:6px;background:#22c55e;border-radius:50%;animation:pulse 2s infinite;display:inline-block}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
+    .header-meta{display:flex;align-items:center;gap:16px}
+    .demo-badge{background:rgba(8,145,178,.1);border:1px solid rgba(8,145,178,.25);border-radius:50px;padding:3px 12px;font-size:.65rem;font-weight:700;color:#22d3ee;letter-spacing:1px;text-transform:uppercase}
+    .stat-chip{background:rgba(8,145,178,.1);border:1px solid rgba(8,145,178,.25);border-radius:50px;padding:5px 14px;font-size:.7rem;font-weight:700;color:#22d3ee}
+    .back-link{color:var(--muted);font-size:.75rem;text-decoration:none;display:flex;align-items:center;gap:4px;transition:color .3s}
+    .back-link:hover{color:var(--text)}
+    /* Portfolio strip */
+    .portfolio-strip{position:relative;z-index:5;display:flex;gap:10px;padding:10px 24px;background:rgba(255,255,255,.02);border-bottom:1px solid rgba(255,255,255,.05);overflow-x:auto}
+    .portfolio-strip::-webkit-scrollbar{height:0}
+    .acc-pill{flex-shrink:0;display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:50px;border:1px solid;cursor:pointer;transition:transform .2s}
+    .acc-pill:hover{transform:scale(1.04)}
+    .acc-pill.healthy{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.25)}
+    .acc-pill.warning{background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.3)}
+    .acc-pill.risk{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.3)}
+    .acc-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.52rem;font-weight:800;color:#fff;flex-shrink:0}
+    .acc-name{font-size:.68rem;font-weight:700}
+    .acc-score{font-size:.65rem;font-weight:900}
+    .acc-pill.healthy .acc-score{color:#22c55e}
+    .acc-pill.warning .acc-score{color:#f59e0b}
+    .acc-pill.risk .acc-score{color:#ef4444}
+    /* Messages */
+    .chat-body{flex:1;overflow-y:auto;padding:18px 24px;display:flex;flex-direction:column;gap:12px;position:relative;z-index:1;scroll-behavior:smooth}
+    .chat-body::-webkit-scrollbar{width:4px}
+    .chat-body::-webkit-scrollbar-thumb{background:rgba(8,145,178,.3);border-radius:2px}
+    .msg{max-width:76%;animation:msgIn .3s ease}
+    @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .msg.bot{align-self:flex-start}.msg.user{align-self:flex-end}
+    .msg-bubble{padding:11px 15px;font-size:.875rem;line-height:1.65;border-radius:16px}
+    .bot .msg-bubble{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px 16px 16px 4px}
+    .user .msg-bubble{background:linear-gradient(135deg,var(--ac1),#1e40af);border-radius:16px 16px 4px 16px;color:#fff}
+    .msg-time{font-size:.58rem;color:var(--muted);margin-top:4px;padding:0 4px}
+    .bot .msg-time{text-align:left}.user .msg-time{text-align:right}
+    /* Account health card */
+    .health-card{background:rgba(8,145,178,.06);border:1px solid rgba(8,145,178,.2);border-radius:12px;padding:14px;margin-top:8px}
+    .hc-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+    .hc-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800;color:#fff;flex-shrink:0}
+    .hc-name{font-weight:800;font-size:.88rem}
+    .hc-plan{font-size:.65rem;color:var(--muted)}
+    .hc-score-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .hc-score-num{font-size:2rem;font-weight:900;line-height:1}
+    .hc-score-bar{flex:1;height:7px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
+    .hc-score-fill{height:100%;border-radius:4px;transition:width .8s ease}
+    .hc-signals{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+    .hc-signal{display:flex;justify-content:space-between;align-items:center;font-size:.7rem}
+    .hc-signal .label{color:var(--muted)}
+    .hc-signal .val{font-weight:700}
+    .hc-alert{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:8px 10px;font-size:.72rem;color:#fcd34d;line-height:1.5;margin-bottom:10px}
+    .hc-btns{display:flex;gap:8px}
+    .hc-btn{flex:1;padding:7px;border-radius:8px;border:none;font-size:.72rem;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;transition:opacity .2s}
+    .hc-btn-p{background:linear-gradient(135deg,var(--ac1),var(--ac2));color:#fff}
+    .hc-btn-s{background:rgba(255,255,255,.06);border:1px solid var(--bdr);color:var(--muted)}
+    .hc-btn:hover{opacity:.85}
+    /* Email draft card */
+    .email-card{background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.2);border-radius:12px;padding:14px;margin-top:8px}
+    .email-label{font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#d8b4fe;margin-bottom:10px}
+    .email-field{font-size:.7rem;color:var(--muted);margin-bottom:4px}
+    .email-field span{color:var(--text);font-weight:600}
+    .email-body{background:rgba(255,255,255,.04);border-radius:8px;padding:10px;font-size:.72rem;line-height:1.7;color:rgba(255,255,255,.8);margin:10px 0;white-space:pre-wrap}
+    .email-btns{display:flex;gap:8px}
+    .email-btn{flex:1;padding:7px;border-radius:8px;border:none;font-size:.72rem;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;transition:opacity .2s}
+    .email-btn-p{background:linear-gradient(135deg,#a855f7,#6366f1);color:#fff}
+    .email-btn-s{background:rgba(255,255,255,.06);border:1px solid var(--bdr);color:var(--muted)}
+    .email-btn:hover{opacity:.85}
+    /* Typing */
+    .typing-wrap{align-self:flex-start;animation:msgIn .3s ease}
+    .typing{display:flex;gap:5px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:16px 16px 16px 4px;padding:12px 15px}
+    .typing span{width:7px;height:7px;background:var(--muted);border-radius:50%;animation:dot 1.4s infinite}
+    .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+    @keyframes dot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+    .quick-wrap{display:flex;flex-wrap:wrap;gap:8px;padding:0 24px 10px;position:relative;z-index:1}
+    .qr{background:rgba(8,145,178,.1);border:1px solid rgba(8,145,178,.3);border-radius:50px;padding:7px 15px;font-size:.75rem;font-weight:600;color:#22d3ee;cursor:pointer;transition:background .2s}
+    .qr:hover{background:rgba(8,145,178,.25)}
+    .chat-input{position:relative;z-index:10;display:flex;align-items:center;gap:12px;padding:14px 24px;background:rgba(3,7,18,.9);border-top:1px solid var(--bdr);backdrop-filter:blur(20px)}
+    .chat-input input{flex:1;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:50px;padding:11px 18px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:.875rem;outline:none;transition:border-color .3s}
+    .chat-input input::placeholder{color:var(--muted)}
+    .chat-input input:focus{border-color:rgba(8,145,178,.5)}
+    .send-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--ac1),var(--ac2));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .2s}
+    .send-btn:hover{transform:scale(1.08)}
+    @media(max-width:600px){.stat-chip{display:none}.msg{max-width:88%}.portfolio-strip{display:none}}
+  </style>
+</head>
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <div class="chat-header">
+    <div class="agent-id">
+      <div class="agent-av">⭐</div>
+      <div class="agent-info">
+        <div class="name">Vela — Customer Success AI</div>
+        <div class="status">Monitoring 12 accounts · 1 alert</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <span class="demo-badge">Live Demo</span>
+      <span class="stat-chip">⚠️ 1 at-risk account</span>
+      <a href="vela.html" class="back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        Learn More
+      </a>
+    </div>
+  </div>
+
+  <div class="portfolio-strip">
+    <div class="acc-pill healthy" onclick="handleQuick('Show me TechFlow account')">
+      <div class="acc-av" style="background:#2563eb">TF</div>
+      <div class="acc-name">TechFlow</div>
+      <div class="acc-score">88</div>
+    </div>
+    <div class="acc-pill healthy" onclick="handleQuick('Show me Nexora account')">
+      <div class="acc-av" style="background:#0891b2">NX</div>
+      <div class="acc-name">Nexora</div>
+      <div class="acc-score">72</div>
+    </div>
+    <div class="acc-pill risk" onclick="handleQuick('Show me BrightVault — they are at risk')">
+      <div class="acc-av" style="background:#dc2626">BV</div>
+      <div class="acc-name">BrightVault ⚠️</div>
+      <div class="acc-score">31</div>
+    </div>
+    <div class="acc-pill warning" onclick="handleQuick('Show me Sprintly account')">
+      <div class="acc-av" style="background:#d97706">SP</div>
+      <div class="acc-name">Sprintly</div>
+      <div class="acc-score">58</div>
+    </div>
+    <div class="acc-pill healthy" onclick="handleQuick('Show me DataPulse account')">
+      <div class="acc-av" style="background:#7c3aed">DP</div>
+      <div class="acc-name">DataPulse</div>
+      <div class="acc-score">91</div>
+    </div>
+  </div>
+
+  <div class="chat-body" id="chat-body"></div>
+  <div class="quick-wrap" id="quick-wrap"></div>
+
+  <div class="chat-input">
+    <input type="text" id="msg-input" placeholder="Ask Vela about any account..." autocomplete="off"/>
+    <button class="send-btn" onclick="sendMessage()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+
+  <script>
+    const body = document.getElementById('chat-body');
+    const input = document.getElementById('msg-input');
+    const quickWrap = document.getElementById('quick-wrap');
+
+    const ACCOUNTS = {
+      techflow: { name:'TechFlow Ltd', color:'#2563eb', plan:'Growth · £2,400/mo', score:88, fill:'#22c55e', renewal:'94 days', logins:'Daily', tickets:'0 open', nps:'9/10', upsell:'Ready for Enterprise', alert:null },
+      nexora:   { name:'Nexora Inc',   color:'#0891b2', plan:'Scale · £5,100/mo',  score:72, fill:'#22c55e', renewal:'31 days', logins:'4×/week', tickets:'1 open', nps:'7/10', upsell:'Possible', alert:'Renewal in 31 days — proactive check-in recommended' },
+      brightvault:{ name:'BrightVault', color:'#dc2626', plan:'Growth · £1,800/mo', score:31, fill:'#ef4444', renewal:'28 days', logins:'Down 60%', tickets:'3 open', nps:'5/10', upsell:'Not yet', alert:'⚠️ URGENT: Health score dropped 41 points in 7 days. 60% login drop. 3 unresolved support tickets. Renewal in 28 days.' },
+      sprintly: { name:'Sprintly HQ',  color:'#d97706', plan:'Launch · £749/mo',   score:58, fill:'#f59e0b', renewal:'62 days', logins:'3×/week', tickets:'2 open', nps:'6/10', upsell:'Needs nurturing', alert:'Usage plateaued — feature adoption campaign recommended' },
+      datapulse:{ name:'DataPulse',    color:'#7c3aed', plan:'Scale · £3,200/mo',  score:91, fill:'#22c55e', renewal:'88 days', logins:'Daily', tickets:'0 open', nps:'10/10', upsell:'🔥 Expansion ready', alert:null },
+    };
+
+    function findAccount(msg) {
+      const lower = msg.toLowerCase();
+      if (lower.includes('techflow') || lower.includes('tech flow')) return ACCOUNTS.techflow;
+      if (lower.includes('nexora')) return ACCOUNTS.nexora;
+      if (lower.includes('brightvault') || lower.includes('bright vault') || lower.includes('at risk') || lower.includes('risk')) return ACCOUNTS.brightvault;
+      if (lower.includes('sprintly')) return ACCOUNTS.sprintly;
+      if (lower.includes('datapulse') || lower.includes('data pulse')) return ACCOUNTS.datapulse;
+      return null;
+    }
+
+    function showHealthCard(acc) {
+      setTimeout(()=>{
+        const el = document.createElement('div');
+        el.className = 'msg bot'; el.style.maxWidth='84%';
+        const scoreColor = acc.score>=70?'#22c55e':acc.score>=50?'#f59e0b':'#ef4444';
+        el.innerHTML = `<div class="msg-bubble" style="padding:0;background:none;border:none;">
+          <div class="health-card">
+            <div class="hc-header">
+              <div class="hc-av" style="background:${acc.color}">${acc.name.split(' ').map(x=>x[0]).join('').substring(0,2)}</div>
+              <div><div class="hc-name">${acc.name}</div><div class="hc-plan">${acc.plan}</div></div>
+            </div>
+            <div class="hc-score-row">
+              <div class="hc-score-num" style="color:${scoreColor}">${acc.score}</div>
+              <div style="flex:1"><div style="font-size:.6rem;color:var(--muted);margin-bottom:4px">Health Score</div>
+              <div class="hc-score-bar"><div class="hc-score-fill" style="width:${acc.score}%;background:${acc.fill}"></div></div></div>
+            </div>
+            <div class="hc-signals">
+              <div class="hc-signal"><span class="label">🔐 Login frequency</span><span class="val" style="color:${acc.score<50?'#ef4444':'#f1f5f9'}">${acc.logins}</span></div>
+              <div class="hc-signal"><span class="label">🎫 Open tickets</span><span class="val" style="color:${acc.tickets!=='0 open'?'#f59e0b':'#22c55e'}">${acc.tickets}</span></div>
+              <div class="hc-signal"><span class="label">😊 NPS Score</span><span class="val">${acc.nps}</span></div>
+              <div class="hc-signal"><span class="label">📅 Renewal</span><span class="val">${acc.renewal}</span></div>
+              <div class="hc-signal"><span class="label">📈 Upsell signal</span><span class="val" style="color:#a855f7">${acc.upsell}</span></div>
+            </div>
+            ${acc.alert?`<div class="hc-alert">${acc.alert}</div>`:''}
+            <div class="hc-btns">
+              <button class="hc-btn hc-btn-p" onclick="handleQuick('Draft check-in email for ${acc.name.split(' ')[0]}')">Draft Email</button>
+              <button class="hc-btn hc-btn-s" onclick="handleQuick('Create QBR for ${acc.name.split(' ')[0]}')">QBR Deck</button>
+            </div>
+          </div>
+        </div><div class="msg-time">Vela · just now</div>`;
+        body.appendChild(el); scrollBottom();
+        if (acc.score < 50) setQuick(['Draft urgent check-in email','Escalate to founder','Schedule an emergency call','See all at-risk accounts']);
+        else if (acc.score >= 85) setQuick(['Draft upsell pitch','Create QBR deck','See expansion opportunities','Show all accounts']);
+        else setQuick(['Draft check-in email','Schedule QBR','See renewal risk','Show all accounts']);
+      }, 300);
+    }
+
+    function showEmailDraft(accName, isUrgent) {
+      const urgentBody = `Hi Sarah,
+
+I hope you're well. I noticed your team's login activity has been lower than usual this week, and I wanted to check in personally.
+
+We genuinely care about making sure you're getting full value from the platform — especially with your renewal coming up.
+
+Are there any blockers, questions, or features you haven't had a chance to explore yet? I'd love to jump on a 20-minute call this week to make sure everything is running smoothly for you.
+
+Would Thursday or Friday work?
+
+Warm regards,
+[Your name]
+ItWorks Customer Success`;
+
+      const normalBody = `Hi [First Name],
+
+Just checking in to see how things are going with the platform. We're always looking to make sure our clients are getting the most out of their investment.
+
+I'd love to catch up briefly — would a 15-minute call this week suit you? Happy to share some new features that I think would be particularly useful for your team.
+
+Best,
+[Your name]
+ItWorks Customer Success`;
+
+      setTimeout(()=>{
+        const el = document.createElement('div');
+        el.className = 'msg bot'; el.style.maxWidth='84%';
+        el.innerHTML = `<div class="msg-bubble" style="padding:0;background:none;border:none;">
+          <div class="email-card">
+            <div class="email-label">✉️ AI-Drafted Email · ${accName}</div>
+            <div class="email-field">To: <span>Sarah M., VP Operations</span></div>
+            <div class="email-field">Subject: <span>${isUrgent?'Quick check-in from ItWorks 👋':'Checking in — how can we help?'}</span></div>
+            <div class="email-body">${(isUrgent?urgentBody:normalBody)}</div>
+            <div class="email-btns">
+              <button class="email-btn email-btn-p" onclick="handleQuick('Send this email')">Send Now</button>
+              <button class="email-btn email-btn-s" onclick="handleQuick('Edit the email first')">Edit First</button>
+            </div>
+          </div>
+        </div><div class="msg-time">Vela · just now</div>`;
+        body.appendChild(el); scrollBottom();
+        setQuick(['Send it','Edit the tone','Also create QBR deck','Schedule a follow-up call']);
+      }, 300);
+    }
+
+    const FLOWS = [
+      { keys:['overview','all accounts','portfolio','summary','how are','all my','dashboard'],
+        reply:()=>`Here's your portfolio health summary 📊\n\n**12 accounts monitored**\n\n🟢 **Healthy (8):** Average score 84 — on track\n🟡 **Watch (2):** Sprintly (58), Nexora (72) — monitor closely\n🔴 **At Risk (1):** BrightVault (31) — **urgent action needed**\n⭐ **Expansion Ready (1):** DataPulse (91) — upsell opportunity\n\n**This month:** 0 churns, £8,450 expansion revenue, 94% renewal rate\n\nWant me to pull up any specific account?`,
+        quick:['Show BrightVault — at risk','Show DataPulse — upsell','Show all warnings','Expansion opportunities']
+      },
+      { keys:['brightvault','bright vault','at risk','risk','urgent','churn','dropping'],
+        reply:()=>`Pulling up BrightVault now — this one needs attention. ⚠️`,
+        followUp:()=>showHealthCard(ACCOUNTS.brightvault),
+        quick:[]
+      },
+      { keys:['techflow','tech flow'],
+        reply:()=>`Here's TechFlow's account health — looking strong! ✅`,
+        followUp:()=>showHealthCard(ACCOUNTS.techflow),
+        quick:[]
+      },
+      { keys:['nexora'],
+        reply:()=>`Pulling up Nexora's account details — renewal is coming up soon. 📅`,
+        followUp:()=>showHealthCard(ACCOUNTS.nexora),
+        quick:[]
+      },
+      { keys:['sprintly'],
+        reply:()=>`Here's Sprintly's health overview — usage has plateaued slightly. 🟡`,
+        followUp:()=>showHealthCard(ACCOUNTS.sprintly),
+        quick:[]
+      },
+      { keys:['datapulse','data pulse'],
+        reply:()=>`DataPulse is performing brilliantly — this is a prime upsell candidate! 🔥`,
+        followUp:()=>showHealthCard(ACCOUNTS.datapulse),
+        quick:[]
+      },
+      { keys:['draft','email','check-in','checkin','write','compose','message'],
+        reply:(msg)=>{
+          const isUrgent = msg.includes('bright') || msg.includes('urgent') || msg.includes('risk');
+          const accName = isUrgent ? 'BrightVault' : msg.includes('nexora') ? 'Nexora' : msg.includes('sprintly') ? 'Sprintly' : msg.includes('techflow') ? 'TechFlow' : 'Account';
+          return `Here's a personalised check-in email drafted for **${accName}** 📧\n\nVela used their usage data, support history, and renewal timeline to personalise this:`;
+        },
+        followUp:(msg)=>{
+          const isUrgent = msg.toLowerCase().includes('bright') || msg.toLowerCase().includes('urgent');
+          const accName = msg.toLowerCase().includes('nexora') ? 'Nexora' : msg.toLowerCase().includes('sprintly') ? 'Sprintly' : 'BrightVault';
+          showEmailDraft(accName, isUrgent);
+        },
+        quick:[]
+      },
+      { keys:['send','sent','yes send'],
+        reply:()=>`✅ Email sent successfully!\n\nVela will track the email open rate and notify you when Sarah replies. If there's no response within 48 hours, I'll automatically flag it for a follow-up call.\n\nShall I also add this interaction to your CRM?`,
+        quick:['Yes, log to HubSpot','Schedule a follow-up call','Create a QBR deck','Show other at-risk accounts']
+      },
+      { keys:['qbr','quarterly','business review','deck','report','presentation'],
+        reply:()=>`Generating QBR deck for BrightVault... ⏳\n\n✅ **Done!** Your QBR deck includes:\n\n• Executive summary (2 slides)\n• Usage metrics vs benchmarks\n• ROI delivered this quarter: **£24,000 estimated**\n• Feature adoption scorecard\n• 3 recommended next steps\n• Renewal proposal slide\n\nThe deck has been saved to your Google Drive and is ready to present. Want me to also email it to the client ahead of the meeting?`,
+        quick:['Email to client','Schedule the QBR call','Show me the slides','Create QBR for another account']
+      },
+      { keys:['upsell','expansion','expand','upgrade','opportunity','revenue'],
+        reply:()=>`Here are your top expansion opportunities right now 💰\n\n**🔥 DataPulse (Score: 91)**\n• Using 94% of Scale plan capacity\n• 8 team members — nearing seat limit\n• Upsell to Enterprise: +£2,100/mo\n• Recommended action: Upsell call this week\n\n**✅ TechFlow (Score: 88)**\n• Using advanced API features daily\n• Started asking about white-labelling\n• Upsell to Enterprise: +£1,400/mo\n\nCombined opportunity: **+£3,500/mo ARR** if both convert.\n\nWant me to draft upsell emails for both?`,
+        quick:['Draft upsell for DataPulse','Draft upsell for TechFlow','Schedule upsell calls','Show all accounts']
+      },
+      { keys:['renewal','renew','contract'],
+        reply:()=>`Upcoming renewals in the next 60 days 📅\n\n• **BrightVault** — 28 days (⚠️ at risk, score: 31)\n• **Nexora** — 31 days (🟡 watch, score: 72)\n• **Sprintly** — 62 days (🟡 stable, score: 58)\n\n**Recommended actions:**\n1. Urgent intervention for BrightVault NOW\n2. Proactive check-in with Nexora this week\n3. Sprintly — feature nudge campaign\n\nWant me to prioritise and draft outreach for all three?`,
+        quick:['Draft BrightVault email','Draft Nexora email','Prioritise all three','Set renewal reminders']
+      },
+      { keys:['send email','log','hubspot','crm','salesforce'],
+        reply:()=>`✅ Logged to HubSpot.\n\nContact record updated with:\n• Check-in email sent (today)\n• Churn risk flag: HIGH\n• Next action: Follow-up call in 48 hours\n• Assigned to: Your CS team\n\nI've also created a task in HubSpot for your team. Is there anything else you'd like to action on BrightVault?`,
+        quick:['Schedule emergency call','Create QBR deck','Check other at-risk accounts','That\'s all for now']
+      },
+      { keys:['thanks','done','all for now','great','perfect'],
+        reply:()=>`You're on top of it! 💪\n\nHere's what Vela actioned today:\n✅ BrightVault flagged and email sent\n✅ Logged to HubSpot\n✅ Expansion opportunities identified\n\nI'll monitor all 12 accounts overnight and alert you immediately if any health scores change significantly. Good work on staying ahead of churn. 🌟`,
+        quick:['Show full portfolio','Set up daily digest','Expand DataPulse']
+      },
+    ];
+
+    const FALLBACK = [
+      "I'm monitoring 12 accounts right now. You can ask me about any specific account, check renewal risks, find upsell opportunities, or draft client emails. What would you like to do? ⭐",
+      "Could you give me a bit more detail? For example — are you asking about a specific account, or would you like a portfolio overview?",
+    ];
+    let fbIdx = 0;
+
+    function addMsg(text, sender) {
+      const el = document.createElement('div');
+      el.className = `msg ${sender}`;
+      const t = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      el.innerHTML = `<div class="msg-bubble">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div><div class="msg-time">${sender==='bot'?'Vela · ':'You · '}${t}</div>`;
+      body.appendChild(el); scrollBottom();
+    }
+
+    function showTyping() {
+      const el = document.createElement('div');
+      el.className='typing-wrap'; el.id='typing';
+      el.innerHTML='<div class="typing"><span></span><span></span><span></span></div>';
+      body.appendChild(el); scrollBottom(); return el;
+    }
+
+    function scrollBottom(){ setTimeout(()=>{ body.scrollTop=body.scrollHeight; },50); }
+
+    function setQuick(arr){
+      quickWrap.innerHTML=arr.map(q=>`<button class="qr" onclick="handleQuick('${q.replace(/'/g,"\\'")}')">${q}</button>`).join('');
+    }
+
+    function getReply(msg){
+      const lower=msg.toLowerCase();
+      for(const f of FLOWS){ if(f.keys.some(k=>lower.includes(k))) return f; }
+      return { reply:()=>FALLBACK[fbIdx++%FALLBACK.length], quick:['Portfolio overview','At-risk accounts','Upsell opportunities','Draft a check-in email'] };
+    }
+
+    function handleQuick(text){ quickWrap.innerHTML=''; addMsg(text,'user'); processInput(text); }
+    function sendMessage(){ const v=input.value.trim(); if(!v)return; input.value=''; quickWrap.innerHTML=''; addMsg(v,'user'); processInput(v); }
+
+    function processInput(text){
+      const typing=showTyping();
+      setTimeout(()=>{
+        typing.remove();
+        const flow=getReply(text);
+        const r=typeof flow.reply==='function'?flow.reply(text):flow.reply;
+        addMsg(r,'bot');
+        if(flow.quick&&flow.quick.length) setQuick(flow.quick);
+        if(flow.followUp) flow.followUp(text);
+      }, 800+Math.random()*500);
+    }
+
+    input.addEventListener('keydown',e=>{ if(e.key==='Enter') sendMessage(); });
+
+    setTimeout(()=>{
+      addMsg("Good morning! ⭐ I'm **Vela**, your Customer Success AI.\n\nI've been monitoring your 12 accounts overnight. One alert needs your attention:\n\n⚠️ **BrightVault** — health score dropped to **31** (from 72 last week). Login frequency is down 60% and they have 3 unresolved tickets. Renewal is in **28 days**.\n\nWhat would you like to do?", 'bot');
+      setQuick(['Show BrightVault details','Draft urgent email to BrightVault','Show full portfolio','What are my upsell opportunities?']);
+    }, 600);
+  </script>
+</body>
+</html>

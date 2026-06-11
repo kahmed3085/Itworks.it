@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+  <title>RelyOn.io — SaaS Onboarding AI Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#030712;--ac1:#0d9488;--ac2:#22c55e;--bdr:rgba(255,255,255,.1);--text:#f1f5f9;--muted:#94a3b8}
+    body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+    .orb{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0}
+    .orb1{width:400px;height:400px;background:radial-gradient(circle,rgba(13,148,136,.18),transparent 70%);top:-100px;right:-80px}
+    .orb2{width:300px;height:300px;background:radial-gradient(circle,rgba(34,197,94,.1),transparent 70%);bottom:0;left:-60px}
+    .chat-header{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:rgba(3,7,18,.9);border-bottom:1px solid var(--bdr);backdrop-filter:blur(20px)}
+    .agent-id{display:flex;align-items:center;gap:12px}
+    .agent-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--ac1),var(--ac2));display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 0 20px rgba(13,148,136,.4)}
+    .agent-info .name{font-weight:800;font-size:.95rem}
+    .agent-info .status{font-size:.7rem;color:#22c55e;display:flex;align-items:center;gap:5px;margin-top:2px}
+    .agent-info .status::before{content:'';width:6px;height:6px;background:#22c55e;border-radius:50%;animation:pulse 2s infinite;display:inline-block}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
+    .header-meta{display:flex;align-items:center;gap:16px}
+    .demo-badge{background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.25);border-radius:50px;padding:3px 12px;font-size:.65rem;font-weight:700;color:#2dd4bf;letter-spacing:1px;text-transform:uppercase}
+    .stat-chip{background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.25);border-radius:50px;padding:5px 14px;font-size:.7rem;font-weight:700;color:#2dd4bf}
+    .back-link{color:var(--muted);font-size:.75rem;text-decoration:none;display:flex;align-items:center;gap:4px;transition:color .3s}
+    .back-link:hover{color:var(--text)}
+    /* Progress bar */
+    .progress-strip{position:relative;z-index:5;padding:12px 24px;background:rgba(255,255,255,.02);border-bottom:1px solid rgba(255,255,255,.05)}
+    .prog-label{display:flex;justify-content:space-between;font-size:.7rem;font-weight:700;color:var(--muted);margin-bottom:7px}
+    .prog-label span:last-child{color:var(--ac2)}
+    .prog-track{height:6px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden}
+    .prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--ac1),var(--ac2));transition:width .8s ease}
+    .prog-steps{display:flex;gap:6px;margin-top:8px;overflow-x:auto}
+    .prog-steps::-webkit-scrollbar{height:0}
+    .prog-step{flex-shrink:0;display:flex;align-items:center;gap:5px;font-size:.62rem;font-weight:600;padding:3px 10px;border-radius:50px}
+    .prog-step.done{background:rgba(13,148,136,.15);color:#2dd4bf;border:1px solid rgba(13,148,136,.25)}
+    .prog-step.active{background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.3)}
+    .prog-step.pending{background:rgba(255,255,255,.04);color:var(--muted);border:1px solid rgba(255,255,255,.08)}
+    .prog-step .tick{font-size:.7rem}
+    /* Messages */
+    .chat-body{flex:1;overflow-y:auto;padding:18px 24px;display:flex;flex-direction:column;gap:12px;position:relative;z-index:1;scroll-behavior:smooth}
+    .chat-body::-webkit-scrollbar{width:4px}
+    .chat-body::-webkit-scrollbar-thumb{background:rgba(13,148,136,.3);border-radius:2px}
+    .msg{max-width:75%;animation:msgIn .3s ease}
+    @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .msg.bot{align-self:flex-start}.msg.user{align-self:flex-end}
+    .msg-bubble{padding:11px 15px;font-size:.875rem;line-height:1.65;border-radius:16px}
+    .bot .msg-bubble{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px 16px 16px 4px}
+    .user .msg-bubble{background:linear-gradient(135deg,var(--ac1),#065f46);border-radius:16px 16px 4px 16px;color:#fff}
+    .msg-time{font-size:.58rem;color:var(--muted);margin-top:4px;padding:0 4px}
+    .bot .msg-time{text-align:left}.user .msg-time{text-align:right}
+    /* Step guide card */
+    .step-card{background:rgba(13,148,136,.07);border:1px solid rgba(13,148,136,.22);border-radius:12px;padding:13px;margin-top:8px}
+    .step-card-title{font-weight:700;font-size:.82rem;color:#2dd4bf;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .step-list{display:flex;flex-direction:column;gap:7px}
+    .step-item{display:flex;align-items:flex-start;gap:9px;font-size:.75rem;line-height:1.5;color:rgba(255,255,255,.75)}
+    .step-num{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--ac1),var(--ac2));display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:#fff;flex-shrink:0;margin-top:1px}
+    .step-done{color:#2dd4bf;font-weight:600}
+    .complete-btn{display:block;margin-top:12px;width:100%;padding:8px;background:linear-gradient(135deg,var(--ac1),var(--ac2));border:none;border-radius:8px;color:#fff;font-size:.75rem;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;transition:opacity .2s}
+    .complete-btn:hover{opacity:.85}
+    /* Typing */
+    .typing-wrap{align-self:flex-start;animation:msgIn .3s ease}
+    .typing{display:flex;gap:5px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:16px 16px 16px 4px;padding:12px 15px}
+    .typing span{width:7px;height:7px;background:var(--muted);border-radius:50%;animation:dot 1.4s infinite}
+    .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+    @keyframes dot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+    .quick-wrap{display:flex;flex-wrap:wrap;gap:8px;padding:0 24px 10px;position:relative;z-index:1}
+    .qr{background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.3);border-radius:50px;padding:7px 15px;font-size:.75rem;font-weight:600;color:#2dd4bf;cursor:pointer;transition:background .2s}
+    .qr:hover{background:rgba(13,148,136,.25)}
+    .chat-input{position:relative;z-index:10;display:flex;align-items:center;gap:12px;padding:14px 24px;background:rgba(3,7,18,.9);border-top:1px solid var(--bdr);backdrop-filter:blur(20px)}
+    .chat-input input{flex:1;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:50px;padding:11px 18px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:.875rem;outline:none;transition:border-color .3s}
+    .chat-input input::placeholder{color:var(--muted)}
+    .chat-input input:focus{border-color:rgba(13,148,136,.5)}
+    .send-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--ac1),var(--ac2));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .2s}
+    .send-btn:hover{transform:scale(1.08)}
+    @media(max-width:600px){.stat-chip{display:none}.msg{max-width:88%}}
+  </style>
+</head>
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <div class="chat-header">
+    <div class="agent-id">
+      <div class="agent-av">🚀</div>
+      <div class="agent-info">
+        <div class="name">RelyOn.io — Onboarding AI</div>
+        <div class="status">Guiding your setup · Step 4 of 6</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <span class="demo-badge">Live Demo</span>
+      <span class="stat-chip">60% complete</span>
+      <a href="relyon.html" class="back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        Learn More
+      </a>
+    </div>
+  </div>
+
+  <div class="progress-strip">
+    <div class="prog-label"><span>Onboarding Progress</span><span id="prog-pct">60%</span></div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:60%"></div></div>
+    <div class="prog-steps" id="prog-steps">
+      <div class="prog-step done"><span class="tick">✓</span> Account Setup</div>
+      <div class="prog-step done"><span class="tick">✓</span> Integration</div>
+      <div class="prog-step done"><span class="tick">✓</span> Team Invited</div>
+      <div class="prog-step active">▶ First Workflow</div>
+      <div class="prog-step pending">Run Automation</div>
+      <div class="prog-step pending">Invite Client</div>
+    </div>
+  </div>
+
+  <div class="chat-body" id="chat-body"></div>
+  <div class="quick-wrap" id="quick-wrap"></div>
+
+  <div class="chat-input">
+    <input type="text" id="msg-input" placeholder="Ask RelyOn anything about getting set up..." autocomplete="off"/>
+    <button class="send-btn" onclick="sendMessage()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+
+  <script>
+    const body = document.getElementById('chat-body');
+    const input = document.getElementById('msg-input');
+    const quickWrap = document.getElementById('quick-wrap');
+    const progFill = document.getElementById('prog-fill');
+    const progPct = document.getElementById('prog-pct');
+    let progress = 60;
+
+    function advanceProgress(to) {
+      if (to > progress) {
+        progress = to;
+        progFill.style.width = progress + '%';
+        progPct.textContent = progress + '%';
+      }
+    }
+
+    const FLOWS = [
+      { keys:['workflow','create','build','first workflow','automation','start'],
+        reply:()=>`Let's create your first workflow — this is the moment everything clicks! 🎉\n\nHere's how to do it in 3 steps:`,
+        followUp:()=>showStepCard('Create Your First Workflow',[
+          'Click **Workflows** in the left sidebar',
+          'Hit the **+ New Workflow** button in the top right',
+          'Choose a template (try "Lead Notification" — it\'s the quickest win)',
+          'Connect your trigger (e.g. new form submission)',
+          'Add an action (e.g. send Slack alert or email)',
+          'Click **Activate** — you\'re live!'
+        ],'I\'ve created a workflow!'),
+        quick:[]
+      },
+      { keys:['slack','connect slack','integrate slack','notification'],
+        reply:()=>`Connecting Slack takes about 30 seconds 🔗\n\nHere's exactly how:`,
+        followUp:()=>showStepCard('Connect Slack',[
+          'Go to **Settings** in the top right menu',
+          'Click **Integrations** → find **Slack**',
+          'Hit **Connect** and sign in to your Slack workspace',
+          'Choose which channel to send notifications to',
+          'Click **Save** — done! ✅'
+        ],'Slack is connected!'),
+        quick:[]
+      },
+      { keys:['invite','team','member','colleague','user','add user'],
+        reply:()=>`Great idea — the more teammates onboarded, the faster you'll see value! 👥\n\nInviting is simple:`,
+        followUp:()=>showStepCard('Invite Team Members',[
+          'Go to **Settings** → **Team**',
+          'Click **Invite Member**',
+          'Enter their email address',
+          'Choose their role: **Admin**, **Member**, or **Viewer**',
+          'Click **Send Invite** — they\'ll get an email within 2 minutes'
+        ],'Team member invited!'),
+        quick:[]
+      },
+      { keys:['integration','connect','api','zapier','hubspot','salesforce','crm'],
+        reply:()=>`We have 50+ native integrations ready to connect. 🔌 The most popular ones for new users are:`,
+        followUp:()=>showStepCard('Popular Integrations',[
+          '**HubSpot** — sync contacts and deals automatically',
+          '**Salesforce** — push qualified leads from your workflows',
+          '**Zapier** — connect to 5,000+ apps without code',
+          '**Slack** — real-time alerts on any trigger',
+          '**Google Sheets** — export data with one click'
+        ],'Show me how to connect HubSpot'),
+        quick:['Connect HubSpot','Connect Zapier','Connect Salesforce']
+      },
+      { keys:['hubspot'],
+        reply:()=>`Connecting HubSpot syncs all your contacts and deals in real time. Here's how:`,
+        followUp:()=>showStepCard('Connect HubSpot',[
+          'Settings → Integrations → HubSpot',
+          'Click **Authorize** and log into HubSpot',
+          'Select which pipeline to sync',
+          'Map your fields (RelyOn auto-suggests mappings)',
+          'Click **Activate Sync** — first sync takes 2–3 minutes'
+        ],'HubSpot connected!'),
+        quick:[]
+      },
+      { keys:['done','completed','finished','created workflow','workflow done','connected','invited'],
+        reply:()=>{advanceProgress(75);return`🎉 Amazing progress! You're at **75%** — almost there!\n\n**Step 5:** Run your first automation end-to-end.\n\nThis means triggering a real event and watching the automation fire. It's the moment you feel the power of the platform.\n\nWant me to walk you through a test run?`},
+        quick:['Yes, show me a test run','Skip to step 6','What does a test run do?']
+      },
+      { keys:['test','run','trigger','fire','try'],
+        reply:()=>`Perfect — let's run a live test! ⚡\n\nHere's how to trigger your first automation:`,
+        followUp:()=>showStepCard('Run Your First Automation',[
+          'Open the workflow you just created',
+          'Click **Test Workflow** in the top bar',
+          'RelyOn will simulate the trigger condition',
+          'Watch the actions fire in real time in the **Run Log**',
+          'If it works — click **Mark as Tested** ✅'
+        ],'Test successful!'),
+        quick:[]
+      },
+      { keys:['test successful','worked','working','it works','great','success'],
+        reply:()=>{advanceProgress(90);return`🚀 You're at **90%!** One step left — invite your first client.\n\nThis is where it gets exciting. Clients can log in to a custom portal, see their project status, submit requests, and communicate with your team — all in one place.\n\nReady to set up your client portal?`},
+        quick:['Set up client portal','How does the portal look?','Skip for now']
+      },
+      { keys:['portal','client','external','setup portal'],
+        reply:()=>`Your client portal is auto-generated — you just need to customise it! 🎨\n\nHere's how:`,
+        followUp:()=>showStepCard('Set Up Client Portal',[
+          'Go to **Client Portal** in the sidebar',
+          'Upload your logo and choose brand colours',
+          'Decide what clients can see (projects, invoices, messages)',
+          'Set a custom domain (e.g. portal.yourcompany.com)',
+          'Click **Publish** and copy the invite link'
+        ],'Portal is live!'),
+        quick:[]
+      },
+      { keys:['portal is live','portal live','done','complete','all done','100'],
+        reply:()=>{advanceProgress(100);return`🎉🎉 **Onboarding Complete!** You're at 100%!\n\nYou've set up everything you need to get real value from the platform. Here's what you've accomplished:\n\n✅ Account configured\n✅ Integrations connected\n✅ Team onboarded\n✅ First workflow live\n✅ Automation tested\n✅ Client portal published\n\n**You're ready to go live.** Your dedicated Customer Success Manager will reach out within 24 hours for your first check-in. Congratulations! 🚀`},
+        quick:['Talk to my CSM','Explore advanced features','Watch tutorial videos']
+      },
+      { keys:['help','stuck','don\'t understand','confused','how','what','where'],
+        reply:()=>`No worries at all — I'm here to help! 🙌\n\nCould you tell me which step you're currently on? For example:\n• Creating a workflow\n• Connecting an integration\n• Inviting team members\n• Setting up your client portal\n\nJust describe what you're trying to do and I'll give you step-by-step guidance.`,
+        quick:['Create a workflow','Connect an integration','Invite team members','Set up client portal']
+      },
+      { keys:['skip','later','next','move on'],
+        reply:()=>`No problem! You can always come back to any step. 🚀\n\nYour progress is saved automatically. What would you like to do next?`,
+        quick:['Run an automation test','Set up client portal','Invite team members','Explore integrations']
+      },
+    ];
+
+    const FALLBACK = [
+      "I'm here to help you get set up! Could you tell me a bit more about what you're trying to do? For example — connecting an integration, creating a workflow, or inviting your team? 🚀",
+      "Great question! Let me help you with that. Which part of the platform are you working in right now?",
+    ];
+    let fbIdx = 0;
+
+    function showStepCard(title, steps, btnText) {
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.className = 'msg bot';
+        el.style.maxWidth = '82%';
+        el.innerHTML = `<div class="msg-bubble" style="padding:0;background:none;border:none;">
+          <div class="step-card">
+            <div class="step-card-title">📋 ${title}</div>
+            <div class="step-list">${steps.map((s,i)=>`<div class="step-item"><div class="step-num">${i+1}</div><span>${s.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</span></div>`).join('')}</div>
+            ${btnText ? `<button class="complete-btn" onclick="handleQuick('${btnText.replace(/'/g,"\\'")}')">✓ ${btnText}</button>` : ''}
+          </div>
+        </div><div class="msg-time">RelyOn · just now</div>`;
+        body.appendChild(el);
+        scrollBottom();
+      }, 300);
+    }
+
+    function addMsg(text, sender) {
+      const el = document.createElement('div');
+      el.className = `msg ${sender}`;
+      const t = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+      el.innerHTML = `<div class="msg-bubble">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div><div class="msg-time">${sender==='bot'?'RelyOn · ':'You · '}${t}</div>`;
+      body.appendChild(el); scrollBottom();
+    }
+
+    function showTyping() {
+      const el = document.createElement('div');
+      el.className = 'typing-wrap'; el.id = 'typing';
+      el.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+      body.appendChild(el); scrollBottom(); return el;
+    }
+
+    function scrollBottom() { setTimeout(()=>{ body.scrollTop = body.scrollHeight; },50); }
+
+    function setQuick(arr) {
+      quickWrap.innerHTML = arr.map(q=>`<button class="qr" onclick="handleQuick('${q.replace(/'/g,"\\'")}')">${q}</button>`).join('');
+    }
+
+    function getReply(msg) {
+      const lower = msg.toLowerCase();
+      for (const f of FLOWS) {
+        if (f.keys.some(k => lower.includes(k))) return f;
+      }
+      return { reply:()=>FALLBACK[fbIdx++%FALLBACK.length], quick:['Create a workflow','Connect Slack','Invite team','Set up client portal'] };
+    }
+
+    function handleQuick(text) { quickWrap.innerHTML=''; addMsg(text,'user'); processInput(text); }
+    function sendMessage() { const v=input.value.trim(); if(!v)return; input.value=''; quickWrap.innerHTML=''; addMsg(v,'user'); processInput(v); }
+
+    function processInput(text) {
+      const typing = showTyping();
+      setTimeout(()=>{
+        typing.remove();
+        const flow = getReply(text);
+        addMsg(typeof flow.reply==='function'?flow.reply():flow.reply, 'bot');
+        if (flow.quick&&flow.quick.length) setQuick(flow.quick);
+        if (flow.followUp) flow.followUp();
+      }, 800+Math.random()*500);
+    }
+
+    input.addEventListener('keydown', e=>{ if(e.key==='Enter') sendMessage(); });
+
+    setTimeout(()=>{
+      addMsg("Welcome back! 👋 I'm **RelyOn.io**, your onboarding guide.\n\nYou're at **60% — great progress!** You've already set up your account, connected your first integration, and invited your team.\n\n**Next up: Create your first workflow.** This is where the real magic happens. Ready?", 'bot');
+      setQuick(['Yes, let\'s create a workflow!','How do I connect Slack?','What integrations do you support?','I need help with something else']);
+    }, 600);
+  </script>
+</body>
+</html>

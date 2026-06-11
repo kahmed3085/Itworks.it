@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+  <title>Alpha — LinkedIn Outreach AI Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#030712;--ac1:#2563eb;--ac2:#38bdf8;--glass:rgba(255,255,255,.05);--bdr:rgba(255,255,255,.1);--text:#f1f5f9;--muted:#94a3b8}
+    body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+    .orb{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0}
+    .orb1{width:400px;height:400px;background:radial-gradient(circle,rgba(37,99,235,.18),transparent 70%);top:-100px;right:-80px}
+    .orb2{width:300px;height:300px;background:radial-gradient(circle,rgba(56,189,248,.1),transparent 70%);bottom:0;left:-60px}
+    .chat-header{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:rgba(3,7,18,.9);border-bottom:1px solid var(--bdr);backdrop-filter:blur(20px)}
+    .agent-id{display:flex;align-items:center;gap:12px}
+    .agent-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--ac1),var(--ac2));display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 0 20px rgba(37,99,235,.4)}
+    .agent-info .name{font-weight:800;font-size:.95rem}
+    .agent-info .status{font-size:.7rem;color:#22c55e;display:flex;align-items:center;gap:5px;margin-top:2px}
+    .agent-info .status::before{content:'';width:6px;height:6px;background:#22c55e;border-radius:50%;animation:pulse 2s infinite;display:inline-block}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
+    .header-meta{display:flex;align-items:center;gap:16px}
+    .stat-chip{background:rgba(37,99,235,.12);border:1px solid rgba(37,99,235,.25);border-radius:50px;padding:5px 14px;font-size:.7rem;font-weight:700;color:#93c5fd}
+    .back-link{color:var(--muted);font-size:.75rem;text-decoration:none;display:flex;align-items:center;gap:4px;transition:color .3s}
+    .back-link:hover{color:var(--text)}
+    .demo-badge{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.2);border-radius:50px;padding:3px 12px;font-size:.65rem;font-weight:700;color:var(--ac2);letter-spacing:1px;text-transform:uppercase}
+    /* Dashboard strip */
+    .dash-strip{position:relative;z-index:5;display:flex;gap:12px;padding:12px 24px;background:rgba(255,255,255,.02);border-bottom:1px solid rgba(255,255,255,.05);overflow-x:auto}
+    .dash-strip::-webkit-scrollbar{height:0}
+    .dash-card{flex-shrink:0;background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);border-radius:12px;padding:10px 18px;text-align:center;min-width:90px}
+    .dash-card .dv{font-size:1.3rem;font-weight:900;background:linear-gradient(135deg,var(--ac1),var(--ac2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .dash-card .dl{font-size:.58rem;color:var(--muted);font-weight:600;margin-top:2px}
+    .dash-card .dt{font-size:.55rem;color:#22c55e;font-weight:700}
+    /* Messages */
+    .chat-body{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:12px;position:relative;z-index:1;scroll-behavior:smooth}
+    .chat-body::-webkit-scrollbar{width:4px}
+    .chat-body::-webkit-scrollbar-thumb{background:rgba(37,99,235,.3);border-radius:2px}
+    .msg{max-width:75%;animation:msgIn .3s ease}
+    @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .msg.bot{align-self:flex-start}
+    .msg.user{align-self:flex-end}
+    .msg-bubble{padding:11px 15px;font-size:.875rem;line-height:1.65;border-radius:16px}
+    .bot .msg-bubble{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px 16px 16px 4px}
+    .user .msg-bubble{background:linear-gradient(135deg,var(--ac1),#1d4ed8);border-radius:16px 16px 4px 16px;color:#fff}
+    .msg-time{font-size:.58rem;color:var(--muted);margin-top:4px;padding:0 4px}
+    .bot .msg-time{text-align:left}.user .msg-time{text-align:right}
+    /* Prospect card */
+    .prospect-card{background:rgba(37,99,235,.07);border:1px solid rgba(37,99,235,.2);border-radius:12px;padding:13px;margin-top:8px}
+    .pc-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .pc-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#fff;flex-shrink:0}
+    .pc-name{font-weight:700;font-size:.82rem}
+    .pc-role{font-size:.65rem;color:var(--muted)}
+    .pc-msg{background:rgba(255,255,255,.04);border-radius:8px;padding:9px 11px;font-size:.72rem;line-height:1.6;color:rgba(255,255,255,.8);border-left:2px solid var(--ac1);margin-bottom:8px}
+    .pc-footer{display:flex;gap:8px}
+    .pc-btn{flex:1;padding:6px;border-radius:8px;border:none;font-size:.7rem;font-weight:700;cursor:pointer;transition:opacity .2s}
+    .pc-btn-p{background:linear-gradient(135deg,var(--ac1),var(--ac2));color:#fff}
+    .pc-btn-s{background:rgba(255,255,255,.06);border:1px solid var(--bdr);color:var(--muted)}
+    .pc-btn:hover{opacity:.85}
+    /* Typing */
+    .typing-wrap{align-self:flex-start;animation:msgIn .3s ease}
+    .typing{display:flex;gap:5px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:16px 16px 16px 4px;padding:12px 15px}
+    .typing span{width:7px;height:7px;background:var(--muted);border-radius:50%;animation:dot 1.4s infinite}
+    .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+    @keyframes dot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+    .quick-wrap{display:flex;flex-wrap:wrap;gap:8px;padding:0 24px 10px;position:relative;z-index:1}
+    .qr{background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.3);border-radius:50px;padding:7px 15px;font-size:.75rem;font-weight:600;color:#93c5fd;cursor:pointer;transition:background .2s}
+    .qr:hover{background:rgba(37,99,235,.25)}
+    .chat-input{position:relative;z-index:10;display:flex;align-items:center;gap:12px;padding:14px 24px;background:rgba(3,7,18,.9);border-top:1px solid var(--bdr);backdrop-filter:blur(20px)}
+    .chat-input input{flex:1;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:50px;padding:11px 18px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:.875rem;outline:none;transition:border-color .3s}
+    .chat-input input::placeholder{color:var(--muted)}
+    .chat-input input:focus{border-color:rgba(37,99,235,.5)}
+    .send-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--ac1),var(--ac2));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .2s}
+    .send-btn:hover{transform:scale(1.08)}
+    @media(max-width:600px){.stat-chip{display:none}.msg{max-width:88%}}
+  </style>
+</head>
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <div class="chat-header">
+    <div class="agent-id">
+      <div class="agent-av">🎯</div>
+      <div class="agent-info">
+        <div class="name">Alpha — LinkedIn Outreach AI</div>
+        <div class="status">Campaign active · 147 sent today</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <span class="demo-badge">Live Demo</span>
+      <span class="stat-chip">Powered by ItWorks</span>
+      <a href="alpha.html" class="back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        Learn More
+      </a>
+    </div>
+  </div>
+
+  <div class="dash-strip">
+    <div class="dash-card"><div class="dv">147</div><div class="dl">Sent Today</div><div class="dt">▲ 12%</div></div>
+    <div class="dash-card"><div class="dv">31</div><div class="dl">Replies</div><div class="dt">21% rate</div></div>
+    <div class="dash-card"><div class="dv">8</div><div class="dl">Meetings</div><div class="dt">this week</div></div>
+    <div class="dash-card"><div class="dv">£0</div><div class="dl">Cost/Lead</div><div class="dt">vs £140 avg</div></div>
+    <div class="dash-card"><div class="dv">5×</div><div class="dl">Reply Rate</div><div class="dt">vs manual</div></div>
+  </div>
+
+  <div class="chat-body" id="chat-body"></div>
+  <div class="quick-wrap" id="quick-wrap"></div>
+
+  <div class="chat-input">
+    <input type="text" id="msg-input" placeholder="Ask Alpha about your campaign..." autocomplete="off"/>
+    <button class="send-btn" onclick="sendMessage()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+
+  <script>
+    const body = document.getElementById('chat-body');
+    const input = document.getElementById('msg-input');
+    const quickWrap = document.getElementById('quick-wrap');
+    let fallbackIdx = 0;
+
+    const PROSPECTS = [
+      { name:'James T.', role:'Head of Operations · LogiFlow Ltd', color:'#2563eb', reply:'Yes, interested — when works for you?', sent:'Hi James — saw your post on AI in logistics. We help ops teams automate those exact workflows. Worth a 20-min chat?' },
+      { name:'Priya M.', role:'VP Sales · NexusTech', color:'#7c3aed', reply:'Thanks for reaching out. Can you send more info?', sent:'Hi Priya — congrats on NexusTech\'s Series A! We help scale-ups like yours automate SDR outreach. Open to a quick call?' },
+      { name:'David K.', role:'Founder · ScaleBase', color:'#0891b2', reply:'Absolutely — let\'s find a time this week.', sent:'Hi David — love what you\'re building at ScaleBase. We\'ve helped 3 similar SaaS founders cut their sales cycle by 40%. Interested?' },
+    ];
+
+    const FLOWS = [
+      { keys:['campaign','how','doing','performing','stats','results','progress','update'],
+        reply:()=>`Here's your live campaign snapshot 📊\n\n**Today:**\n• 147 connection requests sent\n• 31 replies received (21% reply rate — 5× industry average)\n• 8 meetings booked\n\n**This week:**\n• 683 total outreach\n• 94 replies\n• 23 meetings confirmed\n\nYour pipeline value from Alpha this week: **£138,000** (estimated). Want to see who replied?`,
+        quick:['Show me who replied','Which message is working best','Book more meetings','Pause the campaign']
+      },
+      { keys:['replied','who replied','latest','recent','response'],
+        reply:()=>`Here are today's hottest replies 🔥`,
+        followUp: ()=>showProspects(),
+        quick:[]
+      },
+      { keys:['message','template','copy','working','best','performing message'],
+        reply:()=>`Your best-performing message variant this week 🏆\n\n---\n*"Hi [Name] — saw your post about [topic]. We help [role]s at companies like yours [specific outcome]. Worth a 15-min call this week?"*\n---\n\n**Stats:** 28% reply rate (vs 8% for generic templates)\n\n**Why it works:**\n• References their recent content → feels personal\n• Names a specific outcome → relevant\n• Low-friction ask (15 mins) → easy to say yes\n\nWant me to generate a new variant targeting a different ICP?`,
+        quick:['Generate new variant','See other messages','Change my target audience']
+      },
+      { keys:['meeting','book','schedule','call','calendar'],
+        reply:()=>`I've got 3 warm leads ready to book right now. Shall I send them your Cal.com link automatically?\n\n• **James T.** — replied "interested, when works?"\n• **David K.** — replied "let's find a time"\n• **Sarah L.** — opened message 3× and visited your LinkedIn\n\nI can send all three a personalised booking message in the next 60 seconds. Confirm?`,
+        quick:['Yes, send them all','Send James first','Let me review first']
+      },
+      { keys:['yes','confirm','send','do it','go ahead'],
+        reply:()=>`Done! ✅ Booking messages sent to all 3 prospects.\n\nAlpha has pre-personalised each message using their LinkedIn activity. Average response to booking requests is **under 4 hours**.\n\nI'll ping you the moment any of them books. Want me to also run a follow-up to the 14 people who haven't responded to message 2 yet?`,
+        quick:['Yes, follow up on non-responders','Show me who hasn\'t replied','Adjust follow-up timing']
+      },
+      { keys:['pause','stop','slow down','reduce'],
+        reply:()=>`Campaign paused ⏸️\n\nYour current stats are saved. No new requests will be sent until you resume.\n\nWould you like to:\n• Adjust your target audience before resuming\n• Change the message sequence\n• Set a daily limit (currently: 200/day)`,
+        quick:['Resume campaign','Adjust target audience','Change message sequence']
+      },
+      { keys:['target','audience','icp','ideal','profile','industry'],
+        reply:()=>`Your current Ideal Customer Profile 🎯\n\n**Job titles:** VP Sales, Head of Ops, Founder, CRO\n**Company size:** 20–500 employees\n**Industry:** SaaS, Logistics, Professional Services\n**Geography:** UK, US, Ireland\n**Seniority:** Director+\n\nWant to expand into a new vertical? I can research prospect lists for any industry in under 10 minutes.`,
+        quick:['Add FinTech vertical','Target CTOs instead','Expand to UAE market','Keep current settings']
+      },
+      { keys:['fintech','finance','banking','cto','tech','uae','dubai'],
+        reply:()=>`On it! 🔍 Building a targeted prospect list for your new segment...\n\n✅ Found 340 matching profiles\n✅ Filtered to 280 with recent activity (posted in last 30 days)\n✅ Personalisation data pulled from their recent posts\n\n**Ready to launch.** New segment will run alongside your existing campaign. Estimated additional 40–60 replies per week. Shall I activate?`,
+        quick:['Activate new segment','Show sample message','Review list first']
+      },
+      { keys:['report','export','download','share'],
+        reply:()=>`Your weekly report is ready 📄\n\n**Alpha Campaign Report — Week of 2 June 2026**\n• Total outreach: 683 connections\n• Reply rate: 21.3% (vs 4.2% industry average)\n• Meetings booked: 23\n• Estimated pipeline: £138,000\n• Cost per meeting: £8.65 (vs £140+ manual)\n\nI've sent the full PDF to your email. Want me to also share it with your sales team on Slack?`,
+        quick:['Share to Slack','Schedule weekly reports','That\'s great, thanks']
+      },
+      { keys:['thanks','thank','great','brilliant','perfect','awesome'],
+        reply:()=>`You're welcome! 😊 Alpha is running strong.\n\nWhile we're talking — shall I start a warming sequence for your 47 new connections from this week who haven't been messaged yet? Warm leads book 3× faster when followed up within 48 hours.`,
+        quick:['Yes, start warming','Show me those contacts','Not right now']
+      },
+    ];
+
+    const FALLBACK = [
+      "I didn't quite catch that — could you clarify? You can ask me about your campaign stats, who's replied, which messages are working, or booking meetings. 🎯",
+      "Great question! Let me check the data. In the meantime — are you looking to optimise your current campaign, or expand to a new audience?",
+    ];
+
+    function showProspects() {
+      setTimeout(() => {
+        PROSPECTS.forEach((p, i) => {
+          setTimeout(() => {
+            const el = document.createElement('div');
+            el.className = 'msg bot';
+            el.style.maxWidth = '82%';
+            el.innerHTML = `<div class="msg-bubble" style="padding:0;background:none;border:none;">
+              <div class="prospect-card">
+                <div class="pc-top">
+                  <div class="pc-av" style="background:${p.color}">${p.name.split(' ').map(x=>x[0]).join('')}</div>
+                  <div><div class="pc-name">${p.name}</div><div class="pc-role">${p.role}</div></div>
+                </div>
+                <div class="pc-msg">💬 They replied: <em>"${p.reply}"</em></div>
+                <div style="font-size:.68rem;color:var(--muted);margin-bottom:8px">Alpha sent: "${p.sent.substring(0,60)}..."</div>
+                <div class="pc-footer">
+                  <button class="pc-btn pc-btn-p" onclick="handleQuick('Book a meeting with ${p.name.split(' ')[0]}')">Book Meeting</button>
+                  <button class="pc-btn pc-btn-s" onclick="handleQuick('Draft follow-up for ${p.name.split(' ')[0]}')">Draft Follow-Up</button>
+                </div>
+              </div>
+            </div><div class="msg-time">Alpha · just now</div>`;
+            body.appendChild(el);
+            scrollBottom();
+          }, i * 500);
+        });
+        setTimeout(() => setQuick(['Book all 3 meetings','Draft follow-ups','Show campaign stats']), PROSPECTS.length * 500 + 300);
+      }, 300);
+    }
+
+    function addMsg(text, sender) {
+      const el = document.createElement('div');
+      el.className = `msg ${sender}`;
+      const t = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+      el.innerHTML = `<div class="msg-bubble">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/---/g,'<hr style="border-color:rgba(255,255,255,.1);margin:8px 0">')}</div><div class="msg-time">${sender==='bot'?'Alpha · ':'You · '}${t}</div>`;
+      body.appendChild(el);
+      scrollBottom();
+    }
+
+    function showTyping() {
+      const el = document.createElement('div');
+      el.className = 'typing-wrap'; el.id = 'typing';
+      el.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+      body.appendChild(el); scrollBottom(); return el;
+    }
+
+    function scrollBottom() { setTimeout(() => { body.scrollTop = body.scrollHeight; }, 50); }
+
+    function setQuick(arr) {
+      quickWrap.innerHTML = arr.map(q => `<button class="qr" onclick="handleQuick('${q.replace(/'/g,"\\'")}'">${q}</button>`).join('');
+    }
+
+    function getReply(msg) {
+      const lower = msg.toLowerCase();
+      for (const f of FLOWS) {
+        if (f.keys.some(k => lower.includes(k))) return f;
+      }
+      return { reply: () => FALLBACK[fallbackIdx++ % FALLBACK.length], quick: ['Campaign stats','Who replied today','Book meetings','Adjust targeting'] };
+    }
+
+    function handleQuick(text) { quickWrap.innerHTML=''; addMsg(text,'user'); processInput(text); }
+    function sendMessage() { const v=input.value.trim(); if(!v)return; input.value=''; quickWrap.innerHTML=''; addMsg(v,'user'); processInput(v); }
+
+    function processInput(text) {
+      const typing = showTyping();
+      setTimeout(() => {
+        typing.remove();
+        const flow = getReply(text);
+        const r = typeof flow.reply === 'function' ? flow.reply() : flow.reply;
+        addMsg(r, 'bot');
+        if (flow.quick && flow.quick.length) setQuick(flow.quick);
+        if (flow.followUp) flow.followUp();
+      }, 800 + Math.random() * 600);
+    }
+
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+
+    setTimeout(() => {
+      addMsg("Hey! 👋 I'm **Alpha**, your LinkedIn Outreach AI.\n\nYour campaign is live and running strong — **147 connection requests sent today**, **31 replies**, and **8 meetings booked this week**.\n\nWhat would you like to do?", 'bot');
+      setQuick(['Show campaign stats','Who replied today?','Book meetings with hot leads','How\'s my message performing?']);
+    }, 600);
+  </script>
+</body>
+</html>

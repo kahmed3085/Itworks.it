@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+  <title>Enigma — Real Estate AI Agent Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#030712;--ac1:#7c3aed;--ac2:#f59e0b;--glass:rgba(255,255,255,.05);--bdr:rgba(255,255,255,.1);--text:#f1f5f9;--muted:#94a3b8}
+    body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+    .orb{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0}
+    .orb1{width:400px;height:400px;background:radial-gradient(circle,rgba(124,58,237,.2),transparent 70%);top:-100px;right:-80px}
+    .orb2{width:300px;height:300px;background:radial-gradient(circle,rgba(245,158,11,.1),transparent 70%);bottom:0;left:-60px}
+    /* HEADER */
+    .chat-header{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:rgba(3,7,18,.9);border-bottom:1px solid var(--bdr);backdrop-filter:blur(20px)}
+    .agent-id{display:flex;align-items:center;gap:12px}
+    .agent-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--ac1),var(--ac2));display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 0 20px rgba(124,58,237,.4)}
+    .agent-info .name{font-weight:800;font-size:.95rem}
+    .agent-info .status{font-size:.7rem;color:#22c55e;display:flex;align-items:center;gap:5px;margin-top:2px}
+    .agent-info .status::before{content:'';width:6px;height:6px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
+    .header-meta{display:flex;align-items:center;gap:16px}
+    .stat-chip{background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.25);border-radius:50px;padding:5px 14px;font-size:.7rem;font-weight:700;color:#c4b5fd}
+    .back-link{color:var(--muted);font-size:.75rem;text-decoration:none;display:flex;align-items:center;gap:4px;transition:color .3s}
+    .back-link:hover{color:var(--text)}
+    /* MESSAGES */
+    .chat-body{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:14px;position:relative;z-index:1;scroll-behavior:smooth}
+    .chat-body::-webkit-scrollbar{width:4px}
+    .chat-body::-webkit-scrollbar-track{background:transparent}
+    .chat-body::-webkit-scrollbar-thumb{background:rgba(124,58,237,.3);border-radius:2px}
+    .msg{max-width:72%;animation:msgIn .3s ease}
+    @keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+    .msg.bot{align-self:flex-start}
+    .msg.user{align-self:flex-end}
+    .msg-bubble{padding:12px 16px;border-radius:18px;font-size:.875rem;line-height:1.65}
+    .bot .msg-bubble{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:18px 18px 18px 4px}
+    .user .msg-bubble{background:linear-gradient(135deg,var(--ac1),#9333ea);border-radius:18px 18px 4px 18px;color:#fff}
+    .msg-time{font-size:.58rem;color:var(--muted);margin-top:5px;padding:0 4px}
+    .bot .msg-time{text-align:left}
+    .user .msg-time{text-align:right}
+    /* Property card */
+    .prop-card{background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.25);border-radius:14px;padding:14px;margin-top:8px;cursor:pointer;transition:transform .2s,border-color .2s}
+    .prop-card:hover{transform:translateY(-2px);border-color:rgba(124,58,237,.5)}
+    .prop-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+    .prop-title{font-weight:700;font-size:.85rem}
+    .prop-price{font-weight:900;font-size:.95rem;color:var(--ac2)}
+    .prop-details{display:flex;gap:12px;font-size:.72rem;color:var(--muted)}
+    .prop-tag{display:inline-block;background:rgba(124,58,237,.15);border-radius:50px;padding:2px 8px;font-size:.65rem;font-weight:700;color:#c4b5fd;margin-top:6px}
+    .prop-action{display:block;text-align:center;margin-top:10px;background:linear-gradient(135deg,var(--ac1),var(--ac2));color:#fff;padding:7px;border-radius:8px;font-size:.75rem;font-weight:700;border:none;cursor:pointer;width:100%;transition:opacity .2s}
+    .prop-action:hover{opacity:.85}
+    /* Typing */
+    .typing-wrap{align-self:flex-start;animation:msgIn .3s ease}
+    .typing{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:18px 18px 18px 4px;padding:12px 16px}
+    .typing span{width:7px;height:7px;background:var(--muted);border-radius:50%;animation:dot 1.4s ease-in-out infinite}
+    .typing span:nth-child(2){animation-delay:.2s}
+    .typing span:nth-child(3){animation-delay:.4s}
+    @keyframes dot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+    /* Quick replies */
+    .quick-wrap{display:flex;flex-wrap:wrap;gap:8px;padding:0 24px 12px;position:relative;z-index:1}
+    .qr{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);border-radius:50px;padding:7px 16px;font-size:.78rem;font-weight:600;color:#c4b5fd;cursor:pointer;transition:background .2s,border-color .2s}
+    .qr:hover{background:rgba(124,58,237,.25);border-color:rgba(124,58,237,.6)}
+    /* Input */
+    .chat-input{position:relative;z-index:10;display:flex;align-items:center;gap:12px;padding:16px 24px;background:rgba(3,7,18,.9);border-top:1px solid var(--bdr);backdrop-filter:blur(20px)}
+    .chat-input input{flex:1;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:50px;padding:12px 20px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:.875rem;outline:none;transition:border-color .3s}
+    .chat-input input::placeholder{color:var(--muted)}
+    .chat-input input:focus{border-color:rgba(124,58,237,.5)}
+    .send-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--ac1),var(--ac2));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .2s,box-shadow .2s}
+    .send-btn:hover{transform:scale(1.08);box-shadow:0 0 20px rgba(124,58,237,.5)}
+    .send-btn svg{width:18px;height:18px}
+    .demo-badge{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);border-radius:50px;padding:3px 12px;font-size:.65rem;font-weight:700;color:var(--ac2);letter-spacing:1px;text-transform:uppercase}
+    @media(max-width:600px){.stat-chip{display:none}.msg{max-width:88%}}
+  </style>
+</head>
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <div class="chat-header">
+    <div class="agent-id">
+      <div class="agent-av">🏡</div>
+      <div class="agent-info">
+        <div class="name">Enigma — Real Estate AI</div>
+        <div class="status">Online · Ready to help</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <span class="demo-badge">Live Demo</span>
+      <span class="stat-chip">Powered by ItWorks</span>
+      <a href="enigma.html" class="back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        Learn More
+      </a>
+    </div>
+  </div>
+
+  <div class="chat-body" id="chat-body"></div>
+  <div class="quick-wrap" id="quick-wrap"></div>
+
+  <div class="chat-input">
+    <input type="text" id="msg-input" placeholder="Ask Enigma about properties..." autocomplete="off"/>
+    <button class="send-btn" onclick="sendMessage()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+
+  <script>
+    const body = document.getElementById('chat-body');
+    const input = document.getElementById('msg-input');
+    const quickWrap = document.getElementById('quick-wrap');
+
+    let state = { step: 'intent', budget: null, area: null, type: null, beds: null };
+
+    const FLOWS = [
+      {
+        keys: ['buy','purchase','buying','want to buy'],
+        reply: () => {
+          state.type = 'buy'; state.step = 'budget';
+          return "Excellent choice! Buying is a great investment right now, especially in London. 🏡\n\nWhat's your approximate budget? This helps me shortlist the right properties for you.";
+        },
+        quick: ['Under £300k','£300k–£500k','£500k–£800k','£800k+']
+      },
+      {
+        keys: ['rent','renting','tenant','letting','lease'],
+        reply: () => {
+          state.type = 'rent'; state.step = 'budget';
+          return "Great! There are some brilliant rental options right now. 🔑\n\nWhat's your monthly budget? I'll find properties that give you the best value.";
+        },
+        quick: ['Under £1,200/mo','£1,200–£2,000/mo','£2,000–£3,500/mo','£3,500+/mo']
+      },
+      {
+        keys: ['300','400','450','500','600','700','800','under','budget','k','000','£'],
+        reply: (msg) => {
+          state.step = 'area';
+          const b = msg.includes('800') || msg.includes('million') ? '£800k+' : msg.includes('500') || msg.includes('600') || msg.includes('700') ? '£500k–£800k' : msg.includes('300') || msg.includes('400') || msg.includes('450') ? '£300k–£500k' : 'your budget';
+          state.budget = b;
+          return `Perfect — ${b} gives you some excellent options. 📍\n\nWhich area or borough are you looking in? (e.g. South London, Canary Wharf, Manchester, Birmingham...)`;
+        },
+        quick: ['South London','North London','East London','West London','Manchester','Birmingham','Outside London']
+      },
+      {
+        keys: ['london','south','north','east','west','manchester','birmingham','bristol','leeds','outside','zone'],
+        reply: (msg) => {
+          state.step = 'beds';
+          state.area = msg.length < 30 ? msg : 'your preferred area';
+          return `Great area choice! I have strong coverage there. 🛏️\n\nHow many bedrooms are you looking for?`;
+        },
+        quick: ['Studio','1 Bedroom','2 Bedrooms','3 Bedrooms','4+ Bedrooms']
+      },
+      {
+        keys: ['studio','1 bed','2 bed','3 bed','4 bed','bedroom','beds'],
+        reply: (msg) => {
+          state.step = 'results';
+          const beds = msg.includes('studio') ? 'studio' : msg.includes('1') ? '1-bed' : msg.includes('2') ? '2-bed' : msg.includes('3') ? '3-bed' : '4-bed';
+          state.beds = beds;
+          return `Found 3 matching properties for you! Let me pull those up... 🔍`;
+        },
+        quick: [],
+        followUp: () => showProperties()
+      },
+      {
+        keys: ['viewing','view','visit','see','book','schedule','appointment'],
+        reply: () => {
+          state.step = 'book';
+          return `I'd love to book a viewing for you! 📅\n\nI have slots available this week:\n• **Tomorrow** — 10am, 2pm, 5pm\n• **Thursday** — 11am, 3pm\n• **Saturday** — 10am–4pm (flexible)\n\nWhich works best? I'll confirm within minutes.`;
+        },
+        quick: ['Tomorrow 10am','Tomorrow 2pm','Thursday 3pm','Saturday morning']
+      },
+      {
+        keys: ['tomorrow','thursday','saturday','morning','afternoon','10am','11am','2pm','3pm','5pm'],
+        reply: (msg) => {
+          return `Brilliant! ✅ Your viewing is confirmed.\n\nI'll send the full property details and address to your email. The agent will also call you 30 minutes beforehand to confirm.\n\nIs there anything else you'd like to know before the viewing — such as the local area, transport links, or schools?`;
+        },
+        quick: ['Transport links','Local schools','Mortgage options','That\'s all, thanks!']
+      },
+      {
+        keys: ['transport','tube','train','bus','commute'],
+        reply: () => `Great question! The property has excellent transport links — closest tube is within 8 minutes walk, and there are direct routes into Central London in under 25 minutes. 🚇\n\nAnything else I can help with?`,
+        quick: ['Local schools','Mortgage options','Book another viewing','That\'s all, thanks!']
+      },
+      {
+        keys: ['school','education','ofsted'],
+        reply: () => `There are 3 Ofsted-rated 'Outstanding' primary schools within a 1-mile radius, and two well-regarded secondary schools nearby. 🏫\n\nI can include a full schools report in the property pack — would that be useful?`,
+        quick: ['Yes please','Book a viewing','Mortgage options']
+      },
+      {
+        keys: ['mortgage','finance','loan','deposit'],
+        reply: () => `We work with a trusted independent mortgage broker who can find you the best rates in minutes. 💷\n\nFor your budget, typical deposit requirements are 10–15%. We can connect you with them free of charge — shall I make the introduction?`,
+        quick: ['Yes, connect me','I have a broker','Just browsing for now']
+      },
+      {
+        keys: ['thanks','thank you','great','perfect','brilliant','awesome','done'],
+        reply: () => `You're very welcome! 😊\n\nHere's a summary of what we've arranged:\n✅ Property shortlist shared\n✅ Viewing booked\n\nI'm here 24/7 if you have any more questions. One of our human agents will be in touch to confirm the details. Good luck with your search! 🏡`,
+        quick: ['Start a new search','Talk to a human agent','Visit itworks.ai']
+      },
+      {
+        keys: ['price','cost','how much','negotiation','offer'],
+        reply: () => `The asking price is set by the vendor, but our agents are highly experienced negotiators. 🤝\n\nIn the current market, we typically help buyers secure properties 2–5% below asking price. Would you like me to flag this property for negotiation support?`,
+        quick: ['Yes, flag it','Book a viewing','Ask another question']
+      },
+    ];
+
+    const FALLBACK = [
+      "That's a great question! Let me find that information for you. In the meantime, is there anything specific about the property — price, area, or viewings — I can help with? 🏡",
+      "I want to make sure I give you the most accurate answer. Could you tell me a bit more about what you're looking for? Are you buying or renting?",
+      "Great — let me check our latest listings for that. While I do, can I ask: what's your timeline? Are you looking to move within the next 1–3 months?",
+    ];
+    let fallbackIdx = 0;
+
+    function showProperties() {
+      const props = [
+        { title: `Modern ${state.beds||'2-bed'} Apartment`, area: state.area||'South London', price: state.type==='rent'?'£1,950/mo':'£425,000', beds: state.beds||'2', baths: '1', sqft: '780', tag: 'New to market' },
+        { title: `Contemporary ${state.beds||'2-bed'} Flat`, area: state.area||'South London', price: state.type==='rent'?'£1,800/mo':'£389,500', beds: state.beds||'2', baths: '2', sqft: '720', tag: 'Chain-free' },
+        { title: `Bright ${state.beds||'2-bed'} Garden Flat`, area: state.area||'South London', price: state.type==='rent'?'£2,100/mo':'£445,000', beds: state.beds||'2', baths: '1', sqft: '850', tag: 'Popular' },
+      ];
+      setTimeout(() => {
+        const wrap = document.createElement('div');
+        wrap.className = 'msg bot';
+        wrap.style.maxWidth='80%';
+        wrap.innerHTML = `<div class="msg-bubble" style="padding:0;background:none;border:none;">${props.map(p=>`
+          <div class="prop-card">
+            <div class="prop-header">
+              <div class="prop-title">${p.title}</div>
+              <div class="prop-price">${p.price}</div>
+            </div>
+            <div class="prop-details">
+              <span>📍 ${p.area}</span>
+              <span>🛏 ${p.beds} bed</span>
+              <span>🚿 ${p.baths} bath</span>
+              <span>📐 ${p.sqft} sq ft</span>
+            </div>
+            <span class="prop-tag">${p.tag}</span>
+            <button class="prop-action" onclick="handleQuick('Book a viewing')">Book Viewing →</button>
+          </div>`).join('')}
+        </div><div class="msg-time">Enigma · just now</div>`;
+        body.appendChild(wrap);
+        scrollBottom();
+        setQuick(['Book a viewing','Shortlist all 3','Tell me about the area','I need a different budget']);
+      }, 400);
+    }
+
+    function addMsg(text, sender, skipTime) {
+      const el = document.createElement('div');
+      el.className = `msg ${sender}`;
+      const t = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+      el.innerHTML = `<div class="msg-bubble">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>${skipTime?'':` <div class="msg-time">${sender==='bot'?'Enigma · ':'You · '}${t}</div>`}`;
+      body.appendChild(el);
+      scrollBottom();
+    }
+
+    function showTyping() {
+      const el = document.createElement('div');
+      el.className = 'typing-wrap';
+      el.id = 'typing';
+      el.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+      body.appendChild(el);
+      scrollBottom();
+      return el;
+    }
+
+    function scrollBottom() { setTimeout(() => { body.scrollTop = body.scrollHeight; }, 50); }
+
+    function setQuick(arr) {
+      quickWrap.innerHTML = arr.map(q => `<button class="qr" onclick="handleQuick('${q}')">${q}</button>`).join('');
+    }
+
+    function getReply(msg) {
+      const lower = msg.toLowerCase();
+      for (const flow of FLOWS) {
+        if (flow.keys.some(k => lower.includes(k))) {
+          const reply = flow.reply(lower);
+          const quick = flow.quick || [];
+          const followUp = flow.followUp;
+          return { reply, quick, followUp };
+        }
+      }
+      const fb = FALLBACK[fallbackIdx % FALLBACK.length];
+      fallbackIdx++;
+      return { reply: fb, quick: ['Buying a property','Renting a property','Book a viewing','Speak to an agent'] };
+    }
+
+    function handleQuick(text) {
+      quickWrap.innerHTML = '';
+      addMsg(text, 'user');
+      processInput(text);
+    }
+
+    function sendMessage() {
+      const val = input.value.trim();
+      if (!val) return;
+      input.value = '';
+      quickWrap.innerHTML = '';
+      addMsg(val, 'user');
+      processInput(val);
+    }
+
+    function processInput(text) {
+      const typing = showTyping();
+      const delay = 900 + Math.random() * 700;
+      setTimeout(() => {
+        typing.remove();
+        const { reply, quick, followUp } = getReply(text);
+        addMsg(reply, 'bot');
+        if (quick && quick.length) setQuick(quick);
+        if (followUp) followUp();
+      }, delay);
+    }
+
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+
+    // Welcome sequence
+    setTimeout(() => {
+      addMsg("Hi! 👋 I'm **Enigma**, your AI Real Estate Assistant.\n\nI can help you find your perfect property, book viewings, answer questions about areas, and guide you through the buying or renting process.\n\n**Are you looking to buy or rent?**", 'bot');
+      setQuick(['Buy a property 🏡','Rent a property 🔑','I have a specific question','What areas do you cover?']);
+    }, 600);
+  </script>
+</body>
+</html>
